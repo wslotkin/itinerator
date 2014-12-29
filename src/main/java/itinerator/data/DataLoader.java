@@ -22,6 +22,8 @@ public class DataLoader {
     private static final int SCORE_COLUMN = 3;
     private static final int LATITUDE_INDEX = 0;
     private static final int LONGITUDE_INDEX = 1;
+    private static final String COMMA = ",";
+    private static final String SEMICOLON = ";";
 
     public Collection<Activity> loadData(String filename) throws IOException {
         List<Activity> activities = new ArrayList<>();
@@ -36,11 +38,11 @@ public class DataLoader {
         return activities;
     }
 
-    private Activity parseLine(String line) {
-        String[] elements = line.split(",");
+    private static Activity parseLine(String line) {
+        String[] elements = line.split(COMMA);
 
         String id = elements[ID_COLUMN];
-        String[] coordinates = elements[LOCATION_COLUMN].split(";");
+        String[] coordinates = elements[LOCATION_COLUMN].split(SEMICOLON);
         Location location = new Location(parseDouble(coordinates[LATITUDE_INDEX]), parseDouble(coordinates[LONGITUDE_INDEX]));
         long duration = parseLong(elements[DURATION_COLUMN]);
         double cost = 0.0;
