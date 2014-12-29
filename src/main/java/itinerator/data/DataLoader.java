@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static java.lang.Double.parseDouble;
@@ -25,7 +24,7 @@ public class DataLoader {
     private static final String COMMA = ",";
     private static final String SEMICOLON = ";";
 
-    public Collection<Activity> loadData(String filename) throws IOException {
+    public List<Activity> loadData(String filename) throws IOException {
         List<Activity> activities = new ArrayList<>();
 
         BufferedReader reader = new BufferedReader(new FileReader(new File(filename)));

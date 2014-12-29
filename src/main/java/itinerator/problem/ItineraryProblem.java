@@ -4,6 +4,7 @@ import cz.cvut.felk.cig.jcop.problem.*;
 import cz.cvut.felk.cig.jcop.util.JcopRandom;
 import itinerator.datamodel.Activity;
 import itinerator.evaluator.ItineraryEvaluator;
+import itinerator.evaluator.ItineraryFactory;
 import itinerator.evaluator.ItineraryFitness;
 import org.joda.time.DateTime;
 
@@ -27,7 +28,8 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        return new ItineraryFitness(activities, new ItineraryEvaluator(), startTime);
+        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime);
+        return new ItineraryFitness(activities, new ItineraryEvaluator(), itineraryFactory);
     }
 
     @Override

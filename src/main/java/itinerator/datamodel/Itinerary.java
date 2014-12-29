@@ -13,4 +13,16 @@ public class Itinerary {
     public List<Event> getEvents() {
         return events;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Event event : events) {
+            builder.append(event.getActivity().getId())
+                    .append("-")
+                    .append(event.getEventTime())
+                    .append("\n");
+        }
+        return builder.toString();
+    }
 }
