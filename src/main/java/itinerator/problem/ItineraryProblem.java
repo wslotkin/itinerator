@@ -14,12 +14,10 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     private final List<Activity> activities;
     private final DateTime startTime;
-    private final int maxPosition;
 
     public ItineraryProblem(List<Activity> activities, DateTime startTime) {
         this.activities = activities;
         this.startTime = startTime;
-        maxPosition = activities.size() + 1;
     }
 
     @Override
@@ -39,15 +37,15 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Integer getMaximum(int index) {
-        return maxPosition;
+        return activities.size();
     }
 
     @Override
     public Configuration getRandomConfiguration() {
         List<Integer> attributes = new ArrayList<>();
-        for (Activity activity : activities) {
+        for (int i = 0; i < activities.size(); i++) {
             boolean isIncluded = JcopRandom.nextBoolean();
-            attributes.add(isIncluded ? JcopRandom.nextInt(maxPosition) + 1 : 0);
+            attributes.add(isIncluded ? JcopRandom.nextInt(activities.size()) : -1);
         }
         return new Configuration(attributes);
     }

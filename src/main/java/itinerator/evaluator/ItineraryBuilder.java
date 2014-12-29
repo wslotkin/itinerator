@@ -11,8 +11,6 @@ import org.joda.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 public class ItineraryBuilder {
 
     private static final int START_OF_DAY = 8;
@@ -31,7 +29,6 @@ public class ItineraryBuilder {
     }
 
     public ItineraryBuilder addActivityAtPosition(Activity activity, int position) {
-        checkArgument(position > 0, "Index for activity should be >0.");
         if (position >= activities.size()) {
             activities.add(activity);
         } else {

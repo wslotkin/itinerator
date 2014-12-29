@@ -26,7 +26,7 @@ public class ItineraryFitness extends BaseFitness {
         ItineraryBuilder builder = new ItineraryBuilder(startTime);
         for (int i = 0; i < activities.size(); i++) {
             Integer position = configuration.valueAt(i);
-            if (position != 0) {
+            if (position >= 0) {
                 Activity activity = activities.get(i);
                 builder.addActivityAtPosition(activity, position);
             }
