@@ -3,9 +3,6 @@ package itinerator.calculators;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Location;
 
-/**
- * Created by smatt989 on 12/26/14.
- */
 public class DistanceCalculator {
     public double calculate(Event start, Event end) {
         return Math.abs(haversineFormula(start.getActivity().getLocation(), end.getActivity().getLocation()));
@@ -22,7 +19,6 @@ public class DistanceCalculator {
                 + Math.cos(startLatitudeRadians)
                 * Math.cos(endLatitudeRadians)
                 * Math.pow(Math.sin(deltaLongitude / 2), 2);
-
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 

@@ -5,14 +5,12 @@ import itinerator.datamodel.Itinerary;
 public class ItineraryEvaluator {
 
     public double evaluate(Itinerary itinerary) {
-        double result = totalFun(itinerary);
-        return result;
+        return totalFun(itinerary);
     }
 
     private double totalFun(Itinerary itinerary) {
-        double sum = itinerary.getEvents().stream()
+        return itinerary.getEvents().stream()
                 .mapToDouble(a -> a.getActivity().getScore() * a.getActivity().getDuration())
                 .sum();
-        return sum;
     }
 }

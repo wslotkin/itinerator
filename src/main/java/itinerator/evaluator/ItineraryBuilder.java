@@ -19,7 +19,6 @@ public class ItineraryBuilder {
     private static final Interval DINNER = new Interval(new LocalTime(18, 0).toDateTimeToday().getMillis(), new LocalTime(20, 0).toDateTimeToday().getMillis());
     private static final Interval SLEEP = new Interval(new LocalTime(22, 0).toDateTimeToday().getMillis(), new LocalTime(START_OF_DAY, 0).toDateTimeToday().plusDays(1).getMillis());
 
-
     private final DateTime startTime;
     private final List<Activity> activities;
 
