@@ -23,14 +23,15 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String dataFile = Main.class.getClassLoader().getResource("beijingspots.csv").getPath();
         List<Activity> activities = new DataLoader().loadData(dataFile);
-        DateTime startTime = new DateTime();
+        DateTime startTime = new DateTime().minusDays(3);
+        DateTime endTime = new DateTime();
 
-        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(10, 0.2), new ItineraryProblem(activities, startTime));
+        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(10, 0.2), new ItineraryProblem(activities, startTime, endTime));
         solver.addStopCondition(new IterationCondition(10));
         solver.run();
 
         Configuration bestConfiguration = getOnlyElement(solver.getResult().getResultEntries()).getBestConfiguration();
-        Itinerary bestItinerary = new ItineraryFactory(activities, startTime, new TravelTimeCalculator(new DistanceCalculator())).create(bestConfiguration);
+        Itinerary bestItinerary = new ItineraryFactory(activities, startTime, endTime, new TravelTimeCalculator(new DistanceCalculator())).create(bestConfiguration);
         System.out.println(bestItinerary);
     }
 }

@@ -13,15 +13,20 @@ public class ItineraryFactory {
     private final List<Activity> activities;
     private final DateTime startTime;
     private final TravelTimeCalculator travelTimeCalculator;
+    private final DateTime endTime;
 
-    public ItineraryFactory(List<Activity> activities, DateTime startTime, TravelTimeCalculator travelTimeCalculator) {
+    public ItineraryFactory(List<Activity> activities,
+                            DateTime startTime,
+                            DateTime endTime,
+                            TravelTimeCalculator travelTimeCalculator) {
         this.activities = activities;
         this.startTime = startTime;
         this.travelTimeCalculator = travelTimeCalculator;
+        this.endTime = endTime;
     }
 
     public Itinerary create(Configuration configuration) {
-        ItineraryBuilder builder = new ItineraryBuilder(startTime, travelTimeCalculator);
+        ItineraryBuilder builder = new ItineraryBuilder(startTime, endTime, travelTimeCalculator);
         for (int i = 0; i < activities.size(); i++) {
             Integer position = configuration.valueAt(i);
             if (position >= 0) {

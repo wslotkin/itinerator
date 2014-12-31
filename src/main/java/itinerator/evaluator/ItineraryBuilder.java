@@ -21,11 +21,13 @@ public class ItineraryBuilder {
     private static final Interval SLEEP = new Interval(new LocalTime(22, 0).toDateTimeToday().getMillis(), new LocalTime(START_OF_DAY, 0).toDateTimeToday().plusDays(1).getMillis());
 
     private final DateTime startTime;
+    private final DateTime endTime;
     private final List<Activity> activities;
     private final TravelTimeCalculator travelTimeCalculator;
 
-    public ItineraryBuilder(DateTime startTime, TravelTimeCalculator travelTimeCalculator) {
+    public ItineraryBuilder(DateTime startTime, DateTime endTime, TravelTimeCalculator travelTimeCalculator) {
         this.startTime = startTime;
+        this.endTime = endTime;
         this.travelTimeCalculator = travelTimeCalculator;
         activities = new ArrayList<>();
     }
@@ -44,8 +46,10 @@ public class ItineraryBuilder {
         List<Event> events = new ArrayList<>();
         for (Activity activity : activities) {
             DateTime currentDateTime = currentEvent != null ? currentEvent.getEventTime().getEnd() : startTime;
+
             if (isInMealWindow(currentDateTime.toLocalTime())) {
                 currentEvent = activityToEvent(currentEvent, defaultMeal(activity.getLocation()));
+                if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);
                 currentDateTime = currentEvent.getEventTime().getEnd();
             }
@@ -54,17 +58,24 @@ public class ItineraryBuilder {
                 Activity sleepToAdd = defaultSleep(activity.getLocation());
                 DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) sleepToAdd.getDuration()).withTime(START_OF_DAY, 0, 0, 0);
                 currentEvent = new Event(sleepToAdd, new Interval(currentDateTime, endTimeOfActivity), 0.0);
+                if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);
 
                 currentEvent = activityToEvent(currentEvent, defaultMeal(activity.getLocation()));
+                if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);
             }
 
             currentEvent = activityToEvent(currentEvent, activity);
+            if (wouldExceedEndTime(currentEvent)) break;
             events.add(currentEvent);
         }
 
         return new Itinerary(events);
+    }
+
+    private boolean wouldExceedEndTime(Event currentEvent) {
+        return currentEvent.getEventTime().getEnd().isAfter(endTime);
     }
 
     private Event activityToEvent(Event previousEvent, Activity activity) {

@@ -17,10 +17,12 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     private final List<Activity> activities;
     private final DateTime startTime;
+    private final DateTime endTime;
 
-    public ItineraryProblem(List<Activity> activities, DateTime startTime) {
+    public ItineraryProblem(List<Activity> activities, DateTime startTime, DateTime endTime) {
         this.activities = activities;
         this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     @Override
@@ -30,7 +32,8 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, new TravelTimeCalculator(new DistanceCalculator()));
+        TravelTimeCalculator travelCalculator = new TravelTimeCalculator(new DistanceCalculator());
+        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelCalculator);
         return new ItineraryFitness(activities, new ItineraryEvaluator(), itineraryFactory);
     }
 
