@@ -1,10 +1,7 @@
 package itinerator.evaluator;
 
 import itinerator.calculators.TravelTimeCalculator;
-import itinerator.datamodel.Activity;
-import itinerator.datamodel.Event;
-import itinerator.datamodel.Itinerary;
-import itinerator.datamodel.Location;
+import itinerator.datamodel.*;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
@@ -96,11 +93,11 @@ public class ItineraryBuilder {
     }
 
     private static Activity defaultMeal(Location location) {
-        return new Activity("default meal", 60L, location, 0.0, 0.0);
+        return new Activity("default meal", 60L, location, 0.0, 0.0, ActivityType.FOOD);
     }
 
     private static Activity defaultSleep(Location location) {
-        return new Activity("default sleep", 480L, location, 0.0, 0.0);
+        return new Activity("default sleep", 480L, location, 0.0, 0.0, ActivityType.SLEEP);
     }
 
     private static boolean isInMealWindow(LocalTime eventTime) {

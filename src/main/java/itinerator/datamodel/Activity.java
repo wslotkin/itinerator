@@ -7,13 +7,15 @@ public class Activity {
     private final Location location;
     private final double cost;
     private final double score;
+    private final ActivityType type;
 
-    public Activity(String id, long duration, Location location, double cost, double score) {
+    public Activity(String id, long duration, Location location, double cost, double score, ActivityType type) {
         this.id = id;
         this.duration = duration;
         this.location = location;
         this.cost = cost;
         this.score = score;
+        this.type = type;
     }
 
     public String getId() {
@@ -34,5 +36,9 @@ public class Activity {
 
     public double getScore() {
         return score;
+    }
+
+    public ActivityType getType() {
+        return type;
     }
 }
