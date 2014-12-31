@@ -52,9 +52,7 @@ public class ItineraryBuilder {
             }
 
             if (isInSleepWindow(currentDateTime.toLocalTime())) {
-                Activity sleepToAdd = defaultSleep(activity.getLocation());
-                DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) sleepToAdd.getDuration()).withTime(START_OF_DAY, 0, 0, 0);
-                currentEvent = new Event(sleepToAdd, new Interval(currentDateTime, endTimeOfActivity), 0.0);
+                currentEvent = createSleepEvent(activity, currentDateTime);
                 if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);
 
@@ -100,12 +98,18 @@ public class ItineraryBuilder {
         return new Activity("default sleep", 480L, location, 0.0, 0.0, ActivityType.SLEEP);
     }
 
+    private static Event createSleepEvent(Activity activity, DateTime currentDateTime) {
+        Activity sleepToAdd = defaultSleep(activity.getLocation());
+        DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) sleepToAdd.getDuration()).withTime(START_OF_DAY, 0, 0, 0);
+        return new Event(sleepToAdd, new Interval(currentDateTime, endTimeOfActivity), 0.0);
+    }
+
     private static boolean isInMealWindow(LocalTime eventTime) {
         long timeInMillis = eventTime.toDateTimeToday().getMillis();
         return BREAKFAST.contains(timeInMillis) || LUNCH.contains(timeInMillis) || DINNER.contains(timeInMillis);
     }
 
     private static boolean isInSleepWindow(LocalTime eventTime) {
-        return SLEEP.contains(eventTime.toDateTimeToday().getMillis());
+        return SLEEP.contains(eventTime.toDateTimeToday().getMillis()) || SLEEP.contains(eventTime.toDateTimeToday().plusDays(1).getMillis());
     }
 }
