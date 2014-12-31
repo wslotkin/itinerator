@@ -4,6 +4,8 @@ import cz.cvut.felk.cig.jcop.algorithm.geneticalgorithm.GeneticAlgorithm;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import cz.cvut.felk.cig.jcop.solver.SimpleSolver;
 import cz.cvut.felk.cig.jcop.solver.condition.IterationCondition;
+import itinerator.calculators.DistanceCalculator;
+import itinerator.calculators.TravelTimeCalculator;
 import itinerator.data.DataLoader;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Itinerary;
@@ -28,7 +30,7 @@ public class Main {
         solver.run();
 
         Configuration bestConfiguration = getOnlyElement(solver.getResult().getResultEntries()).getBestConfiguration();
-        Itinerary bestItinerary = new ItineraryFactory(activities, startTime).create(bestConfiguration);
+        Itinerary bestItinerary = new ItineraryFactory(activities, startTime, new TravelTimeCalculator(new DistanceCalculator())).create(bestConfiguration);
         System.out.println(bestItinerary);
     }
 }

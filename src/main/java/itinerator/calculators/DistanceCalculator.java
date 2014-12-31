@@ -1,14 +1,9 @@
 package itinerator.calculators;
 
-import itinerator.datamodel.Event;
 import itinerator.datamodel.Location;
 
 public class DistanceCalculator {
-    public double calculate(Event start, Event end) {
-        return Math.abs(haversineFormula(start.getActivity().getLocation(), end.getActivity().getLocation()));
-    }
-
-    private double haversineFormula(Location start, Location end) {
+    public double calculate(Location start, Location end) {
         double radius = 6371;
         double startLatitudeRadians = Math.toRadians(start.getLatitude());
         double endLatitudeRadians = Math.toRadians(end.getLatitude());
@@ -22,6 +17,6 @@ public class DistanceCalculator {
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return radius * c;
+        return Math.abs(radius * c);
     }
 }

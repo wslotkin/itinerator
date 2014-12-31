@@ -1,5 +1,6 @@
 package itinerator.evaluator;
 
+import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
@@ -21,9 +22,11 @@ public class ItineraryBuilder {
 
     private final DateTime startTime;
     private final List<Activity> activities;
+    private final TravelTimeCalculator travelTimeCalculator;
 
-    public ItineraryBuilder(DateTime startTime) {
+    public ItineraryBuilder(DateTime startTime, TravelTimeCalculator travelTimeCalculator) {
         this.startTime = startTime;
+        this.travelTimeCalculator = travelTimeCalculator;
         activities = new ArrayList<>();
     }
 
@@ -37,29 +40,48 @@ public class ItineraryBuilder {
     }
 
     public Itinerary build() {
-        DateTime currentDateTime = startTime;
+        Event currentEvent = null;
         List<Event> events = new ArrayList<>();
         for (Activity activity : activities) {
+            DateTime currentDateTime = currentEvent != null ? currentEvent.getEventTime().getEnd() : startTime;
             if (isInMealWindow(currentDateTime.toLocalTime())) {
-                Activity mealToAdd = defaultMeal(activity.getLocation());
-                DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) mealToAdd.getDuration());
-                events.add(new Event(mealToAdd, new Interval(currentDateTime, endTimeOfActivity)));
-                currentDateTime = endTimeOfActivity;
+                currentEvent = activityToEvent(currentEvent, defaultMeal(activity.getLocation()));
+                events.add(currentEvent);
+                currentDateTime = currentEvent.getEventTime().getEnd();
             }
 
             if (isInSleepWindow(currentDateTime.toLocalTime())) {
                 Activity sleepToAdd = defaultSleep(activity.getLocation());
                 DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) sleepToAdd.getDuration()).withTime(START_OF_DAY, 0, 0, 0);
-                events.add(new Event(sleepToAdd, new Interval(currentDateTime, endTimeOfActivity)));
-                currentDateTime = endTimeOfActivity;
+                currentEvent = new Event(sleepToAdd, new Interval(currentDateTime, endTimeOfActivity), 0.0);
+                events.add(currentEvent);
+
+                currentEvent = activityToEvent(currentEvent, defaultMeal(activity.getLocation()));
+                events.add(currentEvent);
             }
 
-            DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) activity.getDuration());
-            events.add(new Event(activity, new Interval(currentDateTime, endTimeOfActivity)));
-            currentDateTime = endTimeOfActivity;
+            currentEvent = activityToEvent(currentEvent, activity);
+            events.add(currentEvent);
         }
 
         return new Itinerary(events);
+    }
+
+    private Event activityToEvent(Event previousEvent, Activity activity) {
+        Activity previousActivity = previousEvent != null ? previousEvent.getActivity() : null;
+        double travelTime = travelTime(previousActivity, activity);
+        DateTime previousEventEnd = previousEvent != null ? previousEvent.getEventTime().getEnd() : startTime;
+        DateTime activityStart = previousEventEnd.plusMinutes((int) travelTime);
+        DateTime activityEnd = activityStart.plusMinutes((int) activity.getDuration());
+        return new Event(activity, new Interval(activityStart, activityEnd), travelTime);
+    }
+
+    private double travelTime(Activity firstActivity, Activity secondActivity) {
+        if (firstActivity != null && secondActivity != null) {
+            return travelTimeCalculator.calculate(firstActivity, secondActivity);
+        } else {
+            return 0.0;
+        }
     }
 
     private static Activity defaultMeal(Location location) {

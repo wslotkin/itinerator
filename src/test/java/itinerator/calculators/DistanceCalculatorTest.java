@@ -1,10 +1,6 @@
 package itinerator.calculators;
 
-import itinerator.datamodel.Activity;
-import itinerator.datamodel.Event;
 import itinerator.datamodel.Location;
-import org.joda.time.Interval;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,12 +20,8 @@ public class DistanceCalculatorTest {
 
     @Test
     public void test() {
-        double result = distanceCalculator.calculate(createEventWithLocation(START_LOCATION), createEventWithLocation(END_LOCATION));
+        double result = distanceCalculator.calculate(START_LOCATION, END_LOCATION);
 
         assertEquals(62.68975637782323, result, 1e-9);
-    }
-
-    private Event createEventWithLocation(Location location) {
-        return new Event(new Activity("", 1l, location, 0.0, 0.0), new Interval(0l, 1l));
     }
 }

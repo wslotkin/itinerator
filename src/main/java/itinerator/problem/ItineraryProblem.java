@@ -2,6 +2,8 @@ package itinerator.problem;
 
 import cz.cvut.felk.cig.jcop.problem.*;
 import cz.cvut.felk.cig.jcop.util.JcopRandom;
+import itinerator.calculators.DistanceCalculator;
+import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
 import itinerator.evaluator.ItineraryEvaluator;
 import itinerator.evaluator.ItineraryFactory;
@@ -28,7 +30,7 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime);
+        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, new TravelTimeCalculator(new DistanceCalculator()));
         return new ItineraryFitness(activities, new ItineraryEvaluator(), itineraryFactory);
     }
 

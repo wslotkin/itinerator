@@ -6,10 +6,12 @@ public class Event {
 
     private final Activity activity;
     private final Interval eventTime;
+    private final double travelTime;
 
-    public Event(Activity activity, Interval eventTime) {
+    public Event(Activity activity, Interval eventTime, double travelTime) {
         this.activity = activity;
         this.eventTime = eventTime;
+        this.travelTime = travelTime;
     }
 
     public Activity getActivity() {
@@ -18,5 +20,9 @@ public class Event {
 
     public Interval getEventTime() {
         return eventTime;
+    }
+
+    public double getTravelTime() {
+        return travelTime;
     }
 }

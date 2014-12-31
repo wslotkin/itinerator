@@ -1,11 +1,18 @@
 package itinerator.calculators;
 
-import itinerator.datamodel.Event;
+import itinerator.datamodel.Activity;
 
 public class TravelTimeCalculator {
-    public double calculate(Event start, Event end) {
+
+    private final DistanceCalculator distanceCalculator;
+
+    public TravelTimeCalculator(DistanceCalculator distanceCalculator) {
+        this.distanceCalculator = distanceCalculator;
+    }
+
+    public double calculate(Activity start, Activity end) {
         double rateOfTravel = .5; //km/minute
-        double distance = new DistanceCalculator().calculate(start, end);
+        double distance = distanceCalculator.calculate(start.getLocation(), end.getLocation());
         return distance * rateOfTravel;
     }
 }
