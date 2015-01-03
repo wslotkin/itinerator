@@ -4,7 +4,7 @@ import itinerator.datamodel.Location;
 
 public class DistanceCalculator {
     public double calculate(Location start, Location end) {
-        double radius = 6371;
+        double radius = 6371; //radius of the earth in km
         double startLatitudeRadians = Math.toRadians(start.getLatitude());
         double endLatitudeRadians = Math.toRadians(end.getLatitude());
         double deltaLatitude = Math.toRadians(end.getLatitude() - start.getLatitude());

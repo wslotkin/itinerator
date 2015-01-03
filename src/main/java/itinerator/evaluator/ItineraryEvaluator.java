@@ -2,15 +2,22 @@ package itinerator.evaluator;
 
 import itinerator.datamodel.Itinerary;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItineraryEvaluator {
 
-    public double evaluate(Itinerary itinerary) {
-        return totalFun(itinerary);
+    private List<Evaluator> evaluators;
+
+    public ItineraryEvaluator() {
+        evaluators = new ArrayList();
+        evaluators.add(new FunEvaluator());
+        evaluators.add(new TravelEvaluator());
     }
 
-    private double totalFun(Itinerary itinerary) {
-        return itinerary.getEvents().stream()
-                .mapToDouble(a -> a.getActivity().getScore() * a.getActivity().getDuration())
+    public double evaluate(Itinerary itinerary) {
+        return evaluators.stream()
+                .mapToDouble(a -> a.evaluate(itinerary))
                 .sum();
     }
 }
