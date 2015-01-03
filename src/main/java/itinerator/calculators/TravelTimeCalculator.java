@@ -4,6 +4,7 @@ import itinerator.datamodel.Activity;
 
 public class TravelTimeCalculator {
 
+    private static final double SPEED_IN_KM_PER_MINUTE = .5;
     private final DistanceCalculator distanceCalculator;
 
     public TravelTimeCalculator(DistanceCalculator distanceCalculator) {
@@ -11,8 +12,7 @@ public class TravelTimeCalculator {
     }
 
     public double calculate(Activity start, Activity end) {
-        double rateOfTravel = .5; //km/minute
         double distance = distanceCalculator.calculate(start.getLocation(), end.getLocation());
-        return distance / rateOfTravel;
+        return distance / SPEED_IN_KM_PER_MINUTE;
     }
 }

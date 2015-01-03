@@ -3,8 +3,10 @@ package itinerator.calculators;
 import itinerator.datamodel.Location;
 
 public class DistanceCalculator {
+
+    private static final double RADIUS_OF_EARTH_IN_KM = 6371.0;
+
     public double calculate(Location start, Location end) {
-        double radius = 6371; //radius of the earth in km
         double startLatitudeRadians = Math.toRadians(start.getLatitude());
         double endLatitudeRadians = Math.toRadians(end.getLatitude());
         double deltaLatitude = Math.toRadians(end.getLatitude() - start.getLatitude());
@@ -17,6 +19,6 @@ public class DistanceCalculator {
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return Math.abs(radius * c);
+        return Math.abs(RADIUS_OF_EARTH_IN_KM * c);
     }
 }
