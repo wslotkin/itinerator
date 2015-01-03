@@ -1,42 +1,43 @@
 package itinerator.itinerary;
 
+import com.google.common.collect.TreeMultimap;
 import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.*;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+import static com.google.common.collect.Ordering.natural;
 import static itinerator.itinerary.TimeUtil.*;
 
 class ItineraryBuilder {
 
+    private static final ActivityIdComparator ARBITRARY_BUT_PREDICTABLE_ORDERING = new ActivityIdComparator();
+
     private final DateTime startTime;
     private final DateTime endTime;
-    private final List<Activity> activities;
+    private final TreeMultimap<Integer, Activity> activities;
     private final TravelTimeCalculator travelTimeCalculator;
 
     public ItineraryBuilder(DateTime startTime, DateTime endTime, TravelTimeCalculator travelTimeCalculator) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.travelTimeCalculator = travelTimeCalculator;
-        activities = new ArrayList<>();
+        activities = TreeMultimap.<Integer, Activity>create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
     }
 
-    public ItineraryBuilder addActivityAtPosition(Activity activity, int position) {
-        if (position >= activities.size()) {
-            activities.add(activity);
-        } else {
-            activities.add(position, activity);
-        }
+    public ItineraryBuilder addActivityAtPosition(Activity activity, Integer position) {
+        activities.put(position, activity);
         return this;
     }
 
     public Itinerary build() {
         Event currentEvent = null;
         List<Event> events = new ArrayList<>();
-        for (Activity activity : activities) {
+        for (Activity activity : activities.values()) {
             DateTime currentDateTime = currentEvent != null ? currentEvent.getEventTime().getEnd() : startTime;
 
             if (isInMealWindow(currentDateTime.toLocalTime())) {
@@ -97,5 +98,12 @@ class ItineraryBuilder {
         Activity sleepToAdd = defaultSleep(activity.getLocation());
         DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) sleepToAdd.getDuration()).withTime(START_OF_DAY, 0, 0, 0);
         return new Event(sleepToAdd, new Interval(currentDateTime, endTimeOfActivity), 0.0);
+    }
+
+    private static class ActivityIdComparator implements Comparator<Activity> {
+        @Override
+        public int compare(Activity first, Activity second) {
+            return first.getId().compareTo(second.getId());
+        }
     }
 }

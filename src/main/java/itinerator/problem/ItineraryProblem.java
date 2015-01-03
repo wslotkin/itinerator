@@ -7,7 +7,10 @@ import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import itinerator.evaluator.*;
+import itinerator.evaluator.FunEvaluator;
+import itinerator.evaluator.ItineraryEvaluator;
+import itinerator.evaluator.ItineraryFitness;
+import itinerator.evaluator.TravelEvaluator;
 import itinerator.itinerary.ItineraryFactory;
 import org.joda.time.DateTime;
 
@@ -57,7 +60,7 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Integer getMaximum(int index) {
-        return activities.size();
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
         List<Integer> attributes = new ArrayList<>();
         for (int i = 0; i < activities.size(); i++) {
             boolean isIncluded = JcopRandom.nextBoolean();
-            attributes.add(isIncluded ? JcopRandom.nextInt(activities.size()) : -1);
+            attributes.add(isIncluded ? JcopRandom.nextInt(Integer.MAX_VALUE) : -1);
         }
         return new Configuration(attributes);
     }
