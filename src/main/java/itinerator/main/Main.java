@@ -26,8 +26,8 @@ public class Main {
         DateTime startTime = new DateTime().minusDays(3);
         DateTime endTime = new DateTime();
 
-        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(10, 0.2), new ItineraryProblem(activities, startTime, endTime));
-        solver.addStopCondition(new IterationCondition(10));
+        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(100, 0.2), new ItineraryProblem(activities, startTime, endTime));
+        solver.addStopCondition(new IterationCondition(100));
         solver.run();
 
         Configuration bestConfiguration = getOnlyElement(solver.getResult().getResultEntries()).getBestConfiguration();
