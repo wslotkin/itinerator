@@ -7,9 +7,7 @@ import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import itinerator.evaluator.ItineraryEvaluator;
-import itinerator.evaluator.ItineraryFactory;
-import itinerator.evaluator.ItineraryFitness;
+import itinerator.evaluator.*;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -47,7 +45,8 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        return new ItineraryFitness(activities, new ItineraryEvaluator(), itineraryFactory);
+        ItineraryEvaluator evaluator = new ItineraryEvaluator(new FunEvaluator(), new TravelEvaluator());
+        return new ItineraryFitness(activities, evaluator, itineraryFactory);
     }
 
     @Override

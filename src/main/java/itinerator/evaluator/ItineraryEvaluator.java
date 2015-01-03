@@ -2,17 +2,16 @@ package itinerator.evaluator;
 
 import itinerator.datamodel.Itinerary;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ItineraryEvaluator {
+import static com.google.common.collect.Lists.newArrayList;
 
-    private List<Evaluator> evaluators;
+public class ItineraryEvaluator implements Evaluator {
 
-    public ItineraryEvaluator() {
-        evaluators = new ArrayList();
-        evaluators.add(new FunEvaluator());
-        evaluators.add(new TravelEvaluator());
+    private final List<Evaluator> evaluators;
+
+    public ItineraryEvaluator(Evaluator... evaluators) {
+        this.evaluators = newArrayList(evaluators);
     }
 
     public double evaluate(Itinerary itinerary) {

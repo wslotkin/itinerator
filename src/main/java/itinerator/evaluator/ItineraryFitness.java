@@ -8,10 +8,10 @@ import java.util.List;
 
 public class ItineraryFitness extends BaseFitness {
 
-    private final ItineraryEvaluator evaluator;
+    private final Evaluator evaluator;
     private final ItineraryFactory itineraryFactory;
 
-    public ItineraryFitness(List<Activity> activities, ItineraryEvaluator evaluator, ItineraryFactory itineraryFactory) {
+    public ItineraryFitness(List<Activity> activities, Evaluator evaluator, ItineraryFactory itineraryFactory) {
         this.evaluator = evaluator;
         this.itineraryFactory = itineraryFactory;
         maxFitness = activities.stream().mapToDouble(Activity::getScore).sum();
