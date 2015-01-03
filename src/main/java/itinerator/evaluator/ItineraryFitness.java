@@ -3,6 +3,7 @@ package itinerator.evaluator;
 import cz.cvut.felk.cig.jcop.problem.BaseFitness;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import itinerator.datamodel.Activity;
+import itinerator.itinerary.ItineraryFactory;
 
 import java.util.List;
 

@@ -8,6 +8,7 @@ import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
 import itinerator.evaluator.*;
+import itinerator.itinerary.ItineraryFactory;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;

@@ -1,21 +1,16 @@
-package itinerator.evaluator;
+package itinerator.itinerary;
 
 import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.*;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItineraryBuilder {
+import static itinerator.itinerary.TimeUtil.*;
 
-    private static final int START_OF_DAY = 8;
-    private static final Interval BREAKFAST = new Interval(new LocalTime(START_OF_DAY, 0).toDateTimeToday().getMillis(), new LocalTime(10, 0).toDateTimeToday().getMillis());
-    private static final Interval LUNCH = new Interval(new LocalTime(11, 0).toDateTimeToday().getMillis(), new LocalTime(13, 0).toDateTimeToday().getMillis());
-    private static final Interval DINNER = new Interval(new LocalTime(18, 0).toDateTimeToday().getMillis(), new LocalTime(20, 0).toDateTimeToday().getMillis());
-    private static final Interval SLEEP = new Interval(new LocalTime(22, 0).toDateTimeToday().getMillis(), new LocalTime(START_OF_DAY, 0).toDateTimeToday().plusDays(1).getMillis());
+class ItineraryBuilder {
 
     private final DateTime startTime;
     private final DateTime endTime;
@@ -102,14 +97,5 @@ public class ItineraryBuilder {
         Activity sleepToAdd = defaultSleep(activity.getLocation());
         DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) sleepToAdd.getDuration()).withTime(START_OF_DAY, 0, 0, 0);
         return new Event(sleepToAdd, new Interval(currentDateTime, endTimeOfActivity), 0.0);
-    }
-
-    private static boolean isInMealWindow(LocalTime eventTime) {
-        long timeInMillis = eventTime.toDateTimeToday().getMillis();
-        return BREAKFAST.contains(timeInMillis) || LUNCH.contains(timeInMillis) || DINNER.contains(timeInMillis);
-    }
-
-    private static boolean isInSleepWindow(LocalTime eventTime) {
-        return SLEEP.contains(eventTime.toDateTimeToday().getMillis()) || SLEEP.contains(eventTime.toDateTimeToday().plusDays(1).getMillis());
     }
 }

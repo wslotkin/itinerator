@@ -9,7 +9,7 @@ import itinerator.calculators.TravelTimeCalculator;
 import itinerator.data.DataLoader;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Itinerary;
-import itinerator.evaluator.ItineraryFactory;
+import itinerator.itinerary.ItineraryFactory;
 import itinerator.problem.ItineraryProblem;
 import org.joda.time.DateTime;
 

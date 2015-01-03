@@ -1,4 +1,4 @@
-package itinerator.evaluator;
+package itinerator.itinerary;
 
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import itinerator.calculators.TravelTimeCalculator;
