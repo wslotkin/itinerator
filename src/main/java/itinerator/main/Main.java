@@ -23,10 +23,10 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String dataFile = Main.class.getClassLoader().getResource("beijingspots.csv").getPath();
         List<Activity> activities = new DataLoader().loadData(dataFile);
-        DateTime startTime = new DateTime().minusDays(3);
+        DateTime startTime = new DateTime().minusDays(2);
         DateTime endTime = new DateTime();
 
-        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(100, 0.2), new ItineraryProblem(activities, startTime, endTime));
+        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(1000, 0.2), new ItineraryProblem(activities, startTime, endTime));
         solver.addStopCondition(new IterationCondition(100));
         solver.run();
 
