@@ -4,6 +4,7 @@ import itinerator.datamodel.Location;
 import org.junit.Before;
 import org.junit.Test;
 
+import static itinerator.TestConstants.DELTA;
 import static org.junit.Assert.assertEquals;
 
 public class DistanceCalculatorTest {
@@ -22,6 +23,6 @@ public class DistanceCalculatorTest {
     public void test() {
         double result = distanceCalculator.calculate(START_LOCATION, END_LOCATION);
 
-        assertEquals(62.68975637782323, result, 1e-9);
+        assertEquals(62.68975637782323, result, DELTA);
     }
 }

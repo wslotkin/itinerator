@@ -7,8 +7,8 @@ import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
+import itinerator.evaluator.CompositeEvaluator;
 import itinerator.evaluator.FunEvaluator;
-import itinerator.evaluator.ItineraryEvaluator;
 import itinerator.evaluator.ItineraryFitness;
 import itinerator.evaluator.TravelEvaluator;
 import itinerator.itinerary.ItineraryFactory;
@@ -49,8 +49,8 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        ItineraryEvaluator evaluator = new ItineraryEvaluator(new FunEvaluator(), new TravelEvaluator());
-        return new ItineraryFitness(activities, evaluator, itineraryFactory);
+        CompositeEvaluator evaluator = new CompositeEvaluator(new FunEvaluator(), new TravelEvaluator());
+        return new ItineraryFitness(evaluator, itineraryFactory);
     }
 
     @Override

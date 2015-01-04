@@ -1,26 +1,26 @@
 package itinerator.evaluator;
 
-import cz.cvut.felk.cig.jcop.problem.BaseFitness;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
-import itinerator.datamodel.Activity;
+import cz.cvut.felk.cig.jcop.problem.Fitness;
 import itinerator.itinerary.ItineraryFactory;
 
-import java.util.List;
-
-public class ItineraryFitness extends BaseFitness {
+public class ItineraryFitness implements Fitness {
 
     private final Evaluator evaluator;
     private final ItineraryFactory itineraryFactory;
 
-    public ItineraryFitness(List<Activity> activities, Evaluator evaluator, ItineraryFactory itineraryFactory) {
+    public ItineraryFitness(Evaluator evaluator, ItineraryFactory itineraryFactory) {
         this.evaluator = evaluator;
         this.itineraryFactory = itineraryFactory;
-        maxFitness = activities.stream().mapToDouble(Activity::getScore).sum();
-        minFitness = 0.0;
     }
 
     @Override
     public double getValue(Configuration configuration) {
         return evaluator.evaluate(itineraryFactory.create(configuration));
+    }
+
+    @Override
+    public double normalize(double fitness) throws IllegalStateException {
+        throw new IllegalStateException("Unexpected call to normalize().");
     }
 }
