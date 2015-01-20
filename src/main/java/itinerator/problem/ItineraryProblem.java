@@ -7,10 +7,7 @@ import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import itinerator.evaluator.CompositeEvaluator;
-import itinerator.evaluator.FunEvaluator;
-import itinerator.evaluator.ItineraryFitness;
-import itinerator.evaluator.TravelEvaluator;
+import itinerator.evaluator.*;
 import itinerator.itinerary.ItineraryFactory;
 import org.joda.time.DateTime;
 
@@ -49,7 +46,7 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        CompositeEvaluator evaluator = new CompositeEvaluator(new FunEvaluator(), new TravelEvaluator());
+        CompositeEvaluator evaluator = new CompositeEvaluator(new FunEvaluator(), new TravelEvaluator(), new MovementEvaluator());
         return new ItineraryFitness(evaluator, itineraryFactory);
     }
 
