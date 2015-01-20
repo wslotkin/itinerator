@@ -2,6 +2,7 @@ package itinerator.evaluator;
 
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import cz.cvut.felk.cig.jcop.problem.Fitness;
+import itinerator.datamodel.Itinerary;
 import itinerator.itinerary.ItineraryFactory;
 
 public class ItineraryFitness implements Fitness {
@@ -16,7 +17,11 @@ public class ItineraryFitness implements Fitness {
 
     @Override
     public double getValue(Configuration configuration) {
-        return evaluator.evaluate(itineraryFactory.create(configuration));
+        return getValue(itineraryFactory.create(configuration));
+    }
+
+    public double getValue(Itinerary itinerary) {
+        return evaluator.evaluate(itinerary);
     }
 
     @Override
