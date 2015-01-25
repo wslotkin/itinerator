@@ -44,6 +44,5 @@ public class SubitineraryProviderTest {
         assertTrue(subitineraryEvents.contains(EVENT_4));
         assertTrue(subitineraryEvents.contains(EVENT_5));
         assertFalse(subitineraryEvents.contains(EVENT_6));
-
     }
 }
