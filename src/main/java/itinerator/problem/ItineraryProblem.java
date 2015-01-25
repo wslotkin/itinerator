@@ -46,7 +46,8 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        CompositeEvaluator evaluator = new CompositeEvaluator(new FunEvaluator(), new TravelEvaluator(), new MovementEvaluator());
+        CompositeEvaluator evaluator = new CompositeEvaluator(new FunEvaluator(), new TravelEvaluator(),
+                new MovementEvaluator(), new CostEvaluator());
         return new ItineraryFitness(evaluator, itineraryFactory);
     }
 
