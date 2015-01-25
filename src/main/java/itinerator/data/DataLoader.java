@@ -21,6 +21,7 @@ public class DataLoader {
     private static final int DURATION_COLUMN = 2;
     private static final int SCORE_COLUMN = 3;
     private static final int TYPE_COLUMN = 4;
+    private static final int COST_COLUMN = 5;
     private static final int LATITUDE_INDEX = 0;
     private static final int LONGITUDE_INDEX = 1;
     private static final String COMMA = ",";
@@ -30,8 +31,9 @@ public class DataLoader {
         List<Activity> activities = new ArrayList<>();
 
         BufferedReader reader = new BufferedReader(new FileReader(new File(filename)));
-        @SuppressWarnings("UnusedAssignment") // need to discard header line
-                String line = reader.readLine();
+
+        reader.readLine();
+        String line;
         while ((line = reader.readLine()) != null) {
             activities.add(parseLine(line));
         }
@@ -46,9 +48,9 @@ public class DataLoader {
         String[] coordinates = elements[LOCATION_COLUMN].split(SEMICOLON);
         Location location = new Location(parseDouble(coordinates[LATITUDE_INDEX]), parseDouble(coordinates[LONGITUDE_INDEX]));
         long duration = parseLong(elements[DURATION_COLUMN]);
-        double cost = 0.0;
         double score = parseDouble(elements[SCORE_COLUMN]);
         ActivityType type = ActivityType.valueOf(elements[TYPE_COLUMN].toUpperCase());
+        double cost = elements.length > COST_COLUMN ? parseDouble(elements[COST_COLUMN]) : 0.0;
 
         return new Activity(id, duration, location, cost, score, type);
     }

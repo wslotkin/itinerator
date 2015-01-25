@@ -15,15 +15,26 @@ import itinerator.problem.ItineraryProblem;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 
 public class Main {
 
+    private static final String[] DATA_FILES = {"beijingspots.csv", "beijingrestaurants.csv"};
+
     public static void main(String[] args) throws IOException {
-        String dataFile = Main.class.getClassLoader().getResource("beijingspots.csv").getPath();
-        List<Activity> activities = new DataLoader().loadData(dataFile);
+        List<Activity> activities = new ArrayList<>();
+        DataLoader dataLoader = new DataLoader();
+        for (String dataFile : DATA_FILES) {
+            URL dataFileUrl = Main.class.getClassLoader().getResource(dataFile);
+            if (dataFileUrl != null) {
+                activities.addAll(dataLoader.loadData(dataFileUrl.getPath()));
+            }
+        }
+
         DateTime startTime = new DateTime().minusDays(2);
         DateTime endTime = new DateTime();
 

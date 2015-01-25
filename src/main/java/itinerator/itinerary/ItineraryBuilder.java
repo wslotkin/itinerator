@@ -8,6 +8,7 @@ import org.joda.time.Interval;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.collect.Ordering.natural;
@@ -20,6 +21,7 @@ class ItineraryBuilder {
     private final DateTime startTime;
     private final DateTime endTime;
     private final TreeMultimap<Integer, Activity> activities;
+    private final TreeMultimap<Integer, Activity> foods;
     private final TravelTimeCalculator travelTimeCalculator;
 
     public ItineraryBuilder(DateTime startTime, DateTime endTime, TravelTimeCalculator travelTimeCalculator) {
@@ -27,21 +29,32 @@ class ItineraryBuilder {
         this.endTime = endTime;
         this.travelTimeCalculator = travelTimeCalculator;
         activities = TreeMultimap.<Integer, Activity>create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
+        foods = TreeMultimap.<Integer, Activity>create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
     }
 
     public ItineraryBuilder addActivityAtPosition(Activity activity, Integer position) {
-        activities.put(position, activity);
+        switch (activity.getType()) {
+            case ACTIVITY:
+                activities.put(position, activity);
+                break;
+            case FOOD:
+                foods.put(position, activity);
+                break;
+        }
         return this;
     }
 
     public Itinerary build() {
         Event currentEvent = null;
         List<Event> events = new ArrayList<>();
+
+        Iterator<Activity> foodIterator = foods.values().iterator();
+
         for (Activity activity : activities.values()) {
             DateTime currentDateTime = currentEvent != null ? currentEvent.getEventTime().getEnd() : startTime;
 
             if (isInMealWindow(currentDateTime.toLocalTime())) {
-                currentEvent = activityToEvent(currentEvent, defaultMeal(activity.getLocation()));
+                currentEvent = activityToEvent(currentEvent, generateMeal(activity.getLocation(), foodIterator));
                 if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);
                 currentDateTime = currentEvent.getEventTime().getEnd();
@@ -52,7 +65,7 @@ class ItineraryBuilder {
                 if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);
 
-                currentEvent = activityToEvent(currentEvent, defaultMeal(activity.getLocation()));
+                currentEvent = activityToEvent(currentEvent, generateMeal(activity.getLocation(), foodIterator));
                 if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);
             }
@@ -86,8 +99,10 @@ class ItineraryBuilder {
         }
     }
 
-    private static Activity defaultMeal(Location location) {
-        return new Activity("default meal", 60L, location, 0.0, 0.0, ActivityType.FOOD);
+    private static Activity generateMeal(Location location, Iterator<Activity> foodIterator) {
+        return foodIterator.hasNext()
+                ? foodIterator.next()
+                : new Activity("default meal", 60L, location, 0.0, 0.0, ActivityType.FOOD);
     }
 
     private static Activity defaultSleep(Location location) {
