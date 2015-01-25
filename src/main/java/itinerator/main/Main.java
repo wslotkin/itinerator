@@ -10,6 +10,7 @@ import itinerator.data.DataLoader;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Itinerary;
 import itinerator.itinerary.ItineraryFactory;
+import itinerator.itinerary.ItineraryFormatter;
 import itinerator.problem.ItineraryProblem;
 import org.joda.time.DateTime;
 
@@ -28,10 +29,16 @@ public class Main {
 
         SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(1000, 0.2), new ItineraryProblem(activities, startTime, endTime));
         solver.addStopCondition(new IterationCondition(100));
+
+        System.out.println("Starting optimizer...");
+        long runStartTime = System.currentTimeMillis();
         solver.run();
+        long optimizationDuration = System.currentTimeMillis() - runStartTime;
 
         Configuration bestConfiguration = getOnlyElement(solver.getResult().getResultEntries()).getBestConfiguration();
         Itinerary bestItinerary = new ItineraryFactory(activities, startTime, endTime, new TravelTimeCalculator(new DistanceCalculator())).create(bestConfiguration);
-        System.out.println(bestItinerary);
+
+        System.out.println("Optimization complete. Total time: " + optimizationDuration + "ms. Best itinerary:");
+        System.out.println(ItineraryFormatter.prettyPrint(bestItinerary));
     }
 }
