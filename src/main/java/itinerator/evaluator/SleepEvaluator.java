@@ -45,7 +45,7 @@ public class SleepEvaluator extends BaseDaySubitineraryEvaluator {
     }
 
     private static boolean eventIsInSleepWindow(Event event) {
-        return isInSleepWindow(event.getEventTime().getStart().toLocalTime());
+        return isInSleepWindow(event.getEventTime().getStart());
     }
 
     private static boolean eventIsSleepEvent(Event event) {

@@ -53,14 +53,14 @@ class ItineraryBuilder {
         for (Activity activity : activities.values()) {
             DateTime currentDateTime = currentEvent != null ? currentEvent.getEventTime().getEnd() : startTime;
 
-            if (isInMealWindow(currentDateTime.toLocalTime())) {
+            if (isInMealWindow(currentDateTime)) {
                 currentEvent = activityToEvent(currentEvent, generateMeal(activity.getLocation(), foodIterator));
                 if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);
                 currentDateTime = currentEvent.getEventTime().getEnd();
             }
 
-            if (isInSleepWindow(currentDateTime.toLocalTime())) {
+            if (isInSleepWindow(currentDateTime)) {
                 currentEvent = createSleepEvent(activity, currentDateTime);
                 if (wouldExceedEndTime(currentEvent)) break;
                 events.add(currentEvent);

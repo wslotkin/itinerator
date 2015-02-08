@@ -1,22 +1,63 @@
 package itinerator.itinerary;
 
+import com.google.common.annotations.VisibleForTesting;
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
 public class TimeUtil {
 
     static final int START_OF_DAY = 8;
-    private static final Interval BREAKFAST = new Interval(new LocalTime(START_OF_DAY, 0).toDateTimeToday().getMillis(), new LocalTime(10, 0).toDateTimeToday().getMillis());
-    private static final Interval LUNCH = new Interval(new LocalTime(11, 0).toDateTimeToday().getMillis(), new LocalTime(13, 0).toDateTimeToday().getMillis());
-    private static final Interval DINNER = new Interval(new LocalTime(18, 0).toDateTimeToday().getMillis(), new LocalTime(20, 0).toDateTimeToday().getMillis());
-    private static final Interval SLEEP = new Interval(new LocalTime(22, 0).toDateTimeToday().getMillis(), new LocalTime(START_OF_DAY, 0).toDateTimeToday().plusDays(1).getMillis());
+    @VisibleForTesting
+    public static final LocalTime START_OF_BREAKFAST_WINDOW = new LocalTime(START_OF_DAY, 0);
+    @VisibleForTesting
+    public static final LocalTime END_OF_BREAKFAST_WINDOW = new LocalTime(10, 0);
+    @VisibleForTesting
+    public static final LocalTime START_OF_LUNCH_WINDOW = new LocalTime(11, 0);
+    @VisibleForTesting
+    public static final LocalTime END_OF_LUNCH_WINDOW = new LocalTime(13, 0);
+    @VisibleForTesting
+    public static final LocalTime START_OF_DINNER_WINDOW = new LocalTime(18, 0);
+    @VisibleForTesting
+    public static final LocalTime END_OF_DINNER_WINDOW = new LocalTime(20, 0);
+    @VisibleForTesting
+    public static final LocalTime START_OF_SLEEP_WINDOW = new LocalTime(22, 0);
+    @VisibleForTesting
+    static final LocalTime END_OF_SLEEP_WINDOW = new LocalTime(START_OF_DAY, 0);
 
-    public static boolean isInMealWindow(LocalTime eventTime) {
-        long timeInMillis = eventTime.toDateTimeToday().getMillis();
-        return BREAKFAST.contains(timeInMillis) || LUNCH.contains(timeInMillis) || DINNER.contains(timeInMillis);
+    public static boolean isInMealWindow(DateTime eventTime) {
+        return isInBreakfastWindow(eventTime) || isInLunchWindow(eventTime) || isInDinnerWindow(eventTime);
     }
 
-    public static boolean isInSleepWindow(LocalTime eventTime) {
-        return SLEEP.contains(eventTime.toDateTimeToday().getMillis()) || SLEEP.contains(eventTime.toDateTimeToday().plusDays(1).getMillis());
+    public static boolean isInSleepWindow(DateTime eventTime) {
+        Interval sleepWindow = new Interval(fromDateAndTime(eventTime, START_OF_SLEEP_WINDOW),
+                fromDateAndTime(eventTime.plusDays(1), END_OF_SLEEP_WINDOW));
+
+        return sleepWindow.contains(eventTime) || sleepWindow.contains(eventTime.plusDays(1));
+    }
+
+    private static boolean isInBreakfastWindow(DateTime eventTime) {
+        return isInMealWindow(eventTime, START_OF_BREAKFAST_WINDOW, END_OF_BREAKFAST_WINDOW);
+    }
+
+    private static boolean isInLunchWindow(DateTime eventTime) {
+        return isInMealWindow(eventTime, START_OF_LUNCH_WINDOW, END_OF_LUNCH_WINDOW);
+    }
+
+    private static boolean isInDinnerWindow(DateTime eventTime) {
+        return isInMealWindow(eventTime, START_OF_DINNER_WINDOW, END_OF_DINNER_WINDOW);
+    }
+
+    private static boolean isInMealWindow(DateTime eventTime, LocalTime startOfMealWindow, LocalTime endOfMealWindow) {
+        Interval mealWindow = new Interval(fromDateAndTime(eventTime, startOfMealWindow),
+                fromDateAndTime(eventTime, endOfMealWindow));
+        return mealWindow.contains(eventTime);
+    }
+
+    private static DateTime fromDateAndTime(DateTime date, LocalTime time) {
+        return date.withTime(time.getHourOfDay(),
+                time.getMinuteOfHour(),
+                time.getSecondOfMinute(),
+                time.getMillisOfSecond());
     }
 }
