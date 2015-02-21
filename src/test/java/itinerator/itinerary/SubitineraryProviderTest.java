@@ -36,9 +36,9 @@ public class SubitineraryProviderTest {
         Itinerary subitinerary = SubitineraryProvider.subitinerary(ITINERARY, T_2, T_5);
         List<Event> subitineraryEvents = subitinerary.getEvents();
 
-        assertEquals(5, subitineraryEvents.size());
+        assertEquals(4, subitineraryEvents.size());
         assertFalse(subitineraryEvents.contains(EVENT_0));
-        assertTrue(subitineraryEvents.contains(EVENT_1));
+        assertFalse(subitineraryEvents.contains(EVENT_1));
         assertTrue(subitineraryEvents.contains(EVENT_2));
         assertTrue(subitineraryEvents.contains(EVENT_3));
         assertTrue(subitineraryEvents.contains(EVENT_4));

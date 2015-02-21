@@ -23,11 +23,11 @@ public class SubitineraryProvider {
     }
 
     private static boolean eventFallsInTimeRange(DateTime start, DateTime end, Event event) {
-        return !rangeStartsAfterEndOfEvent(start, event) && !rangeEndsBeforeStartOfEvent(end, event);
+        return !rangeStartsAfterStartOfEvent(start, event) && !rangeEndsBeforeStartOfEvent(end, event);
     }
 
-    private static boolean rangeStartsAfterEndOfEvent(DateTime start, Event event) {
-        return start.isAfter(event.getEventTime().getEnd());
+    private static boolean rangeStartsAfterStartOfEvent(DateTime start, Event event) {
+        return start.isAfter(event.getEventTime().getStart());
     }
 
     private static boolean rangeEndsBeforeStartOfEvent(DateTime end, Event event) {
