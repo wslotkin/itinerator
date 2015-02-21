@@ -1,9 +1,7 @@
-package itinerator.problem;
+package itinerator.solver;
 
 import cz.cvut.felk.cig.jcop.problem.*;
 import cz.cvut.felk.cig.jcop.util.JcopRandom;
-import itinerator.calculators.DistanceCalculator;
-import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
@@ -21,12 +19,14 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
     private final DateTime endTime;
     private final ItineraryFactory itineraryFactory;
 
-    public ItineraryProblem(List<Activity> activities, DateTime startTime, DateTime endTime) {
+    public ItineraryProblem(List<Activity> activities,
+                            DateTime startTime,
+                            DateTime endTime,
+                            ItineraryFactory itineraryFactory) {
         this.activities = activities;
         this.startTime = startTime;
         this.endTime = endTime;
-        TravelTimeCalculator travelCalculator = new TravelTimeCalculator(new DistanceCalculator());
-        itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelCalculator);
+        this.itineraryFactory = itineraryFactory;
     }
 
     @Override
