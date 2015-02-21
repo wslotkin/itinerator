@@ -28,8 +28,8 @@ class ItineraryBuilder {
         this.startTime = startTime;
         this.endTime = endTime;
         this.travelTimeCalculator = travelTimeCalculator;
-        activities = TreeMultimap.<Integer, Activity>create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
-        foods = TreeMultimap.<Integer, Activity>create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
+        activities = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
+        foods = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
     }
 
     public ItineraryBuilder addActivityAtPosition(Activity activity, Integer position) {
