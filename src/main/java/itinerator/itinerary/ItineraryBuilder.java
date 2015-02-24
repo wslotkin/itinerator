@@ -1,5 +1,6 @@
 package itinerator.itinerary;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.TreeMultimap;
 import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.*;
@@ -8,11 +9,15 @@ import org.joda.time.Interval;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 
+import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Ordering.natural;
+import static itinerator.datamodel.ActivityType.FOOD;
+import static itinerator.datamodel.ActivityType.SLEEP;
 import static itinerator.itinerary.TimeUtil.*;
+import static org.joda.time.Minutes.minutesBetween;
 
 class ItineraryBuilder {
 
@@ -45,37 +50,36 @@ class ItineraryBuilder {
     }
 
     public Itinerary build() {
-        Event currentEvent = null;
         List<Event> events = new ArrayList<>();
-
-        Iterator<Activity> foodIterator = foods.values().iterator();
-
+        Queue<Activity> mealQueue = newLinkedList(foods.values());
         for (Activity activity : activities.values()) {
-            DateTime currentDateTime = currentEvent != null ? currentEvent.getEventTime().getEnd() : startTime;
-
-            if (isInMealWindow(currentDateTime)) {
-                currentEvent = activityToEvent(currentEvent, generateMeal(activity.getLocation(), foodIterator));
-                if (wouldExceedEndTime(currentEvent)) break;
-                events.add(currentEvent);
-                currentDateTime = currentEvent.getEventTime().getEnd();
-            }
-
-            if (isInSleepWindow(currentDateTime)) {
-                currentEvent = createSleepEvent(activity, currentDateTime);
-                if (wouldExceedEndTime(currentEvent)) break;
-                events.add(currentEvent);
-
-                currentEvent = activityToEvent(currentEvent, generateMeal(activity.getLocation(), foodIterator));
-                if (wouldExceedEndTime(currentEvent)) break;
-                events.add(currentEvent);
-            }
-
-            currentEvent = activityToEvent(currentEvent, activity);
-            if (wouldExceedEndTime(currentEvent)) break;
-            events.add(currentEvent);
+            boolean wasAdded = addEvent(events, activity, mealQueue);
+            if (!wasAdded) break;
         }
 
         return new Itinerary(events);
+    }
+
+    private boolean addEvent(List<Event> runningEventList, Activity activityToAdd, Queue<Activity> mealQueue) {
+        Event lastEvent = Iterables.getLast(runningEventList, null);
+        DateTime currentDateTime = lastEvent != null ? lastEvent.getEventTime().getEnd() : startTime;
+        if (isNotType(activityToAdd, FOOD) && isInMealWindow(currentDateTime) && isNotType(lastEvent, FOOD)) {
+            Activity mealActivity = generateMeal(activityToAdd.getLocation(), mealQueue);
+            boolean wasAdded = addEvent(runningEventList, mealActivity, mealQueue);
+            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue);
+        } else if (isNotType(activityToAdd, SLEEP) && isInSleepWindow(currentDateTime) && isNotType(lastEvent, SLEEP)) {
+            Activity sleepActivity = createSleepActivity(activityToAdd, currentDateTime);
+            boolean wasAdded = addEvent(runningEventList, sleepActivity, mealQueue);
+            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue);
+        } else {
+            Event newEvent = activityToEvent(lastEvent, activityToAdd);
+            if (!wouldExceedEndTime(newEvent)) {
+                runningEventList.add(newEvent);
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     private boolean wouldExceedEndTime(Event currentEvent) {
@@ -99,20 +103,24 @@ class ItineraryBuilder {
         }
     }
 
-    private static Activity generateMeal(Location location, Iterator<Activity> foodIterator) {
-        return foodIterator.hasNext()
-                ? foodIterator.next()
-                : new Activity("default meal", 60L, location, 0.0, 0.0, ActivityType.FOOD);
+    private static boolean isNotType(Event event, ActivityType activityType) {
+        return (event == null || isNotType(event.getActivity(), activityType));
     }
 
-    private static Activity defaultSleep(Location location) {
-        return new Activity("default sleep", 480L, location, 0.0, 0.0, ActivityType.SLEEP);
+    private static boolean isNotType(Activity activity, ActivityType activityType) {
+        return activity.getType() != activityType;
     }
 
-    private static Event createSleepEvent(Activity activity, DateTime currentDateTime) {
-        Activity sleepToAdd = defaultSleep(activity.getLocation());
-        DateTime endTimeOfActivity = currentDateTime.plusMinutes((int) sleepToAdd.getDuration()).withTime(START_OF_DAY, 0, 0, 0);
-        return new Event(sleepToAdd, new Interval(currentDateTime, endTimeOfActivity), 0.0);
+    private static Activity generateMeal(Location location, Queue<Activity> mealQueue) {
+        return !mealQueue.isEmpty()
+                ? mealQueue.poll()
+                : new Activity("default meal", 60L, location, 0.0, 0.0, FOOD);
+    }
+
+    private static Activity createSleepActivity(Activity activity, DateTime currentDateTime) {
+        DateTime endTimeOfActivity = currentDateTime.plusMinutes(480).withTime(START_OF_DAY, 0, 0, 0);
+        long sleepDuration = minutesBetween(currentDateTime, endTimeOfActivity).getMinutes();
+        return new Activity("default sleep", sleepDuration, activity.getLocation(), 0.0, 0.0, ActivityType.SLEEP);
     }
 
     private static class ActivityIdComparator implements Comparator<Activity> {
