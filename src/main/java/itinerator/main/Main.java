@@ -32,17 +32,13 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         List<Activity> activities = loadActivities();
-
         DateTime startTime = new DateTime().minusDays(NUMBER_OF_DAYS);
         DateTime endTime = new DateTime();
 
         ItinerarySolver itinerarySolver = createItinerarySolver(activities, startTime, endTime);
-
-        long runStartTime = System.currentTimeMillis();
         itinerarySolver.run();
-        long optimizationDuration = System.currentTimeMillis() - runStartTime;
 
-        printBestResult(optimizationDuration, itinerarySolver.getBestResult());
+        printBestResult(itinerarySolver.getBestResult());
     }
 
     private static List<Activity> loadActivities() throws IOException {
@@ -63,12 +59,12 @@ public class Main {
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
         SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(POPULATION_SIZE, MUTATION_RATE), itineraryProblem);
         solver.addStopCondition(new IterationCondition(ITERATION_THRESHOLD));
-        return new ItinerarySolver(solver, itineraryProblem, itineraryFactory);
+        return new ItinerarySolver(solver, itineraryFactory);
     }
 
-    private static void printBestResult(long optimizationDuration, SolverResult bestResult) {
+    private static void printBestResult(SolverResult bestResult) {
         String outputString = "Optimization complete. Total time: %dms. Best itinerary with score %.2f:";
-        System.out.println(format(outputString, optimizationDuration, bestResult.getScore()));
+        System.out.println(format(outputString, bestResult.getDuration(), bestResult.getScore()));
         System.out.println(prettyPrint(bestResult.getItinerary()));
     }
 }
