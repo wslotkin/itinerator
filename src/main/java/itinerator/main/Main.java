@@ -22,7 +22,9 @@ import static itinerator.itinerary.ItineraryFormatter.prettyPrint;
 import static java.lang.String.format;
 
 public class Main {
-    private static final String[] DATA_FILES = {"beijingspots.csv", "beijingrestaurants.csv"};
+    private static final String[] NYC_DATA = {"nycplaces.csv"};
+    private static final String[] BEIJING_DATA = {"beijingspots.csv", "beijingrestaurants.csv"};
+    private static final String[] DATA_FILES = NYC_DATA;
     private static final double MUTATION_RATE = 0.2;
     private static final int POPULATION_SIZE = 1000;
     private static final int ITERATION_THRESHOLD = 100;
