@@ -1,14 +1,7 @@
 package itinerator.main;
 
-import cz.cvut.felk.cig.jcop.algorithm.geneticalgorithm.GeneticAlgorithm;
-import cz.cvut.felk.cig.jcop.solver.SimpleSolver;
-import cz.cvut.felk.cig.jcop.solver.condition.IterationCondition;
-import itinerator.calculators.DistanceCalculator;
-import itinerator.calculators.TravelTimeCalculator;
 import itinerator.data.DataLoader;
 import itinerator.datamodel.Activity;
-import itinerator.itinerary.ItineraryFactory;
-import itinerator.solver.ItineraryProblem;
 import itinerator.solver.ItinerarySolver;
 import itinerator.solver.ItinerarySolver.SolverResult;
 import org.joda.time.DateTime;
@@ -19,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static itinerator.itinerary.ItineraryFormatter.prettyPrint;
+import static itinerator.solver.ItinerarySolver.createSolver;
 import static java.lang.String.format;
 
 public class Main {
@@ -35,7 +29,7 @@ public class Main {
         DateTime startTime = new DateTime().minusDays(NUMBER_OF_DAYS);
         DateTime endTime = new DateTime();
 
-        ItinerarySolver itinerarySolver = createItinerarySolver(activities, startTime, endTime);
+        ItinerarySolver itinerarySolver = createSolver(activities, startTime, endTime, POPULATION_SIZE, MUTATION_RATE, ITERATION_THRESHOLD);
         itinerarySolver.run();
 
         printBestResult(itinerarySolver.getBestResult());
@@ -51,15 +45,6 @@ public class Main {
             }
         }
         return activities;
-    }
-
-    private static ItinerarySolver createItinerarySolver(List<Activity> activities, DateTime startTime, DateTime endTime) {
-        TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
-        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, new ArrayList<>());
-        ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
-        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(POPULATION_SIZE, MUTATION_RATE), itineraryProblem);
-        solver.addStopCondition(new IterationCondition(ITERATION_THRESHOLD));
-        return new ItinerarySolver(solver, itineraryFactory);
     }
 
     private static void printBestResult(SolverResult bestResult) {

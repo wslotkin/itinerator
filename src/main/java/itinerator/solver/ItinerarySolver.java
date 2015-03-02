@@ -1,10 +1,20 @@
 package itinerator.solver;
 
+import cz.cvut.felk.cig.jcop.algorithm.geneticalgorithm.GeneticAlgorithm;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import cz.cvut.felk.cig.jcop.result.ResultEntry;
+import cz.cvut.felk.cig.jcop.solver.SimpleSolver;
 import cz.cvut.felk.cig.jcop.solver.Solver;
+import cz.cvut.felk.cig.jcop.solver.condition.IterationCondition;
+import itinerator.calculators.DistanceCalculator;
+import itinerator.calculators.TravelTimeCalculator;
+import itinerator.datamodel.Activity;
 import itinerator.datamodel.Itinerary;
 import itinerator.itinerary.ItineraryFactory;
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 
@@ -12,6 +22,20 @@ public class ItinerarySolver {
 
     private final Solver solver;
     private final ItineraryFactory itineraryFactory;
+
+    public static ItinerarySolver createSolver(List<Activity> activities,
+                                               DateTime startTime,
+                                               DateTime endTime,
+                                               int populationSize,
+                                               double mutationRate,
+                                               int iterationThreshold) {
+        TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
+        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, new ArrayList<>());
+        ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
+        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(populationSize, mutationRate), itineraryProblem);
+        solver.addStopCondition(new IterationCondition(iterationThreshold));
+        return new ItinerarySolver(solver, itineraryFactory);
+    }
 
     public ItinerarySolver(Solver solver, ItineraryFactory itineraryFactory) {
         this.solver = solver;
