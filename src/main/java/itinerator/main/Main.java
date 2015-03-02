@@ -55,7 +55,7 @@ public class Main {
 
     private static ItinerarySolver createItinerarySolver(List<Activity> activities, DateTime startTime, DateTime endTime) {
         TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
-        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator);
+        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, new ArrayList<>());
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
         SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(POPULATION_SIZE, MUTATION_RATE), itineraryProblem);
         solver.addStopCondition(new IterationCondition(ITERATION_THRESHOLD));

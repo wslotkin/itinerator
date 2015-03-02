@@ -8,6 +8,7 @@ import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -30,7 +31,7 @@ public class ItineraryFactoryTest {
     public void before() {
         travelTimeCalculator = mock(TravelTimeCalculator.class);
 
-        itineraryFactory = new ItineraryFactory(ACTIVITIES, START_TIME, END_TIME, travelTimeCalculator);
+        itineraryFactory = new ItineraryFactory(ACTIVITIES, START_TIME, END_TIME, travelTimeCalculator, new ArrayList<>());
     }
 
     @Test
@@ -41,6 +42,28 @@ public class ItineraryFactoryTest {
         assertEquals(2, numberOfEventsMatchingType(itinerary, SLEEP));
         assertEquals(6, numberOfEventsMatchingType(itinerary, FOOD));
         assertEquals(12, numberOfEventsMatchingType(itinerary, ACTIVITY));
+    }
+
+    @Test
+    public void correctlyAddsFixedEventsIntoExpectedItinerary() {
+        Event fixedEvent = new TestEventBuilder()
+                .setActivity(new TestActivityBuilder()
+                        .setId("fixed event")
+                        .setType(ActivityType.ACTIVITY)
+                        .setDuration(0L)
+                        .build())
+                .setEventTime(new Interval(new DateTime(2015, 2, 22, 16, 0), new DateTime(2015, 2, 22, 16, 0)))
+                .build();
+        itineraryFactory = new ItineraryFactory(ACTIVITIES, START_TIME, END_TIME, travelTimeCalculator, newArrayList(fixedEvent));
+
+        Itinerary itinerary = itineraryFactory.create(CONFIGURATION);
+
+        assertTrue(itinerary.getEvents().containsAll(expectedEvents()));
+        assertEquals(2, numberOfEventsMatchingType(itinerary, SLEEP));
+        assertEquals(6, numberOfEventsMatchingType(itinerary, FOOD));
+        assertEquals(13, numberOfEventsMatchingType(itinerary, ACTIVITY));
+        assertEquals(1, numberOfEventsMatchingType(itinerary, PLACEHOLDER));
+        assertTrue(itinerary.getEvents().contains(fixedEvent));
     }
 
     private static long numberOfEventsMatchingType(Itinerary itinerary, ActivityType activityType) {

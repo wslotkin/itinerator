@@ -7,32 +7,35 @@ import itinerator.datamodel.*;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Ordering.natural;
-import static itinerator.datamodel.ActivityType.FOOD;
-import static itinerator.datamodel.ActivityType.SLEEP;
+import static itinerator.datamodel.ActivityType.*;
 import static itinerator.itinerary.TimeUtil.*;
 import static org.joda.time.Minutes.minutesBetween;
 
 class ItineraryBuilder {
 
     private static final ActivityIdComparator ARBITRARY_BUT_PREDICTABLE_ORDERING = new ActivityIdComparator();
+    private static final Comparator<Event> EVENT_COMPARATOR =
+            (o1, o2) -> o2.getEventTime().getStart().compareTo(o1.getEventTime().getStart());
 
     private final DateTime startTime;
     private final DateTime endTime;
     private final TreeMultimap<Integer, Activity> activities;
     private final TreeMultimap<Integer, Activity> foods;
     private final TravelTimeCalculator travelTimeCalculator;
+    private final List<Event> fixedEvents;
 
-    public ItineraryBuilder(DateTime startTime, DateTime endTime, TravelTimeCalculator travelTimeCalculator) {
+    public ItineraryBuilder(DateTime startTime,
+                            DateTime endTime,
+                            TravelTimeCalculator travelTimeCalculator,
+                            List<Event> fixedEvents) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.travelTimeCalculator = travelTimeCalculator;
+        this.fixedEvents = fixedEvents;
         activities = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
         foods = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
     }
@@ -52,38 +55,76 @@ class ItineraryBuilder {
     public Itinerary build() {
         List<Event> events = new ArrayList<>();
         Queue<Activity> mealQueue = newLinkedList(foods.values());
+        Collections.sort(fixedEvents, EVENT_COMPARATOR);
+        Queue<Event> fixedEventQueue = newLinkedList(fixedEvents);
         for (Activity activity : activities.values()) {
-            boolean wasAdded = addEvent(events, activity, mealQueue);
+            boolean wasAdded = addEvent(events, activity, mealQueue, fixedEventQueue);
             if (!wasAdded) break;
         }
 
         return new Itinerary(events);
     }
 
-    private boolean addEvent(List<Event> runningEventList, Activity activityToAdd, Queue<Activity> mealQueue) {
+    private boolean addEvent(List<Event> runningEventList,
+                             Activity activityToAdd,
+                             Queue<Activity> mealQueue,
+                             Queue<Event> fixedEventQueue) {
         Event lastEvent = Iterables.getLast(runningEventList, null);
         DateTime currentDateTime = lastEvent != null ? lastEvent.getEventTime().getEnd() : startTime;
-        if (isNotType(activityToAdd, FOOD) && isInMealWindow(currentDateTime) && isNotType(lastEvent, FOOD)) {
+        if (wouldExceedNextFixedEvent(activityToAdd, fixedEventQueue, lastEvent)) {
+            Event fixedEvent = fixedEventQueue.poll();
+            tryAddActivity(runningEventList, lastEvent, createPlaceholderActivity(fixedEvent, lastEvent));
+            boolean wasAdded = tryAddActivity(runningEventList, lastEvent, fixedEvent.getActivity());
+            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
+        } else if (isNotType(activityToAdd, FOOD) && isInMealWindow(currentDateTime) && isNotType(lastEvent, FOOD)) {
             Activity mealActivity = generateMeal(activityToAdd.getLocation(), mealQueue);
-            boolean wasAdded = addEvent(runningEventList, mealActivity, mealQueue);
-            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue);
+            boolean wasAdded = addEvent(runningEventList, mealActivity, mealQueue, fixedEventQueue);
+            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
         } else if (isNotType(activityToAdd, SLEEP) && isInSleepWindow(currentDateTime) && isNotType(lastEvent, SLEEP)) {
             Activity sleepActivity = createSleepActivity(activityToAdd, currentDateTime);
-            boolean wasAdded = addEvent(runningEventList, sleepActivity, mealQueue);
-            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue);
+            boolean wasAdded = addEvent(runningEventList, sleepActivity, mealQueue, fixedEventQueue);
+            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
         } else {
-            Event newEvent = activityToEvent(lastEvent, activityToAdd);
-            if (!wouldExceedEndTime(newEvent)) {
-                runningEventList.add(newEvent);
-                return true;
-            } else {
-                return false;
-            }
+            return tryAddActivity(runningEventList, lastEvent, activityToAdd);
         }
     }
 
-    private boolean wouldExceedEndTime(Event currentEvent) {
-        return currentEvent.getEventTime().getEnd().isAfter(endTime);
+    private boolean tryAddActivity(List<Event> runningEventList, Event lastEvent, Activity activityToAdd) {
+        Event newEvent = activityToEvent(lastEvent, activityToAdd);
+        if (!wouldExceedTime(newEvent, endTime)) {
+            runningEventList.add(newEvent);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean wouldExceedNextFixedEvent(Activity activityToAdd, Queue<Event> fixedEventQueue, Event lastEvent) {
+        if (!fixedEventQueue.isEmpty()) {
+            Event eventToAdd = activityToEvent(lastEvent, activityToAdd);
+            Event nextFixedEvent = fixedEventQueue.peek();
+            double travelTime = travelTime(activityToAdd, nextFixedEvent.getActivity());
+            return wouldExceedTime(eventToAdd, nextFixedEvent.getEventTime().getStart().minusMinutes((int) travelTime));
+        } else {
+            return false;
+        }
+    }
+
+    private Activity createPlaceholderActivity(Event fixedEvent, Event lastEvent) {
+        final Location location;
+        final int duration;
+        if (lastEvent != null) {
+            location = lastEvent.getActivity().getLocation();
+            DateTime endOfLastEvent = lastEvent.getEventTime().getEnd();
+            double travelTimeFromLastEvent = travelTime(lastEvent.getActivity(), fixedEvent.getActivity());
+            DateTime timeToStartFixedEvent = fixedEvent.getEventTime().getStart().minusMinutes((int) travelTimeFromLastEvent);
+            duration = minutesBetween(endOfLastEvent, timeToStartFixedEvent).getMinutes();
+        } else {
+            location = fixedEvent.getActivity().getLocation();
+            DateTime timeToStartFixedEvent = fixedEvent.getEventTime().getStart().minusMinutes(0);
+            duration = minutesBetween(startTime, timeToStartFixedEvent).getMinutes();
+        }
+        return new Activity("placeholder event", duration, location, 0.0, 0.0, PLACEHOLDER);
     }
 
     private Event activityToEvent(Event previousEvent, Activity activity) {
@@ -101,6 +142,10 @@ class ItineraryBuilder {
         } else {
             return 0.0;
         }
+    }
+
+    private static boolean wouldExceedTime(Event event, DateTime time) {
+        return event.getEventTime().getEnd().isAfter(time);
     }
 
     private static boolean isNotType(Event event, ActivityType activityType) {
