@@ -9,12 +9,14 @@ import cz.cvut.felk.cig.jcop.solver.condition.IterationCondition;
 import itinerator.calculators.DistanceCalculator;
 import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
+import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
 import itinerator.itinerary.ItineraryFactory;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 
@@ -35,6 +37,21 @@ public class ItinerarySolver {
         SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(populationSize, mutationRate), itineraryProblem);
         solver.addStopCondition(new IterationCondition(iterationThreshold));
         return new ItinerarySolver(solver, itineraryFactory);
+    }
+
+    public static SolverResult generateResult(List<Activity> activities,
+                                              DateTime startTime,
+                                              DateTime endTime,
+                                              List<Event> events) {
+        TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
+        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, events);
+        ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
+        List<Integer> attributes = activities.stream().map(activities::indexOf).collect(Collectors.toList());
+
+        Configuration configuration = new Configuration(attributes);
+        Itinerary itinerary = itineraryFactory.create(configuration);
+        double score = itineraryProblem.getDefaultFitness().getValue(configuration);
+        return new SolverResult(itinerary, configuration, score, 0L);
     }
 
     public ItinerarySolver(Solver solver, ItineraryFactory itineraryFactory) {
@@ -58,8 +75,8 @@ public class ItinerarySolver {
     public static class SolverResult {
         private final Itinerary itinerary;
         private final Configuration configuration;
-        private final long duration;
         private final double score;
+        private final long duration;
 
         public SolverResult(Itinerary itinerary, Configuration configuration, double score, long duration) {
             this.itinerary = itinerary;
