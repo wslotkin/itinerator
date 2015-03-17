@@ -23,11 +23,12 @@ public class Main {
     private static final int POPULATION_SIZE = 1000;
     private static final int ITERATION_THRESHOLD = 100;
     private static final int NUMBER_OF_DAYS = 2;
+    private static final int STARTING_HOUR_OF_DAY = 19;
 
     public static void main(String[] args) throws IOException {
         List<Activity> activities = loadActivities();
-        DateTime startTime = new DateTime().minusDays(NUMBER_OF_DAYS);
-        DateTime endTime = new DateTime();
+        DateTime startTime = new DateTime().withTime(STARTING_HOUR_OF_DAY, 0, 0, 0);
+        DateTime endTime = startTime.plusDays(NUMBER_OF_DAYS);
 
         ItinerarySolver itinerarySolver = createSolver(activities, startTime, endTime, POPULATION_SIZE, MUTATION_RATE, ITERATION_THRESHOLD);
         itinerarySolver.run();
