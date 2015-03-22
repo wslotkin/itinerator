@@ -40,10 +40,10 @@ public class TimeUtilTest {
 
     @Test
     public void computesNumberOfMealsBetweenToTimes() {
-        assertEquals(0, numberOfMealsInTimeRange(START_OF_TODAY, START_OF_BREAKFAST_WINDOW.toDateTimeToday()));
-        assertEquals(1, numberOfMealsInTimeRange(START_OF_BREAKFAST_WINDOW.toDateTimeToday(), END_OF_BREAKFAST_WINDOW.toDateTimeToday()));
-        assertEquals(1, numberOfMealsInTimeRange(START_OF_DINNER_WINDOW.toDateTimeToday(), START_OF_TOMORROW));
-        assertEquals(2, numberOfMealsInTimeRange(START_OF_LUNCH_WINDOW.toDateTimeToday(), END_OF_DINNER_WINDOW.toDateTimeToday()));
-        assertEquals(3, numberOfMealsInTimeRange(START_OF_TODAY, START_OF_TOMORROW));
+        assertEquals(0, numberOfMealsInTimeRange(START_OF_TODAY.getMillis(), START_OF_BREAKFAST_WINDOW.toDateTimeToday().getMillis()));
+        assertEquals(1, numberOfMealsInTimeRange(START_OF_BREAKFAST_WINDOW.toDateTimeToday().getMillis(), END_OF_BREAKFAST_WINDOW.toDateTimeToday().getMillis()));
+        assertEquals(1, numberOfMealsInTimeRange(START_OF_DINNER_WINDOW.toDateTimeToday().getMillis(), START_OF_TOMORROW.getMillis()));
+        assertEquals(2, numberOfMealsInTimeRange(START_OF_LUNCH_WINDOW.toDateTimeToday().getMillis(), END_OF_DINNER_WINDOW.toDateTimeToday().getMillis()));
+        assertEquals(3, numberOfMealsInTimeRange(START_OF_TODAY.getMillis(), START_OF_TOMORROW.getMillis()));
     }
 }

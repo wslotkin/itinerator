@@ -16,6 +16,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Ordering.natural;
 import static itinerator.datamodel.ActivityType.*;
 import static itinerator.itinerary.TimeUtil.*;
+import static java.lang.Long.compare;
 import static java.util.Collections.sort;
 import static org.joda.time.Minutes.minutesBetween;
 
@@ -23,7 +24,7 @@ class ItineraryBuilder {
 
     private static final ActivityIdComparator ARBITRARY_BUT_PREDICTABLE_ORDERING = new ActivityIdComparator();
     private static final Comparator<Event> EVENT_COMPARATOR =
-            (o1, o2) -> o1.getEventTime().getStart().compareTo(o2.getEventTime().getStart());
+            (o1, o2) -> compare(o1.getEventTime().getStartMillis(), o2.getEventTime().getStartMillis());
 
     private final DateTime startTime;
     private final DateTime endTime;

@@ -21,8 +21,8 @@ public class MealEvaluator extends BaseDaySubitineraryEvaluator {
         Event firstEvent = events.get(0);
         Event lastEvent = getLast(events);
 
-        int expectedNumberOfMeals = numberOfMealsInTimeRange(firstEvent.getEventTime().getStart(),
-                lastEvent.getEventTime().getEnd());
+        int expectedNumberOfMeals = numberOfMealsInTimeRange(firstEvent.getEventTime().getStartMillis(),
+                lastEvent.getEventTime().getEndMillis());
         int actualNumberOfMeals = events.stream()
                 .mapToInt(a -> eventIsMealEvent(a) ? 1 : 0)
                 .sum();

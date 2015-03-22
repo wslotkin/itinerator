@@ -32,11 +32,11 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
     @Override
     public boolean isSolution(Configuration configuration) {
         Itinerary itinerary = itineraryFactory.create(configuration);
-        DateTime endTimeOfPrevious = startTime;
+        long endTimeOfPrevious = startTime.getMillis();
         for (Event event : itinerary.getEvents()) {
-            DateTime eventStart = event.getEventTime().getStart();
-            DateTime eventEnd = event.getEventTime().getEnd();
-            if (endTimeOfPrevious.isAfter(eventStart) || eventStart.isBefore(startTime) || eventEnd.isAfter(endTime)) {
+            long eventStart = event.getEventTime().getStartMillis();
+            long eventEnd = event.getEventTime().getEndMillis();
+            if (endTimeOfPrevious > eventStart || startTime.isAfter(eventStart) || endTime.isBefore(eventEnd)) {
                 return false;
             }
             endTimeOfPrevious = eventEnd;

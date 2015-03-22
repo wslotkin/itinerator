@@ -30,14 +30,15 @@ public class TimeUtil {
     }
 
     public static boolean isInSleepWindow(DateTime eventTime) {
+        DateTime eventTimeNextDay = eventTime.plusDays(1);
         Interval sleepWindow = new Interval(fromDateAndTime(eventTime, START_OF_SLEEP_WINDOW),
-                fromDateAndTime(eventTime.plusDays(1), END_OF_SLEEP_WINDOW));
+                fromDateAndTime(eventTimeNextDay, END_OF_SLEEP_WINDOW));
 
-        return sleepWindow.contains(eventTime) || sleepWindow.contains(eventTime.plusDays(1));
+        return sleepWindow.contains(eventTime) || sleepWindow.contains(eventTimeNextDay);
     }
 
-    public static int numberOfMealsInTimeRange(DateTime start, DateTime end) {
-        Interval timeRange = new Interval(start, end);
+    public static int numberOfMealsInTimeRange(long startTime, long endTime) {
+        Interval timeRange = new Interval(startTime, endTime);
 
         int numberOfMeals = numberOfMeals(timeRange, START_OF_BREAKFAST_WINDOW, END_OF_BREAKFAST_WINDOW);
         numberOfMeals += numberOfMeals(timeRange, START_OF_LUNCH_WINDOW, END_OF_LUNCH_WINDOW);
@@ -64,14 +65,15 @@ public class TimeUtil {
         return mealWindow.contains(eventTime);
     }
 
-    private static int numberOfMeals(Interval timeRange, LocalTime startOfMealWindow, LocalTime endOfMealWindow) {
+    private static int numberOfMeals(Interval timeRange, LocalTime mealWindowStartTime, LocalTime mealWindowEndTime) {
         int numberOfMeals = 0;
-        Interval mealWindow = new Interval(fromDateAndTime(timeRange.getStart(), startOfMealWindow),
-                fromDateAndTime(timeRange.getStart(), endOfMealWindow));
+        DateTime startOfMealWindow = fromDateAndTime(timeRange.getStart(), mealWindowStartTime);
+        DateTime endOfMealWindow = fromDateAndTime(timeRange.getStart(), mealWindowEndTime);
 
-        while (mealWindow.getStart().isBefore(timeRange.getEnd())) {
-            numberOfMeals += getNumberOfOverlaps(timeRange, mealWindow);
-            mealWindow = addDay(mealWindow);
+        while (startOfMealWindow.isBefore(timeRange.getEndMillis())) {
+            numberOfMeals += overlaps(timeRange, startOfMealWindow, endOfMealWindow) ? 1 : 0;
+            startOfMealWindow = startOfMealWindow.plusDays(1);
+            endOfMealWindow = endOfMealWindow.plus(1);
         }
 
         return numberOfMeals;
@@ -84,11 +86,7 @@ public class TimeUtil {
                 time.getMillisOfSecond());
     }
 
-    private static Interval addDay(Interval interval) {
-        return new Interval(interval.getStart().plusDays(1), interval.getEnd().plusDays(1));
-    }
-
-    private static int getNumberOfOverlaps(Interval first, Interval second) {
-        return first.overlaps(second) ? 1 : 0;
+    private static boolean overlaps(Interval first, DateTime secondStart, DateTime secondEnd) {
+        return first.getStartMillis() < secondEnd.getMillis() && secondStart.getMillis() < first.getEndMillis();
     }
 }

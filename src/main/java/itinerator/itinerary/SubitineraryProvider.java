@@ -27,10 +27,10 @@ public class SubitineraryProvider {
     }
 
     private static boolean rangeStartsAfterStartOfEvent(DateTime start, Event event) {
-        return start.isAfter(event.getEventTime().getStart());
+        return start.isAfter(event.getEventTime().getStartMillis());
     }
 
     private static boolean rangeEndsBeforeStartOfEvent(DateTime end, Event event) {
-        return end.isBefore(event.getEventTime().getStart());
+        return end.isBefore(event.getEventTime().getStartMillis());
     }
 }
