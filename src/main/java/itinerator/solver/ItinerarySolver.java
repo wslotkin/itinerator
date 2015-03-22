@@ -6,6 +6,7 @@ import cz.cvut.felk.cig.jcop.result.ResultEntry;
 import cz.cvut.felk.cig.jcop.solver.SimpleSolver;
 import cz.cvut.felk.cig.jcop.solver.Solver;
 import cz.cvut.felk.cig.jcop.solver.condition.IterationCondition;
+import cz.cvut.felk.cig.jcop.solver.condition.TimeoutCondition;
 import itinerator.calculators.DistanceCalculator;
 import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
@@ -30,12 +31,14 @@ public class ItinerarySolver {
                                                DateTime endTime,
                                                int populationSize,
                                                double mutationRate,
-                                               int iterationThreshold) {
+                                               int iterationThreshold,
+                                               long timeoutThresholdMillis) {
         TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
         ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, new ArrayList<>());
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
         SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(populationSize, mutationRate), itineraryProblem);
         solver.addStopCondition(new IterationCondition(iterationThreshold));
+        solver.addStopCondition(new TimeoutCondition(timeoutThresholdMillis));
         return new ItinerarySolver(solver, itineraryFactory);
     }
 
