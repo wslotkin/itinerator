@@ -17,6 +17,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
@@ -32,14 +33,24 @@ public class ItinerarySolver {
                                                int populationSize,
                                                double mutationRate,
                                                int iterationThreshold,
-                                               long timeoutThresholdMillis) {
+                                               long timeoutThresholdMillis,
+                                               int numberOfThreads) {
         TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
         ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, new ArrayList<>());
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
-        SimpleSolver solver = new SimpleSolver(new GeneticAlgorithm(populationSize, mutationRate), itineraryProblem);
+        GeneticAlgorithm geneticAlgorithm = createGeneticAlgorithm(populationSize, mutationRate, numberOfThreads);
+        SimpleSolver solver = new SimpleSolver(geneticAlgorithm, itineraryProblem);
         solver.addStopCondition(new IterationCondition(iterationThreshold));
         solver.addStopCondition(new TimeoutCondition(timeoutThresholdMillis));
         return new ItinerarySolver(solver, itineraryFactory);
+    }
+
+    private static GeneticAlgorithm createGeneticAlgorithm(int populationSize, double mutationRate, int numberOfThreads) {
+        if (numberOfThreads > 1) {
+            return new ConcurrentGeneticAlgorithm(populationSize, mutationRate, Executors.newFixedThreadPool(numberOfThreads), numberOfThreads);
+        } else {
+            return new GeneticAlgorithm(populationSize, mutationRate);
+        }
     }
 
     public static SolverResult generateResult(List<Activity> activities,
