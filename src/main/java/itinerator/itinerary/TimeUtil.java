@@ -30,11 +30,7 @@ public class TimeUtil {
     }
 
     public static boolean isInSleepWindow(DateTime eventTime) {
-        DateTime eventTimeNextDay = eventTime.plusDays(1);
-        Interval sleepWindow = new Interval(fromDateAndTime(eventTime, START_OF_SLEEP_WINDOW),
-                fromDateAndTime(eventTimeNextDay, END_OF_SLEEP_WINDOW));
-
-        return sleepWindow.contains(eventTime) || sleepWindow.contains(eventTimeNextDay);
+        return isInWindow(eventTime, START_OF_SLEEP_WINDOW, END_OF_SLEEP_WINDOW);
     }
 
     public static int numberOfMealsInTimeRange(long startTime, long endTime) {
@@ -48,21 +44,26 @@ public class TimeUtil {
     }
 
     private static boolean isInBreakfastWindow(DateTime eventTime) {
-        return isInMealWindow(eventTime, START_OF_BREAKFAST_WINDOW, END_OF_BREAKFAST_WINDOW);
+        return isInWindow(eventTime, START_OF_BREAKFAST_WINDOW, END_OF_BREAKFAST_WINDOW);
     }
 
     private static boolean isInLunchWindow(DateTime eventTime) {
-        return isInMealWindow(eventTime, START_OF_LUNCH_WINDOW, END_OF_LUNCH_WINDOW);
+        return isInWindow(eventTime, START_OF_LUNCH_WINDOW, END_OF_LUNCH_WINDOW);
     }
 
     private static boolean isInDinnerWindow(DateTime eventTime) {
-        return isInMealWindow(eventTime, START_OF_DINNER_WINDOW, END_OF_DINNER_WINDOW);
+        return isInWindow(eventTime, START_OF_DINNER_WINDOW, END_OF_DINNER_WINDOW);
     }
 
-    private static boolean isInMealWindow(DateTime eventTime, LocalTime startOfMealWindow, LocalTime endOfMealWindow) {
-        Interval mealWindow = new Interval(fromDateAndTime(eventTime, startOfMealWindow),
-                fromDateAndTime(eventTime, endOfMealWindow));
-        return mealWindow.contains(eventTime);
+    private static boolean isInWindow(DateTime eventTime, LocalTime startOfWindow, LocalTime endOfWindow) {
+        int eventMillis = eventTime.getMillisOfDay();
+        int startOfWindowMillis = startOfWindow.getMillisOfDay();
+        int endOfWindowMillis = endOfWindow.getMillisOfDay();
+        if (startOfWindowMillis < endOfWindowMillis) {
+            return eventMillis >= startOfWindowMillis && eventMillis < endOfWindowMillis;
+        } else {
+            return eventMillis >= startOfWindowMillis || eventMillis < endOfWindowMillis;
+        }
     }
 
     private static int numberOfMeals(Interval timeRange, LocalTime mealWindowStartTime, LocalTime mealWindowEndTime) {
