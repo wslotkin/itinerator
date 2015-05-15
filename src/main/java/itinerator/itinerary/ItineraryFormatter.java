@@ -7,8 +7,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class ItineraryFormatter {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     private static final int MAX_EVENT_IDENTIFIER = 35;
 
     public static String prettyPrint(Itinerary itinerary) {

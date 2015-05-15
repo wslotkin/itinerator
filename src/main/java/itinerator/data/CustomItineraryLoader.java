@@ -1,6 +1,5 @@
 package itinerator.data;
 
-import com.google.common.collect.ImmutableMap;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.ActivityType;
 import itinerator.datamodel.Event;
@@ -11,55 +10,68 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static org.joda.time.Minutes.minutesBetween;
 
 public class CustomItineraryLoader {
 
-    private final ImmutableMap<String, Activity> idToActivityMap;
+    private final Map<String, Activity> idToActivityMap;
 
     public CustomItineraryLoader(List<Activity> allActivities) {
         idToActivityMap = uniqueIndex(allActivities, Activity::getId);
     }
 
-    public List<Event> getActivities(String filename, String delimiter) throws IOException {
+    public List<Event> getActivities(String filename, FileType fileType) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(new File(filename)));
+        reader.readLine();
 
-        List<Event> events = new ArrayList<>();
-        String inputLine = reader.readLine();
-        Event mostRecentEvent = null;
-        while ((inputLine = reader.readLine()) != null) {
-            String[] elements = inputLine.split(delimiter);
-            String activityId = elements[0];
-            String type = elements[1];
-            String start = elements[2];
-            String end = elements[3];
-            mostRecentEvent = createEvent(activityId, start, end, type, mostRecentEvent);
-            events.add(mostRecentEvent);
+        CustomDataLoader dataLoader = getDataLoader(fileType, reader);
+
+        List<Event> events = newArrayList();
+        Event previousEvent = null;
+        EventInputs inputs;
+        while ((inputs = dataLoader.getNextInputs()) != null) {
+            Event event = createEvent(inputs, previousEvent);
+            events.add(event);
+            previousEvent = event;
         }
-
         return events;
     }
 
-    private Event createEvent(String activityId, String start, String end, String type, Event previousEvent) {
-        DateTime startTime = DateTime.parse(start);
-        DateTime endTime = DateTime.parse(end);
-        Activity activity = idToActivityMap.containsKey(activityId)
-                ? idToActivityMap.get(activityId)
-                : createActivity(activityId, type, minutesBetween(startTime, endTime).getMinutes(), previousEvent);
+    private CustomDataLoader getDataLoader(FileType fileType, BufferedReader reader) {
+        switch (fileType) {
+            case CSV:
+                return new CsvItineraryLoader(reader);
+            case TEXT:
+                return new TextItineraryLoader(reader);
+        }
+        throw new IllegalArgumentException("Unexpected file type: " + fileType);
+    }
+
+    private Event createEvent(EventInputs inputs, Event previousEvent) {
+        DateTime startTime = DateTime.parse(inputs.getStart());
+        DateTime endTime = DateTime.parse(inputs.getEnd());
+        Activity activity = idToActivityMap.containsKey(inputs.getActivityId())
+                ? idToActivityMap.get(inputs.getActivityId())
+                : createActivity(inputs.getActivityId(), inputs.getType(), minutesBetween(startTime, endTime).getMinutes(), previousEvent);
         if (activity != null) {
             return new Event(activity, new Interval(startTime, endTime), 0.0);
         } else {
-            System.out.println("Failed to create activity with id: " + activityId);
+            System.out.println("Failed to create activity with id: " + inputs.getActivityId());
         }
         return null;
     }
 
-    private static Activity createActivity(String activityId, String type, int duration, Event previousEvent) {
+    static Activity createActivity(String activityId, String type, int duration, Event previousEvent) {
         ActivityType activityType = ActivityType.valueOf(type);
         return new Activity(activityId, duration, previousEvent.getActivity().getLocation(), 0, 0, activityType);
+    }
+
+    public interface CustomDataLoader {
+        EventInputs getNextInputs() throws IOException;
     }
 }
