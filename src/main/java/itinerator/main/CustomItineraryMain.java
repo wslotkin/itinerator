@@ -16,6 +16,7 @@ import static itinerator.solver.ItinerarySolver.generateResult;
 
 public class CustomItineraryMain extends BaseMain {
     private static final String OUTPUT_FILE_SUFFIX = "-Output.txt";
+    private static final int BUFFER_PERIOD_MINUTES = 25;
 
     private final String inputFilename;
     private final FileType inputFileType;
@@ -42,7 +43,7 @@ public class CustomItineraryMain extends BaseMain {
         List<Event> events = new CustomItineraryLoader(activities).getActivities(inputFilename, inputFileType);
 
         DateTime start = events.get(0).getEventTime().getStart();
-        DateTime end = Iterables.getLast(events).getEventTime().getEnd();
+        DateTime end = Iterables.getLast(events).getEventTime().getEnd().plusMinutes(BUFFER_PERIOD_MINUTES);
 
         return generateResult(activities, start, end, events);
     }
