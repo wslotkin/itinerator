@@ -1,4 +1,4 @@
-package itinerator.data;
+package custom.data;
 
 class EventInputs {
     private final String activityId;

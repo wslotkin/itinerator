@@ -1,11 +1,11 @@
-package itinerator.data;
+package custom.data;
 
 import itinerator.itinerary.ItineraryFormatter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import static itinerator.data.FileType.TEXT;
+import static custom.data.FileType.TEXT;
 
 class TextItineraryLoader implements CustomItineraryLoader.CustomDataLoader {
 

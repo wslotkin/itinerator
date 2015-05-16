@@ -1,9 +1,9 @@
-package itinerator.data;
+package custom.data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import static itinerator.data.FileType.CSV;
+import static custom.data.FileType.CSV;
 
 class CsvItineraryLoader implements CustomItineraryLoader.CustomDataLoader {
 

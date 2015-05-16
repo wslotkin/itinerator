@@ -62,7 +62,6 @@ public class ItineraryFactoryTest {
         assertEquals(2, numberOfEventsMatchingType(itinerary, SLEEP));
         assertEquals(6, numberOfEventsMatchingType(itinerary, FOOD));
         assertEquals(13, numberOfEventsMatchingType(itinerary, ACTIVITY));
-        assertEquals(1, numberOfEventsMatchingType(itinerary, PLACEHOLDER));
         assertTrue(itinerary.getEvents().contains(fixedEvent));
     }
 

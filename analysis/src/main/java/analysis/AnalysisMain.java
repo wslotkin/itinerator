@@ -1,19 +1,19 @@
 package analysis;
 
 import com.google.common.base.Joiner;
+import custom.CustomItineraryMain;
+import custom.data.FileType;
 import itinerator.solver.ItinerarySolver;
 
 import java.io.*;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static itinerator.data.FileType.TEXT;
-import static itinerator.main.BaseMain.BEIJING_DATA;
-import static itinerator.main.CustomItineraryMain.runCustomItinerary;
+import static custom.data.FileType.TEXT;
 import static java.lang.Double.parseDouble;
 import static java.lang.String.format;
 
-public class AnalysisMain {
+public class AnalysisMain extends CustomItineraryMain {
     private static final String ROOT_DIR = filePath("beijingItineraries");
     private static final String FILE_PREFIX = "itinerary";
     private static final String PATH_PREFIX = ROOT_DIR + File.separator + FILE_PREFIX;
@@ -35,6 +35,10 @@ public class AnalysisMain {
         output(results, correlation);
     }
 
+    public AnalysisMain(String fileBase, String outputFilename, FileType inputFileType, String[] dataFiles) {
+        super(fileBase, outputFilename, inputFileType, dataFiles);
+    }
+
     private static List<AnalysisSolverResult> generateResults(BufferedReader reader,
                                                               int idColumnIndex,
                                                               int rankColumnIndex) throws IOException {
@@ -47,7 +51,7 @@ public class AnalysisMain {
 
             String filePathBase = Joiner.on("_").join(PATH_PREFIX, id);
 
-            ItinerarySolver.SolverResult solverResult = runCustomItinerary(filePathBase, TEXT, BEIJING_DATA, null);
+            ItinerarySolver.SolverResult solverResult = runCustomItinerary(filePathBase, TEXT, BEIJING_DATA);
 
             results.add(new AnalysisSolverResult(id, solverResult, referenceScore));
         }
@@ -83,10 +87,5 @@ public class AnalysisMain {
 
         bufferedWriter.flush();
         bufferedWriter.close();
-    }
-
-    private static String filePath(String filename) {
-        //noinspection ConstantConditions
-        return AnalysisMain.class.getClassLoader().getResource(filename).getPath();
     }
 }

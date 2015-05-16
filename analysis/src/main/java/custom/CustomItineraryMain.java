@@ -1,17 +1,18 @@
-package itinerator.main;
+package custom;
 
 import com.google.common.collect.Iterables;
-import itinerator.data.CustomItineraryLoader;
-import itinerator.data.FileType;
+import custom.data.CustomItineraryLoader;
+import custom.data.FileType;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
+import itinerator.main.BaseMain;
 import itinerator.solver.ItinerarySolver.SolverResult;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.List;
 
-import static itinerator.data.FileType.CSV;
+import static custom.data.FileType.CSV;
 import static itinerator.solver.ItinerarySolver.generateResult;
 
 public class CustomItineraryMain extends BaseMain {
@@ -22,18 +23,17 @@ public class CustomItineraryMain extends BaseMain {
     private final FileType inputFileType;
 
     public static void main(String[] args) throws IOException {
-        runCustomItinerary("customItineraries/Sheet 1-Table 1-1", CSV, BEIJING_DATA, OUTPUT_FILE_SUFFIX);
+        runCustomItinerary(filePath("customItineraries") + "/Sheet 1-Table 1-1", CSV, BEIJING_DATA);
     }
 
-    public static SolverResult runCustomItinerary(String fileBase,
-                                                  FileType inputFileType,
-                                                  String[] dataFiles,
-                                                  String outputFileSuffix) throws IOException {
-        return new CustomItineraryMain(fileBase, outputFileSuffix, inputFileType, dataFiles).run();
+    protected static SolverResult runCustomItinerary(String fileBase,
+                                                     FileType inputFileType,
+                                                     String[] dataFiles) throws IOException {
+        return new CustomItineraryMain(fileBase, OUTPUT_FILE_SUFFIX, inputFileType, dataFiles).run();
     }
 
     public CustomItineraryMain(String fileBase, String outputFilename, FileType inputFileType, String[] dataFiles) {
-        super(outputFilename != null ? fileBase + outputFilename : null, dataFiles);
+        super(fileBase + outputFilename, dataFiles);
         this.inputFileType = inputFileType;
         inputFilename = fileBase + inputFileType.getExtenstion();
     }
@@ -46,5 +46,10 @@ public class CustomItineraryMain extends BaseMain {
         DateTime end = Iterables.getLast(events).getEventTime().getEnd().plusMinutes(BUFFER_PERIOD_MINUTES);
 
         return generateResult(activities, start, end, events);
+    }
+
+    protected static String filePath(String filename) {
+        //noinspection ConstantConditions
+        return CustomItineraryMain.class.getClassLoader().getResource(filename).getPath();
     }
 }
