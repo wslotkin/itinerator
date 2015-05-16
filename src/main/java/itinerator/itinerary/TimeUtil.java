@@ -7,7 +7,7 @@ import org.joda.time.LocalTime;
 
 public class TimeUtil {
 
-    static final int START_OF_DAY = 8;
+    public static final int START_OF_DAY = 8;
     @VisibleForTesting
     public static final LocalTime START_OF_BREAKFAST_WINDOW = new LocalTime(START_OF_DAY, 0);
     @VisibleForTesting
