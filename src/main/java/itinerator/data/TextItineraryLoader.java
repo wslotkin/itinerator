@@ -9,6 +9,7 @@ import static itinerator.data.FileType.TEXT;
 
 class TextItineraryLoader implements CustomItineraryLoader.CustomDataLoader {
 
+    public static final String HEADER_TEXT = "Optimization complete";
     private final BufferedReader reader;
 
     public TextItineraryLoader(BufferedReader reader) {
@@ -17,7 +18,7 @@ class TextItineraryLoader implements CustomItineraryLoader.CustomDataLoader {
 
     @Override
     public EventInputs getNextInputs() throws IOException {
-        String nextLine = reader.readLine();
+        String nextLine = getNextLine();
         if (nextLine != null && !nextLine.isEmpty()) {
             String[] elements = nextLine.split("-" + TEXT.getDelimiter());
             String idAndType = elements[0];
@@ -32,6 +33,15 @@ class TextItineraryLoader implements CustomItineraryLoader.CustomDataLoader {
             return new EventInputs(id, startTime, endTime, type);
         } else {
             return null;
+        }
+    }
+
+    private String getNextLine() throws IOException {
+        String nextLine = reader.readLine();
+        if (nextLine != null && nextLine.contains(HEADER_TEXT)) {
+            return getNextLine();
+        } else {
+            return nextLine;
         }
     }
 

@@ -14,8 +14,8 @@ import static itinerator.itinerary.ItineraryFormatter.prettyPrint;
 import static java.lang.String.format;
 
 public abstract class BaseMain {
-    protected static final String[] NYC_DATA = {"nycplaces.csv"};
-    protected static final String[] BEIJING_DATA = {"beijingspots.csv", "beijingrestaurants.csv"};
+    public static final String[] NYC_DATA = {"nycplaces.csv"};
+    public static final String[] BEIJING_DATA = {"beijingspots.csv", "beijingrestaurants.csv"};
     private static final int NUMBER_OF_DAYS = 2;
     private static final int STARTING_HOUR_OF_DAY = 19;
 
@@ -27,7 +27,7 @@ public abstract class BaseMain {
         this.dataFiles = dataFiles;
     }
 
-    public void run() throws IOException {
+    public SolverResult run() throws IOException {
         List<Activity> activities = loadActivities(dataFiles);
         DateTime startTime = new DateTime().withTime(STARTING_HOUR_OF_DAY, 0, 0, 0);
         DateTime endTime = startTime.plusDays(NUMBER_OF_DAYS);
@@ -38,6 +38,8 @@ public abstract class BaseMain {
         if (outputFilename != null) {
             logToOutputFile(bestResult, outputFilename);
         }
+
+        return bestResult;
     }
 
     protected abstract SolverResult getResult(List<Activity> activities, DateTime startTime, DateTime endTime) throws IOException;

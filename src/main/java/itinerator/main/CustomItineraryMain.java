@@ -21,15 +21,18 @@ public class CustomItineraryMain extends BaseMain {
     private final FileType inputFileType;
 
     public static void main(String[] args) throws IOException {
-        runCustomItinerary("customItineraries/Sheet 1-Table 1-1", CSV);
+        runCustomItinerary("customItineraries/Sheet 1-Table 1-1", CSV, BEIJING_DATA, OUTPUT_FILE_SUFFIX);
     }
 
-    public static SolverResult runCustomItinerary(String fileBase, FileType inputFileType) throws IOException {
-        return new CustomItineraryMain(fileBase, OUTPUT_FILE_SUFFIX, inputFileType).run();
+    public static SolverResult runCustomItinerary(String fileBase,
+                                                  FileType inputFileType,
+                                                  String[] dataFiles,
+                                                  String outputFileSuffix) throws IOException {
+        return new CustomItineraryMain(fileBase, outputFileSuffix, inputFileType, dataFiles).run();
     }
 
-    public CustomItineraryMain(String fileBase, String outputFilename, FileType inputFileType) {
-        super(fileBase + outputFilename, BEIJING_DATA);
+    public CustomItineraryMain(String fileBase, String outputFilename, FileType inputFileType, String[] dataFiles) {
+        super(outputFilename != null ? fileBase + outputFilename : null, dataFiles);
         this.inputFileType = inputFileType;
         inputFilename = fileBase + inputFileType.getExtenstion();
     }

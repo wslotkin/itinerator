@@ -27,7 +27,6 @@ public class CustomItineraryLoader {
 
     public List<Event> getActivities(String filename, FileType fileType) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(new File(filename)));
-        reader.readLine();
 
         CustomDataLoader dataLoader = getDataLoader(fileType, reader);
 
