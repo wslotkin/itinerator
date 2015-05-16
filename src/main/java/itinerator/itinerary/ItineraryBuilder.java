@@ -85,11 +85,11 @@ class ItineraryBuilder {
             boolean wasAdded = tryAddActivity(runningEventList, getLast(runningEventList, null), fixedEvent.getActivity());
             return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
         } else if (isNotType(activityToAdd, FOOD) && isInMealWindow(currentDateTime) && isNotType(lastEvent, FOOD)) {
-            Activity mealActivity = generateMeal(activityToAdd.getLocation(), mealQueue);
+            Activity mealActivity = generateMeal(locationForGeneratedActivity(lastEvent, activityToAdd), mealQueue);
             boolean wasAdded = addEvent(runningEventList, mealActivity, mealQueue, fixedEventQueue);
             return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
         } else if (isNotType(activityToAdd, SLEEP) && isInSleepWindow(currentDateTime) && isNotType(lastEvent, SLEEP)) {
-            Activity sleepActivity = createSleepActivity(activityToAdd, currentDateTime);
+            Activity sleepActivity = createSleepActivity(currentDateTime, locationForGeneratedActivity(lastEvent, activityToAdd));
             boolean wasAdded = addEvent(runningEventList, sleepActivity, mealQueue, fixedEventQueue);
             return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
         } else {
@@ -170,10 +170,14 @@ class ItineraryBuilder {
                 : new Activity("default meal", 60L, location, 0.0, 0.0, FOOD);
     }
 
-    private static Activity createSleepActivity(Activity activity, DateTime currentDateTime) {
+    private static Activity createSleepActivity(DateTime currentDateTime, Location location) {
         DateTime endTimeOfActivity = currentDateTime.plusMinutes(480).withTime(START_OF_DAY, 0, 0, 0);
         long sleepDuration = minutesBetween(currentDateTime, endTimeOfActivity).getMinutes();
-        return new Activity("default sleep", sleepDuration, activity.getLocation(), 0.0, 0.0, ActivityType.SLEEP);
+        return new Activity("default sleep", sleepDuration, location, 0.0, 0.0, ActivityType.SLEEP);
+    }
+
+    private static Location locationForGeneratedActivity(Event lastEvent, Activity nextActivity) {
+         return lastEvent != null ? lastEvent.getActivity().getLocation() : nextActivity.getLocation();
     }
 
     private static class ActivityIdComparator implements Comparator<Activity> {
