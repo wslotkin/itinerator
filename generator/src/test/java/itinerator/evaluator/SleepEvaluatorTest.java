@@ -13,11 +13,10 @@ import static com.google.common.collect.Lists.newArrayList;
 import static itinerator.TestConstants.DELTA;
 import static itinerator.datamodel.ActivityType.ACTIVITY;
 import static itinerator.datamodel.ActivityType.SLEEP;
-import static itinerator.evaluator.SleepEvaluator.INCORRECT_SLEEP_PENALTY;
 import static org.junit.Assert.assertEquals;
 
 public class SleepEvaluatorTest {
-
+    private static final double INCORRECT_SLEEP_PENALTY = -100.0;
     private static final DateTime T_0 = new DateTime(2015, 2, 6, 12, 0);
     private static final DateTime T_1 = new DateTime(2015, 2, 6, 22, 0);
     private static final DateTime T_2 = new DateTime(2015, 2, 7, 9, 0);
@@ -37,7 +36,7 @@ public class SleepEvaluatorTest {
     public void before() {
         events = newArrayList(EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5);
 
-        sleepEvaluator = new SleepEvaluator();
+        sleepEvaluator = new SleepEvaluator(INCORRECT_SLEEP_PENALTY);
     }
 
     @Test

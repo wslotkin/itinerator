@@ -1,6 +1,5 @@
 package itinerator.evaluator;
 
-import com.google.common.annotations.VisibleForTesting;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
 
@@ -13,8 +12,11 @@ import static itinerator.itinerary.TimeUtil.isInSleepWindow;
 import static java.lang.Math.abs;
 
 public class SleepEvaluator extends BaseDaySubitineraryEvaluator {
-    @VisibleForTesting
-    static final double INCORRECT_SLEEP_PENALTY = -100.0;
+    private final double incorrectSleepPenalty;
+
+    public SleepEvaluator(double incorrectSleepPenalty) {
+        this.incorrectSleepPenalty = incorrectSleepPenalty;
+    }
 
     @Override
     protected double evaluateDaySubitinerary(Itinerary singleDaySubitinerary) {
@@ -31,7 +33,7 @@ public class SleepEvaluator extends BaseDaySubitineraryEvaluator {
         int numberOfUnexpectedSleepEvents = abs(totalNumberOfSleepEvents - numberOfCorrectlyPlacedSleepEvents);
         int differenceBetweenExpectedAndActual = abs(expectedNumberOfSleepEvents - numberOfCorrectlyPlacedSleepEvents);
 
-        return INCORRECT_SLEEP_PENALTY * (numberOfUnexpectedSleepEvents + differenceBetweenExpectedAndActual);
+        return incorrectSleepPenalty * (numberOfUnexpectedSleepEvents + differenceBetweenExpectedAndActual);
     }
 
     private static int getNumberOfMatchingEvents(Event firstEvent, Event lastEvent, Predicate<Event> eventPredicate) {

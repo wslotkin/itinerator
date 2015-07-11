@@ -1,6 +1,5 @@
 package itinerator.evaluator;
 
-import com.google.common.annotations.VisibleForTesting;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
 
@@ -12,8 +11,11 @@ import static itinerator.itinerary.TimeUtil.numberOfMealsInTimeRange;
 import static java.lang.Math.abs;
 
 public class MealEvaluator extends BaseDaySubitineraryEvaluator {
-    @VisibleForTesting
-    static final double INCORRECT_MEAL_PENALTY = -20.0;
+    private final double incorrectMealPenalty;
+
+    public MealEvaluator(double incorrectMealPenalty) {
+        this.incorrectMealPenalty = incorrectMealPenalty;
+    }
 
     @Override
     protected double evaluateDaySubitinerary(Itinerary singleDaySubitinerary) {
@@ -27,7 +29,7 @@ public class MealEvaluator extends BaseDaySubitineraryEvaluator {
                 .mapToInt(a -> eventIsMealEvent(a) ? 1 : 0)
                 .sum();
 
-        return INCORRECT_MEAL_PENALTY * abs(expectedNumberOfMeals - actualNumberOfMeals);
+        return incorrectMealPenalty * abs(expectedNumberOfMeals - actualNumberOfMeals);
     }
 
     private static boolean eventIsMealEvent(Event event) {

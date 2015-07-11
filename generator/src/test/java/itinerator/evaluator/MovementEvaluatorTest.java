@@ -10,12 +10,12 @@ import java.util.ArrayList;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static itinerator.TestConstants.DELTA;
-import static itinerator.evaluator.MovementEvaluator.AREA_HOPPING_PENALTY;
-import static itinerator.evaluator.MovementEvaluator.AREA_HOPPING_THRESHOLD;
 import static org.junit.Assert.assertEquals;
 
 public class MovementEvaluatorTest {
 
+    private static final double AREA_HOPPING_PENALTY = -50.0;
+    private static final double AREA_HOPPING_THRESHOLD = 15.0;
     private static final double TRAVEL_TIME_BELOW_THRESHOLD = AREA_HOPPING_THRESHOLD - DELTA;
     private static final double TRAVEL_TIME_ABOVE_THRESHOLD = AREA_HOPPING_THRESHOLD + DELTA;
     private static final Event FIRST_EVENT = new TestEventBuilder().setTravelTime(TRAVEL_TIME_ABOVE_THRESHOLD).build();
@@ -26,7 +26,7 @@ public class MovementEvaluatorTest {
 
     @Before
     public void before() {
-        movementEvaluator = new MovementEvaluator();
+        movementEvaluator = new MovementEvaluator(AREA_HOPPING_PENALTY, AREA_HOPPING_THRESHOLD);
     }
 
     @Test

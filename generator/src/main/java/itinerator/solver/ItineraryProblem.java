@@ -2,6 +2,7 @@ package itinerator.solver;
 
 import cz.cvut.felk.cig.jcop.problem.*;
 import cz.cvut.felk.cig.jcop.util.JcopRandom;
+import itinerator.config.EvaluationConfig;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
@@ -18,15 +19,18 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
     private final DateTime startTime;
     private final DateTime endTime;
     private final ItineraryFactory itineraryFactory;
+    private final EvaluationConfig evaluationConfig;
 
     public ItineraryProblem(List<Activity> activities,
                             DateTime startTime,
                             DateTime endTime,
-                            ItineraryFactory itineraryFactory) {
+                            ItineraryFactory itineraryFactory,
+                            EvaluationConfig evaluationConfig) {
         this.activities = activities;
         this.startTime = startTime;
         this.endTime = endTime;
         this.itineraryFactory = itineraryFactory;
+        this.evaluationConfig = evaluationConfig;
     }
 
     @Override
@@ -46,8 +50,12 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        CompositeEvaluator evaluator = new CompositeEvaluator(new FunEvaluator(), new TravelEvaluator(),
-                new MovementEvaluator(), new CostEvaluator(), new SleepEvaluator(), new MealEvaluator());
+        CompositeEvaluator evaluator = new CompositeEvaluator(new FunEvaluator(),
+                new TravelEvaluator(evaluationConfig.getTravelTimePenalty()),
+                new MovementEvaluator(evaluationConfig.getAreaHoppingPenalty(), evaluationConfig.getAreaHoppingThreshold()),
+                new CostEvaluator(evaluationConfig.getCostPenalty()),
+                new SleepEvaluator(evaluationConfig.getIncorrectSleepPenalty()),
+                new MealEvaluator(evaluationConfig.getIncorrectMealPenalty()));
         return new ItineraryFitness(evaluator, itineraryFactory);
     }
 

@@ -3,6 +3,8 @@ package analysis;
 import com.google.common.base.Joiner;
 import custom.CustomItineraryMain;
 import custom.data.FileType;
+import itinerator.config.EvaluationConfig;
+import itinerator.config.ItineratorConfig;
 import itinerator.solver.ItinerarySolver;
 
 import java.io.*;
@@ -35,8 +37,8 @@ public class AnalysisMain extends CustomItineraryMain {
         output(results, correlation);
     }
 
-    public AnalysisMain(String fileBase, String outputFilename, FileType inputFileType, String[] dataFiles) {
-        super(fileBase, outputFilename, inputFileType, dataFiles);
+    public AnalysisMain(String fileBase, String outputFilename, FileType inputFileType, ItineratorConfig itineratorConfig, EvaluationConfig evaluationConfig) {
+        super(fileBase, outputFilename, inputFileType, itineratorConfig, evaluationConfig);
     }
 
     private static List<AnalysisSolverResult> generateResults(BufferedReader reader,
@@ -51,7 +53,10 @@ public class AnalysisMain extends CustomItineraryMain {
 
             String filePathBase = Joiner.on("_").join(PATH_PREFIX, id);
 
-            ItinerarySolver.SolverResult solverResult = runCustomItinerary(filePathBase, TEXT, BEIJING_DATA);
+            ItinerarySolver.SolverResult solverResult = runCustomItinerary(filePathBase,
+                    TEXT,
+                    new ItineratorConfig.Builder().build(),
+                    new EvaluationConfig.Builder().build());
 
             results.add(new AnalysisSolverResult(id, solverResult, referenceScore));
         }

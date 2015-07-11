@@ -1,5 +1,6 @@
 package itinerator.main;
 
+import itinerator.config.ItineratorConfig;
 import itinerator.data.DataLoader;
 import itinerator.datamodel.Activity;
 import itinerator.solver.ItinerarySolver.SolverResult;
@@ -14,32 +15,30 @@ import static itinerator.itinerary.ItineraryFormatter.prettyPrint;
 import static java.lang.String.format;
 
 public abstract class BaseMain {
-    public static final String[] NYC_DATA = {"nycplaces.csv"};
-    public static final String[] BEIJING_DATA = {"beijingspots.csv", "beijingrestaurants.csv"};
-    private static final int NUMBER_OF_DAYS = 2;
-    private static final int STARTING_HOUR_OF_DAY = 19;
 
-    private final String outputFilename;
-    private final String[] dataFiles;
+    private final ItineratorConfig itineratorConfig;
 
-    public BaseMain(String outputFilename, String[] dataFiles) {
-        this.outputFilename = outputFilename;
-        this.dataFiles = dataFiles;
+    public BaseMain(ItineratorConfig itineratorConfig) {
+        this.itineratorConfig = itineratorConfig;
     }
 
     public SolverResult run() throws IOException {
-        List<Activity> activities = loadActivities(dataFiles);
-        DateTime startTime = new DateTime().withTime(STARTING_HOUR_OF_DAY, 0, 0, 0);
-        DateTime endTime = startTime.plusDays(NUMBER_OF_DAYS);
+        List<Activity> activities = loadActivities(itineratorConfig.getInputDataFiles());
 
-        SolverResult bestResult = getResult(activities, startTime, endTime);
+        SolverResult bestResult = getResult(activities,
+                itineratorConfig.getStartTime(),
+                itineratorConfig.getEndTime());
 
         printResult(bestResult);
-        if (outputFilename != null) {
-            logToOutputFile(bestResult, outputFilename);
+        if (itineratorConfig.getOutputFile() != null) {
+            logToOutputFile(bestResult, itineratorConfig.getOutputFile());
         }
 
         return bestResult;
+    }
+
+    protected ItineratorConfig config() {
+        return itineratorConfig;
     }
 
     protected abstract SolverResult getResult(List<Activity> activities, DateTime startTime, DateTime endTime) throws IOException;

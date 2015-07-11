@@ -1,18 +1,19 @@
 package itinerator.evaluator;
 
-import com.google.common.annotations.VisibleForTesting;
 import itinerator.datamodel.Itinerary;
 
 public class MovementEvaluator implements Evaluator {
+    private final double areaHoppingPenalty;
+    private final double areaHoppingThreshold;
 
-    @VisibleForTesting
-    static final double AREA_HOPPING_PENALTY = -50.0;
-    @VisibleForTesting
-    static final double AREA_HOPPING_THRESHOLD = 15.0;
+    public MovementEvaluator(double areaHoppingPenalty, double areaHoppingThreshold) {
+        this.areaHoppingPenalty = areaHoppingPenalty;
+        this.areaHoppingThreshold = areaHoppingThreshold;
+    }
 
     public double evaluate(Itinerary itinerary) {
-        return AREA_HOPPING_PENALTY * itinerary.getEvents().stream()
-                .filter(a -> a.getTravelTime() > AREA_HOPPING_THRESHOLD)
+        return areaHoppingPenalty * itinerary.getEvents().stream()
+                .filter(a -> a.getTravelTime() > areaHoppingThreshold)
                 .count();
     }
 }

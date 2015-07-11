@@ -9,6 +9,8 @@ import cz.cvut.felk.cig.jcop.solver.condition.IterationCondition;
 import cz.cvut.felk.cig.jcop.solver.condition.TimeoutCondition;
 import itinerator.calculators.DistanceCalculator;
 import itinerator.calculators.TravelTimeCalculator;
+import itinerator.config.EvaluationConfig;
+import itinerator.config.GeneticAlgorithmConfig;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
@@ -30,18 +32,17 @@ public class ItinerarySolver {
     public static ItinerarySolver createSolver(List<Activity> activities,
                                                DateTime startTime,
                                                DateTime endTime,
-                                               int populationSize,
-                                               double mutationRate,
-                                               int iterationThreshold,
-                                               long timeoutThresholdMillis,
-                                               int numberOfThreads) {
+                                               GeneticAlgorithmConfig geneticAlgorithmConfig,
+                                               EvaluationConfig evaluationConfig) {
         TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
         ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, new ArrayList<>());
-        ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
-        GeneticAlgorithm geneticAlgorithm = createGeneticAlgorithm(populationSize, mutationRate, numberOfThreads);
+        ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory, evaluationConfig);
+        GeneticAlgorithm geneticAlgorithm = createGeneticAlgorithm(geneticAlgorithmConfig.getPopulationSize(),
+                geneticAlgorithmConfig.getMutationRate(),
+                geneticAlgorithmConfig.getNumberOfThreads());
         SimpleSolver solver = new SimpleSolver(geneticAlgorithm, itineraryProblem);
-        solver.addStopCondition(new IterationCondition(iterationThreshold));
-        solver.addStopCondition(new TimeoutCondition(timeoutThresholdMillis));
+        solver.addStopCondition(new IterationCondition(geneticAlgorithmConfig.getMaxIterations()));
+        solver.addStopCondition(new TimeoutCondition(geneticAlgorithmConfig.getMaxDuration()));
         return new ItinerarySolver(solver, itineraryFactory);
     }
 
@@ -56,10 +57,11 @@ public class ItinerarySolver {
     public static SolverResult generateResult(List<Activity> activities,
                                               DateTime startTime,
                                               DateTime endTime,
-                                              List<Event> events) {
+                                              List<Event> events,
+                                              EvaluationConfig evaluationConfig) {
         TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
         ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, events);
-        ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory);
+        ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory, evaluationConfig);
         List<Integer> attributes = activities.stream().map(activities::indexOf).collect(Collectors.toList());
 
         Configuration configuration = new Configuration(attributes);

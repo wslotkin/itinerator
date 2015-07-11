@@ -1,16 +1,17 @@
 package itinerator.evaluator;
 
-import com.google.common.annotations.VisibleForTesting;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
 
 public class TravelEvaluator implements Evaluator {
+    private final double travelTimePenalty;
 
-    @VisibleForTesting
-    static final double TRAVEL_TIME_MULTIPLIER = -20.0;
+    public TravelEvaluator(double travelTimePenalty) {
+        this.travelTimePenalty = travelTimePenalty;
+    }
 
     public double evaluate(Itinerary itinerary) {
-        return TRAVEL_TIME_MULTIPLIER * itinerary.getEvents().stream()
+        return travelTimePenalty * itinerary.getEvents().stream()
                 .mapToDouble(Event::getTravelTime)
                 .sum();
     }

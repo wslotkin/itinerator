@@ -13,11 +13,11 @@ import static com.google.common.collect.Lists.newArrayList;
 import static itinerator.TestConstants.DELTA;
 import static itinerator.datamodel.ActivityType.ACTIVITY;
 import static itinerator.datamodel.ActivityType.FOOD;
-import static itinerator.evaluator.MealEvaluator.INCORRECT_MEAL_PENALTY;
 import static itinerator.itinerary.TimeUtil.*;
 import static org.junit.Assert.assertEquals;
 
 public class MealEvaluatorTest {
+    private static final double INCORRECT_MEAL_PENALTY = -20.0;
     private static final DateTime T_0 = new DateTime(2015, 2, 6, START_OF_DINNER_WINDOW.getHourOfDay(), 0);
     private static final DateTime T_1 = new DateTime(2015, 2, 6, END_OF_DINNER_WINDOW.getHourOfDay(), 0);
     private static final DateTime T_2 = new DateTime(2015, 2, 7, START_OF_BREAKFAST_WINDOW.getHourOfDay(), 0);
@@ -45,7 +45,7 @@ public class MealEvaluatorTest {
     public void before() {
         events = newArrayList(EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5, EVENT_6, EVENT_7, EVENT_8, EVENT_9);
 
-        mealEvaluator = new MealEvaluator();
+        mealEvaluator = new MealEvaluator(INCORRECT_MEAL_PENALTY);
     }
 
     @Test

@@ -1,15 +1,16 @@
 package itinerator.evaluator;
 
-import com.google.common.annotations.VisibleForTesting;
 import itinerator.datamodel.Itinerary;
 
 public class CostEvaluator implements Evaluator {
+    private final double costPenalty;
 
-    @VisibleForTesting
-    static final double COST_MULTIPLIER = -10.0;
+    public CostEvaluator(double costPenalty) {
+        this.costPenalty = costPenalty;
+    }
 
     public double evaluate(Itinerary itinerary) {
-        return COST_MULTIPLIER * itinerary.getEvents().stream()
+        return costPenalty * itinerary.getEvents().stream()
                 .mapToDouble(a -> a.getActivity().getCost())
                 .sum();
     }

@@ -3,6 +3,8 @@ package custom;
 import com.google.common.collect.Iterables;
 import custom.data.CustomItineraryLoader;
 import custom.data.FileType;
+import itinerator.config.EvaluationConfig;
+import itinerator.config.ItineratorConfig;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.main.BaseMain;
@@ -21,20 +23,29 @@ public class CustomItineraryMain extends BaseMain {
 
     private final String inputFilename;
     private final FileType inputFileType;
+    private final EvaluationConfig evaluationConfig;
 
     public static void main(String[] args) throws IOException {
-        runCustomItinerary(filePath("customItineraries") + "/Sheet 1-Table 1-1", CSV, BEIJING_DATA);
+        runCustomItinerary(filePath("customItineraries") + "/Sheet 1-Table 1-1",
+                CSV,
+                new ItineratorConfig.Builder().build(),
+                new EvaluationConfig.Builder().build());
     }
 
     protected static SolverResult runCustomItinerary(String fileBase,
                                                      FileType inputFileType,
-                                                     String[] dataFiles) throws IOException {
-        return new CustomItineraryMain(fileBase, OUTPUT_FILE_SUFFIX, inputFileType, dataFiles).run();
+                                                     ItineratorConfig itineratorConfig,
+                                                     EvaluationConfig evaluationConfig) throws IOException {
+        return new CustomItineraryMain(fileBase, OUTPUT_FILE_SUFFIX, inputFileType, itineratorConfig, evaluationConfig).run();
     }
 
-    public CustomItineraryMain(String fileBase, String outputFilename, FileType inputFileType, String[] dataFiles) {
-        super(fileBase + outputFilename, dataFiles);
+    public CustomItineraryMain(String fileBase,
+                               String outputFilename,
+                               FileType inputFileType,
+                               ItineratorConfig itineratorConfig, EvaluationConfig evaluationConfig) {
+        super(itineratorConfig.toBuilder().setOutputFile(fileBase + outputFilename).build());
         this.inputFileType = inputFileType;
+        this.evaluationConfig = evaluationConfig;
         inputFilename = fileBase + inputFileType.getExtenstion();
     }
 
@@ -45,7 +56,7 @@ public class CustomItineraryMain extends BaseMain {
         DateTime start = events.get(0).getEventTime().getStart();
         DateTime end = Iterables.getLast(events).getEventTime().getEnd().plusMinutes(BUFFER_PERIOD_MINUTES);
 
-        return generateResult(activities, start, end, events);
+        return generateResult(activities, start, end, events, evaluationConfig);
     }
 
     protected static String filePath(String filename) {
