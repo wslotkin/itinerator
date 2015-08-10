@@ -1,5 +1,6 @@
 package custom.data;
 
+import itinerator.data.FileType;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.ActivityType;
 import itinerator.datamodel.Event;

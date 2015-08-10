@@ -2,7 +2,7 @@ package custom;
 
 import com.google.common.collect.Iterables;
 import custom.data.CustomItineraryLoader;
-import custom.data.FileType;
+import itinerator.data.FileType;
 import itinerator.config.EvaluationConfig;
 import itinerator.config.ItineratorConfig;
 import itinerator.datamodel.Activity;
@@ -14,7 +14,7 @@ import org.joda.time.DateTime;
 import java.io.IOException;
 import java.util.List;
 
-import static custom.data.FileType.CSV;
+import static itinerator.data.FileType.CSV;
 import static itinerator.solver.ItinerarySolver.generateResult;
 
 public class CustomItineraryMain extends BaseMain {

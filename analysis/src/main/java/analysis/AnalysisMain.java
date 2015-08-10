@@ -2,7 +2,7 @@ package analysis;
 
 import com.google.common.base.Joiner;
 import custom.CustomItineraryMain;
-import custom.data.FileType;
+import itinerator.data.FileType;
 import itinerator.config.EvaluationConfig;
 import itinerator.config.ItineratorConfig;
 import itinerator.solver.ItinerarySolver;
@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static custom.data.FileType.TEXT;
+import static itinerator.data.FileType.TEXT;
 import static java.lang.Double.parseDouble;
 import static java.lang.String.format;
 

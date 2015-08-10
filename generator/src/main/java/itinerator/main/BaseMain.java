@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static itinerator.data.DataLoaderFactory.createForFile;
 import static itinerator.itinerary.ItineraryFormatter.prettyPrint;
 import static java.lang.String.format;
 
@@ -52,8 +53,8 @@ public abstract class BaseMain {
 
     private static List<Activity> loadActivities(String[] dataFiles) throws IOException {
         List<Activity> activities = new ArrayList<>();
-        DataLoader dataLoader = new DataLoader();
         for (String dataFile : dataFiles) {
+            DataLoader dataLoader = createForFile(dataFile);
             URL dataFileUrl = BaseMain.class.getClassLoader().getResource(dataFile);
             if (dataFileUrl != null) {
                 activities.addAll(dataLoader.loadData(dataFileUrl.getPath()));

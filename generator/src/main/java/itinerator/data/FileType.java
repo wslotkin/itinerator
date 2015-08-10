@@ -1,4 +1,4 @@
-package custom.data;
+package itinerator.data;
 
 public enum FileType {
     CSV(".csv", ","),
