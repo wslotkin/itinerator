@@ -81,7 +81,7 @@ public class MealEvaluatorTest {
     private void transformEventAtIndexToType(int index, ActivityType type) {
         Event event = events.get(index);
         Event transformedEvent = new TestEventBuilder()
-                .setActivity(new TestActivityBuilder()
+                .setActivity(new ActivityBuilder()
                         .setType(type)
                         .build())
                 .setEventTime(event.getEventTime())
@@ -92,7 +92,7 @@ public class MealEvaluatorTest {
 
     private static Event event(ActivityType type, DateTime startTime, DateTime endTime) {
         return new TestEventBuilder()
-                .setActivity(new TestActivityBuilder()
+                .setActivity(new ActivityBuilder()
                         .setType(type)
                         .build())
                 .setEventTime(new Interval(startTime, endTime))

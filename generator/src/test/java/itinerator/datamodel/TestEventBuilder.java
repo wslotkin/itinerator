@@ -4,7 +4,7 @@ import org.joda.time.Interval;
 
 public class TestEventBuilder {
 
-    private Activity activity = new TestActivityBuilder().build();
+    private Activity activity = new ActivityBuilder().build();
     private Interval eventTime = new Interval(0L, 1L);
     private double travelTime = 0.0;
 

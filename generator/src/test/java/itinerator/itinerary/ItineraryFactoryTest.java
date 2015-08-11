@@ -47,7 +47,7 @@ public class ItineraryFactoryTest {
     @Test
     public void correctlyAddsFixedEventsIntoExpectedItinerary() {
         Event fixedEvent = new TestEventBuilder()
-                .setActivity(new TestActivityBuilder()
+                .setActivity(new ActivityBuilder()
                         .setId("fixed event")
                         .setType(ActivityType.ACTIVITY)
                         .setDuration(0L)
@@ -72,19 +72,19 @@ public class ItineraryFactoryTest {
     }
 
     private static List<Activity> createActivities() {
-        return newArrayList(new TestActivityBuilder().setId("1").setDuration(120L).build(),
-                new TestActivityBuilder().setId("2").setDuration(120L).build(),
-                new TestActivityBuilder().setId("3").setDuration(120L).build(),
-                new TestActivityBuilder().setId("4").setDuration(120L).build(),
-                new TestActivityBuilder().setId("5").setDuration(120L).build(),
-                new TestActivityBuilder().setId("6").setDuration(120L).build(),
-                new TestActivityBuilder().setId("7").setDuration(120L).build(),
-                new TestActivityBuilder().setId("8").setDuration(120L).build(),
-                new TestActivityBuilder().setId("9").setDuration(120L).build(),
-                new TestActivityBuilder().setId("10").setDuration(120L).build(),
-                new TestActivityBuilder().setId("11").setDuration(120L).build(),
-                new TestActivityBuilder().setId("12").setDuration(120L).build(),
-                new TestActivityBuilder().setId("13").setDuration(120L).build());
+        return newArrayList(new ActivityBuilder().setId("1").setDuration(120L).build(),
+                new ActivityBuilder().setId("2").setDuration(120L).build(),
+                new ActivityBuilder().setId("3").setDuration(120L).build(),
+                new ActivityBuilder().setId("4").setDuration(120L).build(),
+                new ActivityBuilder().setId("5").setDuration(120L).build(),
+                new ActivityBuilder().setId("6").setDuration(120L).build(),
+                new ActivityBuilder().setId("7").setDuration(120L).build(),
+                new ActivityBuilder().setId("8").setDuration(120L).build(),
+                new ActivityBuilder().setId("9").setDuration(120L).build(),
+                new ActivityBuilder().setId("10").setDuration(120L).build(),
+                new ActivityBuilder().setId("11").setDuration(120L).build(),
+                new ActivityBuilder().setId("12").setDuration(120L).build(),
+                new ActivityBuilder().setId("13").setDuration(120L).build());
     }
 
     private static List<Event> expectedEvents() {

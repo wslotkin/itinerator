@@ -1,7 +1,7 @@
 package itinerator.data;
 
 import itinerator.datamodel.Activity;
-import itinerator.datamodel.ActivityType;
+import itinerator.datamodel.ActivityBuilder;
 import itinerator.datamodel.Location;
 
 import static java.lang.Double.parseDouble;
@@ -21,17 +21,21 @@ class TextDataLoader extends AbstractDataLoader {
 
     @Override
     protected Activity parseRowElements(String[] rowElements) {
-        // TODO: incorporate optionality (use test builders?)
         // TODO: implement hours open
 
-        String id = rowElements[ID_COLUMN];
-        Location location = new Location(parseDouble(rowElements[LATITUDE_COLUMN]), parseDouble(rowElements[LONGITUDE_COLUMN]));
-        String durationString = rowElements[DURATION_COLUMN];
-        long duration = !durationString.isEmpty() ? parseLong(durationString) : 60L;
-        double score = parseDouble(rowElements[SCORE_COLUMN]);
-        ActivityType type = ActivityType.ACTIVITY;
-        double cost = 0.0;
+        Location location = new Location(parseDouble(rowElements[LATITUDE_COLUMN]),
+                parseDouble(rowElements[LONGITUDE_COLUMN]));
 
-        return new Activity(id, duration, location, cost, score, type);
+        ActivityBuilder activityBuilder = new ActivityBuilder()
+                .setId(rowElements[ID_COLUMN])
+                .setLocation(location)
+                .setScore(parseDouble(rowElements[SCORE_COLUMN]));
+
+        String durationString = rowElements[DURATION_COLUMN];
+        if (!durationString.isEmpty()) {
+            activityBuilder = activityBuilder.setDuration(parseLong(durationString));
+        }
+
+        return activityBuilder.build();
     }
 }

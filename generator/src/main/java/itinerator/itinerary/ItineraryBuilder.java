@@ -132,7 +132,7 @@ class ItineraryBuilder {
             DateTime timeToStartFixedEvent = fixedEvent.getEventTime().getStart().minusMinutes(0);
             duration = minutesBetween(startTime, timeToStartFixedEvent).getMinutes();
         }
-        return new Activity("placeholder event", duration, location, 0.0, 0.0, PLACEHOLDER);
+        return createActivity("placeholder event", duration, location, PLACEHOLDER);
     }
 
     private Event activityToEvent(Event previousEvent, Activity activity) {
@@ -167,17 +167,26 @@ class ItineraryBuilder {
     private static Activity generateMeal(Location location, Queue<Activity> mealQueue) {
         return !mealQueue.isEmpty()
                 ? mealQueue.poll()
-                : new Activity("default meal", 60L, location, 0.0, 0.0, FOOD);
+                : createActivity("default meal", 60L, location, FOOD);
     }
 
     private static Activity createSleepActivity(DateTime currentDateTime, Location location) {
         DateTime endTimeOfActivity = currentDateTime.plusMinutes(480).withTime(START_OF_DAY, 0, 0, 0);
         long sleepDuration = minutesBetween(currentDateTime, endTimeOfActivity).getMinutes();
-        return new Activity("default sleep", sleepDuration, location, 0.0, 0.0, ActivityType.SLEEP);
+        return createActivity("default sleep", sleepDuration, location, ActivityType.SLEEP);
     }
 
     private static Location locationForGeneratedActivity(Event lastEvent, Activity nextActivity) {
-         return lastEvent != null ? lastEvent.getActivity().getLocation() : nextActivity.getLocation();
+        return lastEvent != null ? lastEvent.getActivity().getLocation() : nextActivity.getLocation();
+    }
+
+    private static Activity createActivity(String activityId, long duration, Location location, ActivityType type) {
+        return new ActivityBuilder()
+                .setId(activityId)
+                .setLocation(location)
+                .setDuration(duration)
+                .setType(type)
+                .build();
     }
 
     private static class ActivityIdComparator implements Comparator<Activity> {

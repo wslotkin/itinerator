@@ -9,7 +9,7 @@ public class Activity {
     private final double score;
     private final ActivityType type;
 
-    public Activity(String id, long duration, Location location, double cost, double score, ActivityType type) {
+    Activity(String id, long duration, Location location, double cost, double score, ActivityType type) {
         this.id = id;
         this.duration = duration;
         this.location = location;

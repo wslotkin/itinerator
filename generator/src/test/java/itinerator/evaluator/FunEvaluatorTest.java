@@ -2,7 +2,7 @@ package itinerator.evaluator;
 
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import itinerator.datamodel.TestActivityBuilder;
+import itinerator.datamodel.ActivityBuilder;
 import itinerator.datamodel.TestEventBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class FunEvaluatorTest {
 
     private static Event createEvent(long activityDuration, double activityScore) {
         return new TestEventBuilder()
-                .setActivity(new TestActivityBuilder()
+                .setActivity(new ActivityBuilder()
                         .setDuration(activityDuration)
                         .setScore(activityScore)
                         .build())

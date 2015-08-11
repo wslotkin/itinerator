@@ -2,6 +2,7 @@ package custom.data;
 
 import itinerator.data.FileType;
 import itinerator.datamodel.Activity;
+import itinerator.datamodel.ActivityBuilder;
 import itinerator.datamodel.ActivityType;
 import itinerator.datamodel.Event;
 import org.joda.time.DateTime;
@@ -18,7 +19,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static itinerator.datamodel.ActivityType.SLEEP;
 import static itinerator.itinerary.TimeUtil.START_OF_BREAKFAST_WINDOW;
-import static java.lang.Math.abs;
 import static org.joda.time.Minutes.minutesBetween;
 
 public class CustomItineraryLoader {
@@ -81,9 +81,14 @@ public class CustomItineraryLoader {
         }
     }
 
-    static Activity createActivity(String activityId, String type, int duration, Event previousEvent) {
+    private static Activity createActivity(String activityId, String type, int duration, Event previousEvent) {
         ActivityType activityType = ActivityType.valueOf(type);
-        return new Activity(activityId, duration, previousEvent.getActivity().getLocation(), 0, 0, activityType);
+        return new ActivityBuilder()
+                .setId(activityId)
+                .setLocation(previousEvent.getActivity().getLocation())
+                .setDuration(duration)
+                .setType(activityType)
+                .build();
     }
 
     public interface CustomDataLoader {

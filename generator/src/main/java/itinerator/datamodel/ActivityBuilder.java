@@ -1,40 +1,40 @@
 package itinerator.datamodel;
 
-public class TestActivityBuilder {
+public class ActivityBuilder {
 
     private String id = "";
-    private long duration = 0L;
+    private long duration = 60L;
     private Location location = new Location(0.0, 0.0);
     private double cost = 0.0;
     private double score = 0.0;
     private ActivityType type = ActivityType.ACTIVITY;
 
-    public TestActivityBuilder setId(String id) {
+    public ActivityBuilder setId(String id) {
         this.id = id;
         return this;
     }
 
-    public TestActivityBuilder setDuration(long duration) {
+    public ActivityBuilder setDuration(long duration) {
         this.duration = duration;
         return this;
     }
 
-    public TestActivityBuilder setLocation(Location location) {
+    public ActivityBuilder setLocation(Location location) {
         this.location = location;
         return this;
     }
 
-    public TestActivityBuilder setCost(double cost) {
+    public ActivityBuilder setCost(double cost) {
         this.cost = cost;
         return this;
     }
 
-    public TestActivityBuilder setScore(double score) {
+    public ActivityBuilder setScore(double score) {
         this.score = score;
         return this;
     }
 
-    public TestActivityBuilder setType(ActivityType type) {
+    public ActivityBuilder setType(ActivityType type) {
         this.type = type;
         return this;
     }
