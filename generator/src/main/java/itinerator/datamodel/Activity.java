@@ -1,5 +1,7 @@
 package itinerator.datamodel;
 
+import java.util.Objects;
+
 public class Activity {
 
     private final String id;
@@ -9,7 +11,11 @@ public class Activity {
     private final double score;
     private final ActivityType type;
 
-    Activity(String id, long duration, Location location, double cost, double score, ActivityType type) {
+    Activity(String id, long duration,
+             Location location,
+             double cost,
+             double score,
+             ActivityType type) {
         this.id = id;
         this.duration = duration;
         this.location = location;
@@ -46,31 +52,17 @@ public class Activity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Activity activity = (Activity) o;
-
-        if (Double.compare(activity.cost, cost) != 0) return false;
-        if (duration != activity.duration) return false;
-        if (Double.compare(activity.score, score) != 0) return false;
-        if (id != null ? !id.equals(activity.id) : activity.id != null) return false;
-        if (location != null ? !location.equals(activity.location) : activity.location != null) return false;
-        if (type != activity.type) return false;
-
-        return true;
+        return Objects.equals(duration, activity.duration) &&
+                Objects.equals(cost, activity.cost) &&
+                Objects.equals(score, activity.score) &&
+                Objects.equals(id, activity.id) &&
+                Objects.equals(location, activity.location) &&
+                Objects.equals(type, activity.type);
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (int) (duration ^ (duration >>> 32));
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        temp = Double.doubleToLongBits(cost);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(score);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        return result;
+        return Objects.hash(id, duration, location, cost, score, type);
     }
 }

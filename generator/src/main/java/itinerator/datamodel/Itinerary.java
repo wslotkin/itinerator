@@ -1,6 +1,7 @@
 package itinerator.datamodel;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Itinerary {
 
@@ -18,17 +19,13 @@ public class Itinerary {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Itinerary itinerary = (Itinerary) o;
-
-        if (events != null ? !events.equals(itinerary.events) : itinerary.events != null) return false;
-
-        return true;
+        return Objects.equals(events, itinerary.events);
     }
 
     @Override
     public int hashCode() {
-        return events != null ? events.hashCode() : 0;
+        return Objects.hash(events);
     }
 
     @Override

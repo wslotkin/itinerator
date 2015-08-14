@@ -1,5 +1,7 @@
 package itinerator.datamodel;
 
+import java.util.Objects;
+
 public class Location {
 
     private final double latitude;
@@ -22,23 +24,13 @@ public class Location {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Location location = (Location) o;
-
-        if (Double.compare(location.latitude, latitude) != 0) return false;
-        if (Double.compare(location.longitude, longitude) != 0) return false;
-
-        return true;
+        return Objects.equals(latitude, location.latitude) &&
+                Objects.equals(longitude, location.longitude);
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits(latitude);
-        result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(longitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
+        return Objects.hash(latitude, longitude);
     }
 }

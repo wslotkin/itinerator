@@ -1,7 +1,8 @@
 package itinerator.datamodel;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
+
+import java.util.Objects;
 
 public class WeeklyShift implements Comparable<WeeklyShift> {
     private final WeeklyTimePoint startTime;
@@ -30,7 +31,7 @@ public class WeeklyShift implements Comparable<WeeklyShift> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(startTime, endTime);
+        return Objects.hash(startTime, endTime);
     }
 
     @Override
