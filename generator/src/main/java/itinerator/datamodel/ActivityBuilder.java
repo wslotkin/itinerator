@@ -1,5 +1,7 @@
 package itinerator.datamodel;
 
+import static java.util.Collections.emptyList;
+
 public class ActivityBuilder {
 
     private String id = "";
@@ -8,6 +10,7 @@ public class ActivityBuilder {
     private double cost = 0.0;
     private double score = 0.0;
     private ActivityType type = ActivityType.ACTIVITY;
+    private WeeklySchedule weeklySchedule = new WeeklySchedule(emptyList());
 
     public ActivityBuilder setId(String id) {
         this.id = id;
@@ -39,7 +42,12 @@ public class ActivityBuilder {
         return this;
     }
 
+    public ActivityBuilder setWeeklySchedule(WeeklySchedule weeklySchedule) {
+        this.weeklySchedule = weeklySchedule;
+        return this;
+    }
+
     public Activity build() {
-        return new Activity(id, duration, location, cost, score, type);
+        return new Activity(id, duration, location, cost, score, type, weeklySchedule);
     }
 }

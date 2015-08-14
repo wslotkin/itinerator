@@ -10,18 +10,21 @@ public class Activity {
     private final double cost;
     private final double score;
     private final ActivityType type;
+    private final WeeklySchedule weeklySchedule;
 
     Activity(String id, long duration,
              Location location,
              double cost,
              double score,
-             ActivityType type) {
+             ActivityType type,
+             WeeklySchedule weeklySchedule) {
         this.id = id;
         this.duration = duration;
         this.location = location;
         this.cost = cost;
         this.score = score;
         this.type = type;
+        this.weeklySchedule = weeklySchedule;
     }
 
     public String getId() {
@@ -48,6 +51,10 @@ public class Activity {
         return type;
     }
 
+    public WeeklySchedule getWeeklySchedule() {
+        return weeklySchedule;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,11 +65,12 @@ public class Activity {
                 Objects.equals(score, activity.score) &&
                 Objects.equals(id, activity.id) &&
                 Objects.equals(location, activity.location) &&
-                Objects.equals(type, activity.type);
+                Objects.equals(type, activity.type) &&
+                Objects.equals(weeklySchedule, activity.weeklySchedule);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, duration, location, cost, score, type);
+        return Objects.hash(id, duration, location, cost, score, type, weeklySchedule);
     }
 }

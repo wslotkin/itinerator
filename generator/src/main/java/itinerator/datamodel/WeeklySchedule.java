@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.SortedSet;
 
 import static com.google.common.collect.Sets.newTreeSet;
@@ -29,6 +30,19 @@ public class WeeklySchedule {
                 end.minuteOfHour().get());
 
         return isEventWithinAnyShift(startPoint, endPoint);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WeeklySchedule that = (WeeklySchedule) o;
+        return Objects.equals(shifts, that.shifts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(shifts);
     }
 
     private boolean isEventWithinAnyShift(WeeklyTimePoint startPoint, WeeklyTimePoint endPoint) {
