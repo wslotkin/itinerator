@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 public class ItineratorConfig {
     public static final String[] NYC_DATA = {"nycplaces.csv"};
     public static final String[] BEIJING_DATA = {"beijingspots.csv", "beijingrestaurants.csv"};
-    public static final String[] SCRAPED_CHICAGO = {"scraped-data_updated_chicago.txt"};
+    public static final String[] SCRAPED_CHICAGO = {"scraped-data_updated_chicago_fixed.txt", "usa_chicago_restaurants_fixed.txt"};
 
     private final DateTime startTime;
     private final DateTime endTime;

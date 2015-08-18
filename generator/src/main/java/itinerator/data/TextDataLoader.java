@@ -19,6 +19,7 @@ class TextDataLoader extends AbstractDataLoader {
     private static final int LATITUDE_COLUMN = 6;
     private static final int SCORE_COLUMN = 13;
     private static final int HOURS_COLUMN = 14;
+    private static final int TYPE_COLUMN = 17;
 
     public TextDataLoader() {
         super(FileType.TEXT);
@@ -36,7 +37,8 @@ class TextDataLoader extends AbstractDataLoader {
                 .setId(rowElements[ID_COLUMN])
                 .setLocation(location)
                 .setScore(optionalDouble(rowElements[SCORE_COLUMN]))
-                .setWeeklySchedule(weeklySchedule);
+                .setWeeklySchedule(weeklySchedule)
+                .setType(ActivityType.valueOf(rowElements[TYPE_COLUMN].toUpperCase()));
 
         String durationString = rowElements[DURATION_COLUMN];
         if (!durationString.isEmpty()) {
@@ -57,7 +59,8 @@ class TextDataLoader extends AbstractDataLoader {
     private static WeeklySchedule parseHours(String hoursString) {
         String trimmedString = hoursString.replace("[", "")
                 .replace("]", "")
-                .replace("'", "");
+                .replace("'", "")
+                .replace("\"", "");
 
         String[] shifts = !trimmedString.isEmpty() ? trimmedString.split(",") : new String[]{};
 
