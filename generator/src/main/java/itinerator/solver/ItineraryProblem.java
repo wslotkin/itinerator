@@ -55,7 +55,8 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
                 new MovementEvaluator(evaluationConfig.getAreaHoppingPenalty(), evaluationConfig.getAreaHoppingThreshold()),
                 new CostEvaluator(evaluationConfig.getCostPenalty()),
                 new SleepEvaluator(evaluationConfig.getIncorrectSleepPenalty()),
-                new MealEvaluator(evaluationConfig.getIncorrectMealPenalty()));
+                new MealEvaluator(evaluationConfig.getIncorrectMealPenalty()),
+                new HoursEvaluator(evaluationConfig.getInvalidHoursPenalty()));
         return new ItineraryFitness(evaluator, itineraryFactory);
     }
 

@@ -7,19 +7,22 @@ public class EvaluationConfig {
     private final double areaHoppingThreshold;
     private final double incorrectSleepPenalty;
     private final double travelTimePenalty;
+    private final double invalidHoursPenalty;
 
     public EvaluationConfig(double costPenalty,
                             double incorrectMealPenalty,
                             double areaHoppingPenalty,
                             double areaHoppingThreshold,
                             double incorrectSleepPenalty,
-                            double travelTimePenalty) {
+                            double travelTimePenalty,
+                            double invalidHoursPenalty) {
         this.costPenalty = costPenalty;
         this.incorrectMealPenalty = incorrectMealPenalty;
         this.areaHoppingPenalty = areaHoppingPenalty;
         this.areaHoppingThreshold = areaHoppingThreshold;
         this.incorrectSleepPenalty = incorrectSleepPenalty;
         this.travelTimePenalty = travelTimePenalty;
+        this.invalidHoursPenalty = invalidHoursPenalty;
     }
 
     public double getCostPenalty() {
@@ -46,6 +49,10 @@ public class EvaluationConfig {
         return travelTimePenalty;
     }
 
+    public double getInvalidHoursPenalty() {
+        return invalidHoursPenalty;
+    }
+
     public Builder toBuilder() {
         return new Builder()
                 .setCostPenalty(costPenalty)
@@ -53,7 +60,8 @@ public class EvaluationConfig {
                 .setAreaHoppingPenalty(areaHoppingPenalty)
                 .setAreaHoppingThreshold(areaHoppingThreshold)
                 .setIncorrectSleepPenalty(incorrectSleepPenalty)
-                .setTravelTimePenalty(travelTimePenalty);
+                .setTravelTimePenalty(travelTimePenalty)
+                .setInvalidHoursPenalty(invalidHoursPenalty);
     }
 
     public static class Builder {
@@ -63,6 +71,7 @@ public class EvaluationConfig {
         private double areaHoppingThreshold = 15.0;
         private double incorrectSleepPenalty = -100.0;
         private double travelTimePenalty = -20.0;
+        private double invalidHoursPenalty = -75.0;
 
         public Builder setCostPenalty(double costPenalty) {
             this.costPenalty = costPenalty;
@@ -94,13 +103,19 @@ public class EvaluationConfig {
             return this;
         }
 
+        public Builder setInvalidHoursPenalty(double invalidHoursPenalty) {
+            this.invalidHoursPenalty = invalidHoursPenalty;
+            return this;
+        }
+
         public EvaluationConfig build() {
             return new EvaluationConfig(costPenalty,
                     incorrectMealPenalty,
                     areaHoppingPenalty,
                     areaHoppingThreshold,
                     incorrectSleepPenalty,
-                    travelTimePenalty);
+                    travelTimePenalty,
+                    invalidHoursPenalty);
         }
     }
 }
