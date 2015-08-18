@@ -1,30 +1,30 @@
 package itinerator.datamodel;
 
 import com.google.common.collect.ComparisonChain;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Objects;
 
-public class WeeklyTimePoint implements Comparable<WeeklyTimePoint> {
-    private final int dayOfWeek;
-    private final int hourOfDay;
-    private final int minuteOfHour;
+import static org.joda.time.format.DateTimeFormat.forPattern;
 
-    public WeeklyTimePoint(int dayOfWeek, int hourOfDay, int minuteOfHour) {
+public class WeeklyTimePoint implements Comparable<WeeklyTimePoint> {
+    private static final DateTimeFormatter FORMATTER = forPattern("HH:mm");
+
+    private final Day dayOfWeek;
+    private final LocalTime timeOfDay;
+
+    public WeeklyTimePoint(Day dayOfWeek, LocalTime timeOfDay) {
         this.dayOfWeek = dayOfWeek;
-        this.hourOfDay = hourOfDay;
-        this.minuteOfHour = minuteOfHour;
+        this.timeOfDay = timeOfDay;
     }
 
-    public int getDayOfWeek() {
+    public Day getDayOfWeek() {
         return dayOfWeek;
     }
 
-    public int getHourOfDay() {
-        return hourOfDay;
-    }
-
-    public int getMinuteOfHour() {
-        return minuteOfHour;
+    public LocalTime getTimeOfDay() {
+        return timeOfDay;
     }
 
     @Override
@@ -37,15 +37,19 @@ public class WeeklyTimePoint implements Comparable<WeeklyTimePoint> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(dayOfWeek, hourOfDay, minuteOfHour);
+        return Objects.hash(dayOfWeek, timeOfDay);
     }
 
     @Override
     public int compareTo(@SuppressWarnings("NullableProblems") WeeklyTimePoint other) {
         return ComparisonChain.start()
                 .compare(dayOfWeek, other.dayOfWeek)
-                .compare(hourOfDay, other.hourOfDay)
-                .compare(minuteOfHour, other.minuteOfHour)
+                .compare(timeOfDay, other.timeOfDay)
                 .result();
+    }
+
+    @Override
+    public String toString() {
+        return "(" + dayOfWeek + " " + FORMATTER.print(timeOfDay) + ')';
     }
 }

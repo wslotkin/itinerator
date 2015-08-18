@@ -2,12 +2,14 @@ package itinerator.datamodel;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.LocalTime;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.SortedSet;
 
 import static com.google.common.collect.Sets.newTreeSet;
+import static itinerator.datamodel.Day.valueOf;
 
 public class WeeklySchedule {
     private final SortedSet<WeeklyShift> shifts;
@@ -22,12 +24,10 @@ public class WeeklySchedule {
 
         DateTime start = interval.getStart();
         DateTime end = interval.getEnd();
-        WeeklyTimePoint startPoint = new WeeklyTimePoint(start.dayOfWeek().get(),
-                start.hourOfDay().get(),
-                start.minuteOfHour().get());
-        WeeklyTimePoint endPoint = new WeeklyTimePoint(end.dayOfWeek().get(),
-                end.hourOfDay().get(),
-                end.minuteOfHour().get());
+        WeeklyTimePoint startPoint = new WeeklyTimePoint(valueOf(start.dayOfWeek().get()),
+                new LocalTime(start.hourOfDay().get(), start.minuteOfHour().get()));
+        WeeklyTimePoint endPoint = new WeeklyTimePoint(valueOf(end.dayOfWeek().get()),
+                new LocalTime(end.hourOfDay().get(), end.minuteOfHour().get()));
 
         return isEventWithinAnyShift(startPoint, endPoint);
     }
@@ -62,5 +62,12 @@ public class WeeklySchedule {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "WeeklySchedule{" +
+                "shifts=" + shifts +
+                '}';
     }
 }

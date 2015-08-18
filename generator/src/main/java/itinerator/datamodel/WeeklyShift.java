@@ -41,4 +41,9 @@ public class WeeklyShift implements Comparable<WeeklyShift> {
                 .compare(endTime, other.endTime)
                 .result();
     }
+
+    @Override
+    public String toString() {
+        return "[" + startTime + "-" + endTime + ']';
+    }
 }
