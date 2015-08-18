@@ -16,7 +16,7 @@ public class CompositeEvaluator implements Evaluator {
 
     public double evaluate(Itinerary itinerary) {
         return evaluators.stream()
-                .mapToDouble(a -> a.evaluate(itinerary))
+                .mapToDouble(evaluator -> evaluator.evaluate(itinerary))
                 .sum();
     }
 }

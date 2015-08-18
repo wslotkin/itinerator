@@ -11,7 +11,7 @@ public class CostEvaluator implements Evaluator {
 
     public double evaluate(Itinerary itinerary) {
         return costPenalty * itinerary.getEvents().stream()
-                .mapToDouble(a -> a.getActivity().getCost())
+                .mapToDouble(event -> event.getActivity().getCost())
                 .sum();
     }
 }

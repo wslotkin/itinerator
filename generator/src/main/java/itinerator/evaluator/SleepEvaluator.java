@@ -27,7 +27,7 @@ public class SleepEvaluator extends BaseDaySubitineraryEvaluator {
         int expectedNumberOfSleepEvents = getNumberOfMatchingEvents(firstEvent, lastEvent, SleepEvaluator::eventIsInSleepWindow);
         int numberOfCorrectlyPlacedSleepEvents = getNumberOfMatchingEvents(firstEvent, lastEvent, SleepEvaluator::eventIsSleepEvent);
         int totalNumberOfSleepEvents = events.stream()
-                .mapToInt(a -> eventIsSleepEvent(a) ? 1 : 0)
+                .mapToInt(event -> eventIsSleepEvent(event) ? 1 : 0)
                 .sum();
 
         int numberOfUnexpectedSleepEvents = abs(totalNumberOfSleepEvents - numberOfCorrectlyPlacedSleepEvents);

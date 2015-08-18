@@ -13,7 +13,7 @@ public class MovementEvaluator implements Evaluator {
 
     public double evaluate(Itinerary itinerary) {
         return areaHoppingPenalty * itinerary.getEvents().stream()
-                .filter(a -> a.getTravelTime() > areaHoppingThreshold)
+                .filter(event -> event.getTravelTime() > areaHoppingThreshold)
                 .count();
     }
 }

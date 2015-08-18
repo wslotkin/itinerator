@@ -35,7 +35,7 @@ public class CostEvaluatorTest {
     }
 
     @Test
-    public void whenItineraryHasOnlyOneEventReturnsTravelTimeOfEventScaledByMultiplier() {
+    public void whenItineraryHasOnlyOneEventReturnsCostOfEventScaledByMultiplier() {
         double result = costEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT)));
 
         double expectedResult = FIRST_EVENT_COST * COST_PENALTY;
@@ -44,7 +44,7 @@ public class CostEvaluatorTest {
     }
 
     @Test
-    public void returnsSumOfTravelTimesOfAllEventsScaledByMultiplier() {
+    public void returnsSumOfCostsOfAllEventsScaledByMultiplier() {
         double result = costEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
 
         double expectedResult = (FIRST_EVENT_COST + SECOND_EVENT_COST) * COST_PENALTY;
