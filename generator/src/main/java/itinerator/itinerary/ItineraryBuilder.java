@@ -171,7 +171,7 @@ class ItineraryBuilder {
     }
 
     private static Activity createSleepActivity(DateTime currentDateTime, Location location) {
-        DateTime endTimeOfActivity = currentDateTime.plusMinutes(480).withTime(START_OF_DAY, 0, 0, 0);
+        DateTime endTimeOfActivity = currentDateTime.plusMinutes(TARGET_MINUTES_OF_SLEEP).withTime(START_OF_DAY, 0, 0, 0);
         long sleepDuration = minutesBetween(currentDateTime, endTimeOfActivity).getMinutes();
         return createActivity("default sleep", sleepDuration, location, ActivityType.SLEEP);
     }
