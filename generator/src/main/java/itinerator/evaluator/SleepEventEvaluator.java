@@ -11,10 +11,10 @@ import static itinerator.datamodel.ActivityType.SLEEP;
 import static itinerator.itinerary.TimeUtil.isInSleepWindow;
 import static java.lang.Math.abs;
 
-public class SleepEvaluator extends BaseDaySubitineraryEvaluator {
+public class SleepEventEvaluator extends BaseDaySubitineraryEvaluator {
     private final double incorrectSleepPenalty;
 
-    public SleepEvaluator(double incorrectSleepPenalty) {
+    public SleepEventEvaluator(double incorrectSleepPenalty) {
         this.incorrectSleepPenalty = incorrectSleepPenalty;
     }
 
@@ -24,8 +24,8 @@ public class SleepEvaluator extends BaseDaySubitineraryEvaluator {
         Event firstEvent = events.get(0);
         Event lastEvent = getLast(events);
 
-        int expectedNumberOfSleepEvents = getNumberOfMatchingEvents(firstEvent, lastEvent, SleepEvaluator::eventIsInSleepWindow);
-        int numberOfCorrectlyPlacedSleepEvents = getNumberOfMatchingEvents(firstEvent, lastEvent, SleepEvaluator::eventIsSleepEvent);
+        int expectedNumberOfSleepEvents = getNumberOfMatchingEvents(firstEvent, lastEvent, SleepEventEvaluator::eventIsInSleepWindow);
+        int numberOfCorrectlyPlacedSleepEvents = getNumberOfMatchingEvents(firstEvent, lastEvent, SleepEventEvaluator::eventIsSleepEvent);
         int totalNumberOfSleepEvents = events.stream()
                 .mapToInt(event -> eventIsSleepEvent(event) ? 1 : 0)
                 .sum();

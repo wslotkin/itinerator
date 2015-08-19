@@ -15,7 +15,7 @@ import static itinerator.datamodel.ActivityType.ACTIVITY;
 import static itinerator.datamodel.ActivityType.SLEEP;
 import static org.junit.Assert.assertEquals;
 
-public class SleepEvaluatorTest {
+public class SleepEventEvaluatorTest {
     private static final double INCORRECT_SLEEP_PENALTY = -100.0;
     private static final DateTime T_0 = new DateTime(2015, 2, 6, 12, 0);
     private static final DateTime T_1 = new DateTime(2015, 2, 6, 22, 0);
@@ -30,25 +30,25 @@ public class SleepEvaluatorTest {
     private static final Event EVENT_5 = event(ACTIVITY, T_4, T_5);
 
     private List<Event> events;
-    private SleepEvaluator sleepEvaluator;
+    private SleepEventEvaluator sleepEventEvaluator;
 
     @Before
     public void before() {
         events = newArrayList(EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5);
 
-        sleepEvaluator = new SleepEvaluator(INCORRECT_SLEEP_PENALTY);
+        sleepEventEvaluator = new SleepEventEvaluator(INCORRECT_SLEEP_PENALTY);
     }
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = sleepEvaluator.evaluate(new Itinerary(new ArrayList<>()));
+        double result = sleepEventEvaluator.evaluate(new Itinerary(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenItineraryHasCorrectSleepEventsShouldReturnZero() {
-        double result = sleepEvaluator.evaluate(new Itinerary(events));
+        double result = sleepEventEvaluator.evaluate(new Itinerary(events));
 
         assertEquals(0.0, result, DELTA);
     }
@@ -56,7 +56,7 @@ public class SleepEvaluatorTest {
     @Test
     public void whenItineraryIsMissingExpectedSleepEventShouldReturnPenalty() {
         transformEventAtIndexToType(1, ACTIVITY);
-        double result = sleepEvaluator.evaluate(new Itinerary(events));
+        double result = sleepEventEvaluator.evaluate(new Itinerary(events));
 
         assertEquals(INCORRECT_SLEEP_PENALTY, result, DELTA);
     }
@@ -64,7 +64,7 @@ public class SleepEvaluatorTest {
     @Test
     public void whenItineraryHasExtraSleepEventShouldReturnPenalty() {
         transformEventAtIndexToType(2, SLEEP);
-        double result = sleepEvaluator.evaluate(new Itinerary(events));
+        double result = sleepEventEvaluator.evaluate(new Itinerary(events));
 
         assertEquals(INCORRECT_SLEEP_PENALTY, result, DELTA);
     }
