@@ -21,6 +21,14 @@ public class WeeklyShift implements Comparable<WeeklyShift> {
         return endTime;
     }
 
+    public boolean wrapsOverWeekEnd() {
+        return startTime.compareTo(endTime) >= 0;
+    }
+
+    public boolean isTwentyFourSeven() {
+        return startTime.compareTo(endTime) == 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
