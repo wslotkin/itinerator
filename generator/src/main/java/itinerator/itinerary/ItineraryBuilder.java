@@ -21,10 +21,10 @@ import static java.util.Collections.sort;
 import static org.joda.time.Minutes.minutesBetween;
 
 class ItineraryBuilder {
-
-    private static final ActivityIdComparator ARBITRARY_BUT_PREDICTABLE_ORDERING = new ActivityIdComparator();
+    private static final Comparator<Activity> ARBITRARY_BUT_PREDICTABLE_ORDERING =
+            (activity1, activity2) -> activity1.getId().compareTo(activity2.getId());
     private static final Comparator<Event> EVENT_COMPARATOR =
-            (o1, o2) -> compare(o1.getEventTime().getStartMillis(), o2.getEventTime().getStartMillis());
+            (event1, event2) -> compare(event1.getEventTime().getStartMillis(), event2.getEventTime().getStartMillis());
 
     private final DateTime startTime;
     private final DateTime endTime;
@@ -187,12 +187,5 @@ class ItineraryBuilder {
                 .setDuration(duration)
                 .setType(type)
                 .build();
-    }
-
-    private static class ActivityIdComparator implements Comparator<Activity> {
-        @Override
-        public int compare(Activity first, Activity second) {
-            return first.getId().compareTo(second.getId());
-        }
     }
 }
