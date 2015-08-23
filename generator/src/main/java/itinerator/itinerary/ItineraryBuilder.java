@@ -2,7 +2,7 @@ package itinerator.itinerary;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.TreeMultimap;
-import itinerator.calculators.TravelTimeCalculator;
+import itinerator.calculators.RoundingTravelTimeCalculator;
 import itinerator.datamodel.*;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -33,12 +33,12 @@ class ItineraryBuilder {
     private final TreeMultimap<Integer, Activity> activities;
     private final TreeMultimap<Integer, Activity> foods;
     private final TreeMultimap<Integer, Activity> hotels;
-    private final TravelTimeCalculator travelTimeCalculator;
+    private final RoundingTravelTimeCalculator travelTimeCalculator;
     private final List<Event> fixedEvents;
 
     public ItineraryBuilder(DateTime startTime,
                             DateTime endTime,
-                            TravelTimeCalculator travelTimeCalculator,
+                            RoundingTravelTimeCalculator travelTimeCalculator,
                             List<Event> fixedEvents) {
         this.startTime = startTime;
         this.endTime = endTime;

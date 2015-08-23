@@ -8,6 +8,7 @@ import cz.cvut.felk.cig.jcop.solver.Solver;
 import cz.cvut.felk.cig.jcop.solver.condition.IterationCondition;
 import cz.cvut.felk.cig.jcop.solver.condition.TimeoutCondition;
 import itinerator.calculators.DistanceCalculator;
+import itinerator.calculators.RoundingTravelTimeCalculator;
 import itinerator.calculators.TravelTimeCalculator;
 import itinerator.config.EvaluationConfig;
 import itinerator.config.GeneticAlgorithmConfig;
@@ -34,7 +35,7 @@ public class ItinerarySolver {
                                                DateTime endTime,
                                                GeneticAlgorithmConfig geneticAlgorithmConfig,
                                                EvaluationConfig evaluationConfig) {
-        TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
+        RoundingTravelTimeCalculator travelTimeCalculator = new RoundingTravelTimeCalculator(new TravelTimeCalculator(new DistanceCalculator()), 5.0);
         ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, new ArrayList<>());
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory, evaluationConfig);
         GeneticAlgorithm geneticAlgorithm = createGeneticAlgorithm(geneticAlgorithmConfig.getPopulationSize(),
@@ -59,7 +60,7 @@ public class ItinerarySolver {
                                               DateTime endTime,
                                               List<Event> events,
                                               EvaluationConfig evaluationConfig) {
-        TravelTimeCalculator travelTimeCalculator = new TravelTimeCalculator(new DistanceCalculator());
+        RoundingTravelTimeCalculator travelTimeCalculator = new RoundingTravelTimeCalculator(new TravelTimeCalculator(new DistanceCalculator()), 5.0);
         ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, events);
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory, evaluationConfig);
         List<Integer> attributes = activities.stream().map(activities::indexOf).collect(Collectors.toList());

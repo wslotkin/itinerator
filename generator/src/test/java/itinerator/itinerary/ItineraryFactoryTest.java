@@ -1,7 +1,7 @@
 package itinerator.itinerary;
 
 import cz.cvut.felk.cig.jcop.problem.Configuration;
-import itinerator.calculators.TravelTimeCalculator;
+import itinerator.calculators.RoundingTravelTimeCalculator;
 import itinerator.datamodel.*;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -24,12 +24,12 @@ public class ItineraryFactoryTest {
     private static final DateTime START_TIME = new DateTime(2015, 2, 21, 21, 0);
     private static final DateTime END_TIME = START_TIME.plusDays(2);
 
-    private TravelTimeCalculator travelTimeCalculator;
+    private RoundingTravelTimeCalculator travelTimeCalculator;
     private ItineraryFactory itineraryFactory;
 
     @Before
     public void before() {
-        travelTimeCalculator = mock(TravelTimeCalculator.class);
+        travelTimeCalculator = mock(RoundingTravelTimeCalculator.class);
 
         itineraryFactory = new ItineraryFactory(ACTIVITIES, START_TIME, END_TIME, travelTimeCalculator, new ArrayList<>());
     }
