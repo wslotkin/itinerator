@@ -4,5 +4,6 @@ public enum ActivityType {
     ACTIVITY,
     FOOD,
     SLEEP,
-    PLACEHOLDER
+    PLACEHOLDER,
+    HOTEL
 }

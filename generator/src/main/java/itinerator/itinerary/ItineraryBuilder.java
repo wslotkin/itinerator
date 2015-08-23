@@ -1,5 +1,6 @@
 package itinerator.itinerary;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.TreeMultimap;
 import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.*;
@@ -17,6 +18,7 @@ import static com.google.common.collect.Ordering.natural;
 import static itinerator.datamodel.ActivityType.*;
 import static itinerator.itinerary.TimeUtil.*;
 import static java.lang.Long.compare;
+import static java.lang.Math.max;
 import static java.util.Collections.sort;
 import static org.joda.time.Minutes.minutesBetween;
 
@@ -30,6 +32,7 @@ class ItineraryBuilder {
     private final DateTime endTime;
     private final TreeMultimap<Integer, Activity> activities;
     private final TreeMultimap<Integer, Activity> foods;
+    private final TreeMultimap<Integer, Activity> hotels;
     private final TravelTimeCalculator travelTimeCalculator;
     private final List<Event> fixedEvents;
 
@@ -43,6 +46,7 @@ class ItineraryBuilder {
         this.fixedEvents = fixedEvents;
         activities = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
         foods = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
+        hotels = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
     }
 
     public ItineraryBuilder addActivityAtPosition(Activity activity, Integer position) {
@@ -53,6 +57,9 @@ class ItineraryBuilder {
             case FOOD:
                 foods.put(position, activity);
                 break;
+            case HOTEL:
+                hotels.put(position, activity);
+                break;
         }
         return this;
     }
@@ -62,8 +69,10 @@ class ItineraryBuilder {
         Queue<Activity> mealQueue = newLinkedList(foods.values());
         sort(fixedEvents, EVENT_COMPARATOR);
         Queue<Event> fixedEventQueue = newLinkedList(fixedEvents);
+        Activity hotel = !hotels.isEmpty() ? Iterables.get(hotels.values(), 0) : null;
+
         for (Activity activity : activities.values()) {
-            boolean wasAdded = addEvent(events, activity, mealQueue, fixedEventQueue);
+            boolean wasAdded = addEvent(events, activity, mealQueue, fixedEventQueue, hotel);
             if (!wasAdded) break;
         }
 
@@ -73,7 +82,8 @@ class ItineraryBuilder {
     private boolean addEvent(List<Event> runningEventList,
                              Activity activityToAdd,
                              Queue<Activity> mealQueue,
-                             Queue<Event> fixedEventQueue) {
+                             Queue<Event> fixedEventQueue,
+                             Activity hotel) {
         Event lastEvent = getLast(runningEventList, null);
         DateTime currentDateTime = lastEvent != null ? lastEvent.getEventTime().getEnd() : startTime;
         if (wouldExceedNextFixedEvent(activityToAdd, fixedEventQueue, lastEvent)) {
@@ -83,15 +93,15 @@ class ItineraryBuilder {
                 tryAddActivity(runningEventList, lastEvent, placeholderActivity);
             }
             boolean wasAdded = tryAddActivity(runningEventList, getLast(runningEventList, null), fixedEvent.getActivity());
-            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
+            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue, hotel);
         } else if (isNotType(activityToAdd, FOOD) && isInMealWindow(currentDateTime) && isNotType(lastEvent, FOOD)) {
             Activity mealActivity = generateMeal(locationForGeneratedActivity(lastEvent, activityToAdd), mealQueue);
-            boolean wasAdded = addEvent(runningEventList, mealActivity, mealQueue, fixedEventQueue);
-            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
+            boolean wasAdded = addEvent(runningEventList, mealActivity, mealQueue, fixedEventQueue, hotel);
+            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue, hotel);
         } else if (isNotType(activityToAdd, SLEEP) && isInSleepWindow(currentDateTime) && isNotType(lastEvent, SLEEP)) {
-            Activity sleepActivity = createSleepActivity(currentDateTime, locationForGeneratedActivity(lastEvent, activityToAdd));
-            boolean wasAdded = addEvent(runningEventList, sleepActivity, mealQueue, fixedEventQueue);
-            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue);
+            Activity sleepActivity = createSleepActivity(currentDateTime, lastEvent, activityToAdd, hotel);
+            boolean wasAdded = addEvent(runningEventList, sleepActivity, mealQueue, fixedEventQueue, hotel);
+            return wasAdded && addEvent(runningEventList, activityToAdd, mealQueue, fixedEventQueue, hotel);
         } else {
             return tryAddActivity(runningEventList, lastEvent, activityToAdd);
         }
@@ -170,10 +180,22 @@ class ItineraryBuilder {
                 : createActivity("default meal", 60L, location, FOOD);
     }
 
-    private static Activity createSleepActivity(DateTime currentDateTime, Location location) {
+    private Activity createSleepActivity(DateTime currentDateTime, Event lastEvent, Activity activityToAdd, Activity hotel) {
         DateTime endTimeOfActivity = currentDateTime.plusMinutes(TARGET_MINUTES_OF_SLEEP).withTime(START_OF_DAY, 0, 0, 0);
-        long sleepDuration = minutesBetween(currentDateTime, endTimeOfActivity).getMinutes();
-        return createActivity("default sleep", sleepDuration, location, ActivityType.SLEEP);
+        long minutesUntilStartOfDay = minutesBetween(currentDateTime, endTimeOfActivity).getMinutes();
+        long duration = max(minutesUntilStartOfDay - (long) travelTime(lastEvent.getActivity(), hotel), TARGET_MINUTES_OF_SLEEP);
+        if (hotel != null) {
+            return new ActivityBuilder()
+                    .setId("Sleep at " + hotel.getId())
+                    .setLocation(hotel.getLocation())
+                    .setDuration(duration)
+                    .setCost(hotel.getCost())
+                    .setScore(hotel.getScore())
+                    .setType(SLEEP)
+                    .build();
+        } else {
+            return createActivity("default sleep", duration, locationForGeneratedActivity(lastEvent, activityToAdd), SLEEP);
+        }
     }
 
     private static Location locationForGeneratedActivity(Event lastEvent, Activity nextActivity) {
