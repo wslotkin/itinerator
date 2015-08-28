@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Iterables.getLast;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -27,6 +28,7 @@ class ItineraryBuilder {
             (activity1, activity2) -> activity1.getId().compareTo(activity2.getId());
     private static final Comparator<Event> EVENT_COMPARATOR =
             (event1, event2) -> compare(event1.getEventTime().getStartMillis(), event2.getEventTime().getStartMillis());
+    private static final long TARGET_HOURS_OF_SLEEP = TimeUnit.MINUTES.toHours(TARGET_MINUTES_OF_SLEEP);
 
     private final DateTime startTime;
     private final DateTime endTime;
@@ -190,7 +192,7 @@ class ItineraryBuilder {
                     .setLocation(hotel.getLocation())
                     .setDuration(duration)
                     .setCost(hotel.getCost())
-                    .setScore(hotel.getScore())
+                    .setScore(hotel.getScore() / TARGET_HOURS_OF_SLEEP)
                     .setType(SLEEP)
                     .build();
         } else {
