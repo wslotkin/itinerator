@@ -4,7 +4,7 @@ import itinerator.datamodel.Location;
 import org.junit.Before;
 import org.junit.Test;
 
-import static itinerator.TestConstants.DELTA;
+import static itinerator.TestUtil.DELTA;
 import static org.junit.Assert.assertEquals;
 
 public class DistanceCalculatorTest {

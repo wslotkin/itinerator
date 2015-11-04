@@ -5,7 +5,7 @@ import itinerator.datamodel.ActivityBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import static itinerator.TestConstants.DELTA;
+import static itinerator.TestUtil.DELTA;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

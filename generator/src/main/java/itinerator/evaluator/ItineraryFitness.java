@@ -7,10 +7,10 @@ import itinerator.itinerary.ItineraryFactory;
 
 public class ItineraryFitness implements Fitness {
 
-    private final Evaluator evaluator;
+    private final Evaluator<Itinerary> evaluator;
     private final ItineraryFactory itineraryFactory;
 
-    public ItineraryFitness(Evaluator evaluator, ItineraryFactory itineraryFactory) {
+    public ItineraryFitness(Evaluator<Itinerary> evaluator, ItineraryFactory itineraryFactory) {
         this.evaluator = evaluator;
         this.itineraryFactory = itineraryFactory;
     }
@@ -21,7 +21,7 @@ public class ItineraryFitness implements Fitness {
     }
 
     public double getValue(Itinerary itinerary) {
-        return evaluator.evaluate(itinerary);
+        return evaluator.applyAsDouble(itinerary);
     }
 
     @Override

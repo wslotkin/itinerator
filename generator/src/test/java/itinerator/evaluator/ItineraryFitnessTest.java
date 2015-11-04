@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static itinerator.TestConstants.DELTA;
+import static itinerator.TestUtil.DELTA;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -18,18 +18,18 @@ public class ItineraryFitnessTest {
     private static final Itinerary ITINERARY = new Itinerary(new ArrayList<>());
     private static final double FITNESS_SCORE = 1.2;
 
-    private CompositeEvaluator evaluator;
+    private ItineraryEvaluators evaluator;
     private ItineraryFactory factory;
 
     private ItineraryFitness itineraryFitness;
 
     @Before
     public void before() {
-        evaluator = mock(CompositeEvaluator.class);
+        evaluator = mock(ItineraryEvaluators.class);
         factory = mock(ItineraryFactory.class);
 
         when(factory.create(CONFIGURATION)).thenReturn(ITINERARY);
-        when(evaluator.evaluate(ITINERARY)).thenReturn(FITNESS_SCORE);
+        when(evaluator.applyAsDouble(ITINERARY)).thenReturn(FITNESS_SCORE);
 
         itineraryFitness = new ItineraryFitness(evaluator, factory);
     }
@@ -41,6 +41,6 @@ public class ItineraryFitnessTest {
         assertEquals(FITNESS_SCORE, value, DELTA);
 
         verify(factory).create(CONFIGURATION);
-        verify(evaluator).evaluate(ITINERARY);
+        verify(evaluator).applyAsDouble(ITINERARY);
     }
 }

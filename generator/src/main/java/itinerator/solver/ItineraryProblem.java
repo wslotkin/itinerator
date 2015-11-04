@@ -6,7 +6,9 @@ import itinerator.config.EvaluationConfig;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import itinerator.evaluator.*;
+import itinerator.evaluator.Evaluator;
+import itinerator.evaluator.ItineraryEvaluators;
+import itinerator.evaluator.ItineraryFitness;
 import itinerator.itinerary.ItineraryFactory;
 import org.joda.time.DateTime;
 
@@ -50,14 +52,7 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        CompositeEvaluator evaluator = new CompositeEvaluator(new FunEvaluator(),
-                new TravelEvaluator(evaluationConfig.getTravelTimePenalty()),
-                new MovementEvaluator(evaluationConfig.getAreaHoppingPenalty(), evaluationConfig.getAreaHoppingThreshold()),
-                new CostEvaluator(evaluationConfig.getCostPenalty()),
-                new SleepEventEvaluator(evaluationConfig.getIncorrectSleepPenalty()),
-                new MealEvaluator(evaluationConfig.getIncorrectMealPenalty()),
-                new HoursEvaluator(evaluationConfig.getInvalidHoursPenalty()),
-                new SleepDurationEvaluator(evaluationConfig.getMissingSleepMinutesPenalty()));
+        Evaluator<Itinerary> evaluator = ItineraryEvaluators.createEvaluators(evaluationConfig);
         return new ItineraryFitness(evaluator, itineraryFactory);
     }
 

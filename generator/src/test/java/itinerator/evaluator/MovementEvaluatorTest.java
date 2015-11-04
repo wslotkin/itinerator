@@ -9,7 +9,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static itinerator.TestConstants.DELTA;
+import static itinerator.TestUtil.DELTA;
+import static itinerator.evaluator.EventEvaluators.movementEvaluator;
 import static org.junit.Assert.assertEquals;
 
 public class MovementEvaluatorTest {
@@ -22,23 +23,23 @@ public class MovementEvaluatorTest {
     private static final Event SECOND_EVENT = new TestEventBuilder().setTravelTime(TRAVEL_TIME_BELOW_THRESHOLD).build();
     private static final Event THIRD_EVENT = new TestEventBuilder().setTravelTime(TRAVEL_TIME_ABOVE_THRESHOLD).build();
 
-    private MovementEvaluator movementEvaluator;
+    private Evaluator<Itinerary> movementEvaluator;
 
     @Before
     public void before() {
-        movementEvaluator = new MovementEvaluator(AREA_HOPPING_PENALTY, AREA_HOPPING_THRESHOLD);
+        movementEvaluator = new EventEvaluators(movementEvaluator(AREA_HOPPING_PENALTY, AREA_HOPPING_THRESHOLD));
     }
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = movementEvaluator.evaluate(new Itinerary(new ArrayList<>()));
+        double result = movementEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void returnsNumberOfEventsWithTravelTimeGreaterThanThresholdTimesPenalty() {
-        double result = movementEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT, THIRD_EVENT)));
+        double result = movementEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT, THIRD_EVENT)));
 
         double expectedResult = 2.0 * AREA_HOPPING_PENALTY;
 

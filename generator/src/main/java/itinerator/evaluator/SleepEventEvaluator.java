@@ -11,7 +11,7 @@ import static itinerator.datamodel.ActivityType.SLEEP;
 import static itinerator.itinerary.TimeUtil.isInSleepWindow;
 import static java.lang.Math.abs;
 
-public class SleepEventEvaluator extends BaseDaySubitineraryEvaluator {
+class SleepEventEvaluator implements Evaluator<Itinerary> {
     private final double incorrectSleepPenalty;
 
     public SleepEventEvaluator(double incorrectSleepPenalty) {
@@ -19,7 +19,7 @@ public class SleepEventEvaluator extends BaseDaySubitineraryEvaluator {
     }
 
     @Override
-    protected double evaluateDaySubitinerary(Itinerary singleDaySubitinerary) {
+    public double applyAsDouble(Itinerary singleDaySubitinerary) {
         List<Event> events = singleDaySubitinerary.getEvents();
         Event firstEvent = events.get(0);
         Event lastEvent = getLast(events);

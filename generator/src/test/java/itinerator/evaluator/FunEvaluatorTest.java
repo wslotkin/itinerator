@@ -1,8 +1,8 @@
 package itinerator.evaluator;
 
+import itinerator.datamodel.ActivityBuilder;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import itinerator.datamodel.ActivityBuilder;
 import itinerator.datamodel.TestEventBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static itinerator.TestConstants.DELTA;
+import static itinerator.TestUtil.DELTA;
+import static itinerator.evaluator.EventEvaluators.funEvaluator;
 import static org.junit.Assert.assertEquals;
 
 public class FunEvaluatorTest {
@@ -22,23 +23,23 @@ public class FunEvaluatorTest {
     private static final Event FIRST_EVENT = createEvent(FIRST_ACTIVITY_DURATION, FIRST_ACTIVITY_SCORE);
     private static final Event SECOND_EVENT = createEvent(SECOND_ACTIVITY_DURATION, SECOND_ACTIVITY_SCORE);
 
-    private FunEvaluator funEvaluator;
+    private Evaluator<Itinerary> funEvaluator;
 
     @Before
     public void before() {
-        funEvaluator = new FunEvaluator();
+        funEvaluator = new EventEvaluators(funEvaluator());
     }
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = funEvaluator.evaluate(new Itinerary(new ArrayList<>()));
+        double result = funEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenItineraryHasOnlyOneEventReturnsScoreTimesDurationOfEvent() {
-        double result = funEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT)));
+        double result = funEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT)));
 
         double expectedResult = FIRST_ACTIVITY_DURATION * FIRST_ACTIVITY_SCORE;
 
@@ -47,7 +48,7 @@ public class FunEvaluatorTest {
 
     @Test
     public void returnsSumOfScoreTimesDurationOfAllActivities() {
-        double result = funEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
+        double result = funEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
 
         double expectedResult = FIRST_ACTIVITY_DURATION * FIRST_ACTIVITY_SCORE
                 + SECOND_ACTIVITY_DURATION * SECOND_ACTIVITY_SCORE;

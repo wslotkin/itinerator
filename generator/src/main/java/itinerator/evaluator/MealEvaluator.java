@@ -10,7 +10,7 @@ import static itinerator.datamodel.ActivityType.FOOD;
 import static itinerator.itinerary.TimeUtil.numberOfMealsInTimeRange;
 import static java.lang.Math.abs;
 
-public class MealEvaluator extends BaseDaySubitineraryEvaluator {
+class MealEvaluator implements Evaluator<Itinerary> {
     private final double incorrectMealPenalty;
 
     public MealEvaluator(double incorrectMealPenalty) {
@@ -18,7 +18,7 @@ public class MealEvaluator extends BaseDaySubitineraryEvaluator {
     }
 
     @Override
-    protected double evaluateDaySubitinerary(Itinerary singleDaySubitinerary) {
+    public double applyAsDouble(Itinerary singleDaySubitinerary) {
         List<Event> events = singleDaySubitinerary.getEvents();
         Event firstEvent = events.get(0);
         Event lastEvent = getLast(events);

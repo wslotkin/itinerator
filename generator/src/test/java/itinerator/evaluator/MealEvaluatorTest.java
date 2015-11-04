@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static itinerator.TestConstants.DELTA;
+import static itinerator.TestUtil.DELTA;
 import static itinerator.datamodel.ActivityType.ACTIVITY;
 import static itinerator.datamodel.ActivityType.FOOD;
 import static itinerator.itinerary.TimeUtil.*;
@@ -39,25 +39,25 @@ public class MealEvaluatorTest {
     private static final Event EVENT_9 = event(FOOD, T_8, T_9);
 
     private List<Event> events;
-    private MealEvaluator mealEvaluator;
+    private Evaluator<Itinerary> mealEvaluator;
 
     @Before
     public void before() {
         events = newArrayList(EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5, EVENT_6, EVENT_7, EVENT_8, EVENT_9);
 
-        mealEvaluator = new MealEvaluator(INCORRECT_MEAL_PENALTY);
+        mealEvaluator = new ItineraryEvaluators(new DaySubitineraryProvider(), new MealEvaluator(INCORRECT_MEAL_PENALTY));
     }
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = mealEvaluator.evaluate(new Itinerary(new ArrayList<>()));
+        double result = mealEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenItineraryHasCorrectMealEventsShouldReturnZero() {
-        double result = mealEvaluator.evaluate(new Itinerary(events));
+        double result = mealEvaluator.applyAsDouble(new Itinerary(events));
 
         assertEquals(0.0, result, DELTA);
     }
@@ -65,7 +65,7 @@ public class MealEvaluatorTest {
     @Test
     public void whenItineraryIsMissingExpectedMealEventShouldReturnPenalty() {
         transformEventAtIndexToType(0, ACTIVITY);
-        double result = mealEvaluator.evaluate(new Itinerary(events));
+        double result = mealEvaluator.applyAsDouble(new Itinerary(events));
 
         assertEquals(INCORRECT_MEAL_PENALTY, result, DELTA);
     }
@@ -73,7 +73,7 @@ public class MealEvaluatorTest {
     @Test
     public void whenItineraryHasExtraMealEventShouldReturnPenalty() {
         transformEventAtIndexToType(1, FOOD);
-        double result = mealEvaluator.evaluate(new Itinerary(events));
+        double result = mealEvaluator.applyAsDouble(new Itinerary(events));
 
         assertEquals(INCORRECT_MEAL_PENALTY, result, DELTA);
     }

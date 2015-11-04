@@ -1,8 +1,8 @@
 package itinerator.evaluator;
 
+import itinerator.datamodel.ActivityBuilder;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import itinerator.datamodel.ActivityBuilder;
 import itinerator.datamodel.TestEventBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static itinerator.TestConstants.DELTA;
+import static itinerator.TestUtil.DELTA;
+import static itinerator.evaluator.EventEvaluators.costEvaluator;
 import static org.junit.Assert.assertEquals;
 
 public class CostEvaluatorTest {
@@ -20,23 +21,23 @@ public class CostEvaluatorTest {
     private static final Event FIRST_EVENT = eventWithCost(FIRST_EVENT_COST);
     private static final Event SECOND_EVENT = eventWithCost(SECOND_EVENT_COST);
 
-    private CostEvaluator costEvaluator;
+    private Evaluator<Itinerary> costEvaluator;
 
     @Before
     public void before() {
-        costEvaluator = new CostEvaluator(COST_PENALTY);
+        costEvaluator = new EventEvaluators(costEvaluator(COST_PENALTY));
     }
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = costEvaluator.evaluate(new Itinerary(new ArrayList<>()));
+        double result = costEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenItineraryHasOnlyOneEventReturnsCostOfEventScaledByMultiplier() {
-        double result = costEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT)));
+        double result = costEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT)));
 
         double expectedResult = FIRST_EVENT_COST * COST_PENALTY;
 
@@ -45,7 +46,7 @@ public class CostEvaluatorTest {
 
     @Test
     public void returnsSumOfCostsOfAllEventsScaledByMultiplier() {
-        double result = costEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
+        double result = costEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
 
         double expectedResult = (FIRST_EVENT_COST + SECOND_EVENT_COST) * COST_PENALTY;
 

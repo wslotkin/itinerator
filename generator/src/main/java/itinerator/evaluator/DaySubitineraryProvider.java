@@ -9,13 +9,14 @@ import java.util.List;
 import static com.google.common.collect.Iterables.getLast;
 import static com.google.common.collect.Lists.newArrayList;
 import static itinerator.itinerary.SubitineraryProvider.subitinerary;
+import static java.util.Collections.emptyList;
 
-public abstract class BaseDaySubitineraryEvaluator implements Evaluator {
-    @Override
-    public double evaluate(Itinerary itinerary) {
+class DaySubitineraryProvider {
+
+    public List<Itinerary> getPerDaySubitineraries(Itinerary itinerary) {
         List<Event> events = itinerary.getEvents();
         if (events.isEmpty()) {
-            return 0.0;
+            return emptyList();
         }
 
         Event firstEvent = events.get(0);
@@ -33,11 +34,6 @@ public abstract class BaseDaySubitineraryEvaluator implements Evaluator {
             currentStartTime = currentEndTime;
             currentEndTime = currentEndTime.plusDays(1);
         }
-
-        return dailySubitineraries.stream()
-                .mapToDouble(this::evaluateDaySubitinerary)
-                .sum();
+        return dailySubitineraries;
     }
-
-    protected abstract double evaluateDaySubitinerary(Itinerary singleDaySubitinerary);
 }

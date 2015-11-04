@@ -9,7 +9,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static itinerator.TestConstants.DELTA;
+import static itinerator.TestUtil.DELTA;
+import static itinerator.evaluator.EventEvaluators.travelEvaluator;
 import static org.junit.Assert.assertEquals;
 
 public class TravelEvaluatorTest {
@@ -20,23 +21,23 @@ public class TravelEvaluatorTest {
     private static final Event FIRST_EVENT = new TestEventBuilder().setTravelTime(FIRST_EVENT_TRAVEL_TIME).build();
     private static final Event SECOND_EVENT = new TestEventBuilder().setTravelTime(SECOND_EVENT_TRAVEL_TIME).build();
 
-    private TravelEvaluator travelEvaluator;
+    private Evaluator<Itinerary> travelEvaluator;
 
     @Before
     public void before() {
-        travelEvaluator = new TravelEvaluator(TRAVEL_TIME_PENALTY);
+        travelEvaluator = new EventEvaluators(travelEvaluator(TRAVEL_TIME_PENALTY));
     }
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = travelEvaluator.evaluate(new Itinerary(new ArrayList<>()));
+        double result = travelEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenItineraryHasOnlyOneEventReturnsTravelTimeOfEventScaledByMultiplier() {
-        double result = travelEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT)));
+        double result = travelEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT)));
 
         double expectedResult = FIRST_EVENT_TRAVEL_TIME * TRAVEL_TIME_PENALTY;
 
@@ -45,7 +46,7 @@ public class TravelEvaluatorTest {
 
     @Test
     public void returnsSumOfTravelTimesOfAllEventsScaledByMultiplier() {
-        double result = travelEvaluator.evaluate(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
+        double result = travelEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
 
         double expectedResult = (FIRST_EVENT_TRAVEL_TIME + SECOND_EVENT_TRAVEL_TIME) * TRAVEL_TIME_PENALTY;
 
