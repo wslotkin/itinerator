@@ -11,6 +11,7 @@
     <modules>
         <module>generator</module>
         <module>analysis</module>
+        <module>performance</module>
     </modules>
 
     <dependencyManagement>
