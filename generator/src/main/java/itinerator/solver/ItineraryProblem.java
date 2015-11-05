@@ -10,22 +10,22 @@ import itinerator.evaluator.Evaluator;
 import itinerator.evaluator.ItineraryEvaluators;
 import itinerator.evaluator.ItineraryFitness;
 import itinerator.itinerary.ItineraryFactory;
-import org.joda.time.DateTime;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem, RandomConfigurationProblem {
 
     private final List<Activity> activities;
-    private final DateTime startTime;
-    private final DateTime endTime;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
     private final ItineraryFactory itineraryFactory;
     private final EvaluationConfig evaluationConfig;
 
     public ItineraryProblem(List<Activity> activities,
-                            DateTime startTime,
-                            DateTime endTime,
+                            LocalDateTime startTime,
+                            LocalDateTime endTime,
                             ItineraryFactory itineraryFactory,
                             EvaluationConfig evaluationConfig) {
         this.activities = activities;
@@ -38,11 +38,11 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
     @Override
     public boolean isSolution(Configuration configuration) {
         Itinerary itinerary = itineraryFactory.create(configuration);
-        long endTimeOfPrevious = startTime.getMillis();
+        LocalDateTime endTimeOfPrevious = startTime;
         for (Event event : itinerary.getEvents()) {
-            long eventStart = event.getEventTime().getStartMillis();
-            long eventEnd = event.getEventTime().getEndMillis();
-            if (endTimeOfPrevious > eventStart || startTime.isAfter(eventStart) || endTime.isBefore(eventEnd)) {
+            LocalDateTime eventStart = event.getEventTime().getStart();
+            LocalDateTime eventEnd = event.getEventTime().getEnd();
+            if (endTimeOfPrevious.isAfter(eventStart) || startTime.isAfter(eventStart) || endTime.isBefore(eventEnd)) {
                 return false;
             }
             endTimeOfPrevious = eventEnd;

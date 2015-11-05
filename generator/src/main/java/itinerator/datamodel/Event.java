@@ -1,16 +1,15 @@
 package itinerator.datamodel;
 
-import org.joda.time.Interval;
-
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Event {
 
     private final Activity activity;
-    private final Interval eventTime;
+    private final Range<LocalDateTime> eventTime;
     private final double travelTime;
 
-    public Event(Activity activity, Interval eventTime, double travelTime) {
+    public Event(Activity activity, Range<LocalDateTime> eventTime, double travelTime) {
         this.activity = activity;
         this.eventTime = eventTime;
         this.travelTime = travelTime;
@@ -20,7 +19,7 @@ public class Event {
         return activity;
     }
 
-    public Interval getEventTime() {
+    public Range<LocalDateTime> getEventTime() {
         return eventTime;
     }
 

@@ -46,6 +46,6 @@ class TextItineraryLoader implements CustomItineraryLoader.CustomDataLoader {
     }
 
     private static String toStandardDateTimeString(String timeRangeElement) {
-        return ItineraryFormatter.DATE_TIME_FORMATTER.parseDateTime(timeRangeElement).toString();
+        return ItineraryFormatter.DATE_TIME_FORMATTER.parse(timeRangeElement).toString();
     }
 }

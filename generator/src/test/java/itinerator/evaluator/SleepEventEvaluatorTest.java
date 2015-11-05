@@ -1,11 +1,11 @@
 package itinerator.evaluator;
 
 import itinerator.datamodel.*;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
+import itinerator.datamodel.Range;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +17,12 @@ import static org.junit.Assert.assertEquals;
 
 public class SleepEventEvaluatorTest {
     private static final double INCORRECT_SLEEP_PENALTY = -100.0;
-    private static final DateTime T_0 = new DateTime(2015, 2, 6, 12, 0);
-    private static final DateTime T_1 = new DateTime(2015, 2, 6, 22, 0);
-    private static final DateTime T_2 = new DateTime(2015, 2, 7, 9, 0);
-    private static final DateTime T_3 = new DateTime(2015, 2, 7, 22, 0);
-    private static final DateTime T_4 = new DateTime(2015, 2, 8, 9, 0);
-    private static final DateTime T_5 = new DateTime(2015, 2, 8, 12, 0);
+    private static final LocalDateTime T_0 = LocalDateTime.of(2015, 2, 6, 12, 0);
+    private static final LocalDateTime T_1 = LocalDateTime.of(2015, 2, 6, 22, 0);
+    private static final LocalDateTime T_2 = LocalDateTime.of(2015, 2, 7, 9, 0);
+    private static final LocalDateTime T_3 = LocalDateTime.of(2015, 2, 7, 22, 0);
+    private static final LocalDateTime T_4 = LocalDateTime.of(2015, 2, 8, 9, 0);
+    private static final LocalDateTime T_5 = LocalDateTime.of(2015, 2, 8, 12, 0);
     private static final Event EVENT_1 = event(ACTIVITY, T_0, T_1);
     private static final Event EVENT_2 = event(SLEEP, T_1, T_2);
     private static final Event EVENT_3 = event(ACTIVITY, T_2, T_3);
@@ -81,12 +81,12 @@ public class SleepEventEvaluatorTest {
         events.add(index, transformedEvent);
     }
 
-    private static Event event(ActivityType type, DateTime startTime, DateTime endTime) {
+    private static Event event(ActivityType type, LocalDateTime startTime, LocalDateTime endTime) {
         return new TestEventBuilder()
                 .setActivity(new ActivityBuilder()
                         .setType(type)
                         .build())
-                .setEventTime(new Interval(startTime, endTime))
+                .setEventTime(new Range<>(startTime, endTime))
                 .build();
     }
 }

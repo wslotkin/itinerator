@@ -2,25 +2,24 @@ package itinerator.itinerary;
 
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import itinerator.calculators.RoundingTravelTimeCalculator;
-import itinerator.calculators.TravelTimeCalculator;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import org.joda.time.DateTime;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ItineraryFactory {
 
     private final List<Activity> activities;
-    private final DateTime startTime;
+    private final LocalDateTime startTime;
     private final RoundingTravelTimeCalculator travelTimeCalculator;
-    private final DateTime endTime;
+    private final LocalDateTime endTime;
     private final List<Event> fixedEvents;
 
     public ItineraryFactory(List<Activity> activities,
-                            DateTime startTime,
-                            DateTime endTime,
+                            LocalDateTime startTime,
+                            LocalDateTime endTime,
                             RoundingTravelTimeCalculator travelTimeCalculator,
                             List<Event> fixedEvents) {
         this.activities = activities;

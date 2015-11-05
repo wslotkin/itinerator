@@ -2,6 +2,7 @@ package itinerator.evaluator;
 
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
+import itinerator.datamodel.Range;
 
 import java.util.List;
 
@@ -23,8 +24,8 @@ class MealEvaluator implements Evaluator<Itinerary> {
         Event firstEvent = events.get(0);
         Event lastEvent = getLast(events);
 
-        int expectedNumberOfMeals = numberOfMealsInTimeRange(firstEvent.getEventTime().getStartMillis(),
-                lastEvent.getEventTime().getEndMillis());
+        int expectedNumberOfMeals = numberOfMealsInTimeRange(new Range<>(firstEvent.getEventTime().getStart(),
+                lastEvent.getEventTime().getEnd()));
         int actualNumberOfMeals = events.stream()
                 .mapToInt(event -> eventIsMealEvent(event) ? 1 : 0)
                 .sum();

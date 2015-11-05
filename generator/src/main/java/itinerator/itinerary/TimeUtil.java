@@ -1,42 +1,41 @@
 package itinerator.itinerary;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.joda.time.LocalTime;
+import itinerator.datamodel.Range;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class TimeUtil {
 
     public static final int START_OF_DAY = 8;
     public static final int TARGET_MINUTES_OF_SLEEP = 480;
     @VisibleForTesting
-    public static final LocalTime START_OF_BREAKFAST_WINDOW = new LocalTime(START_OF_DAY, 0);
+    public static final LocalTime START_OF_BREAKFAST_WINDOW = LocalTime.of(START_OF_DAY, 0);
     @VisibleForTesting
-    public static final LocalTime END_OF_BREAKFAST_WINDOW = new LocalTime(10, 0);
+    public static final LocalTime END_OF_BREAKFAST_WINDOW = LocalTime.of(10, 0);
     @VisibleForTesting
-    public static final LocalTime START_OF_LUNCH_WINDOW = new LocalTime(11, 0);
+    public static final LocalTime START_OF_LUNCH_WINDOW = LocalTime.of(11, 0);
     @VisibleForTesting
-    public static final LocalTime END_OF_LUNCH_WINDOW = new LocalTime(13, 0);
+    public static final LocalTime END_OF_LUNCH_WINDOW = LocalTime.of(13, 0);
     @VisibleForTesting
-    public static final LocalTime START_OF_DINNER_WINDOW = new LocalTime(18, 0);
+    public static final LocalTime START_OF_DINNER_WINDOW = LocalTime.of(18, 0);
     @VisibleForTesting
-    public static final LocalTime END_OF_DINNER_WINDOW = new LocalTime(20, 0);
+    public static final LocalTime END_OF_DINNER_WINDOW = LocalTime.of(20, 0);
     @VisibleForTesting
-    public static final LocalTime START_OF_SLEEP_WINDOW = new LocalTime(22, 0);
+    public static final LocalTime START_OF_SLEEP_WINDOW = LocalTime.of(22, 0);
     @VisibleForTesting
-    static final LocalTime END_OF_SLEEP_WINDOW = new LocalTime(START_OF_DAY, 0);
+    static final LocalTime END_OF_SLEEP_WINDOW = LocalTime.of(START_OF_DAY, 0);
 
-    public static boolean isInMealWindow(DateTime eventTime) {
+    public static boolean isInMealWindow(LocalDateTime eventTime) {
         return isInBreakfastWindow(eventTime) || isInLunchWindow(eventTime) || isInDinnerWindow(eventTime);
     }
 
-    public static boolean isInSleepWindow(DateTime eventTime) {
+    public static boolean isInSleepWindow(LocalDateTime eventTime) {
         return isInWindow(eventTime, START_OF_SLEEP_WINDOW, END_OF_SLEEP_WINDOW);
     }
 
-    public static int numberOfMealsInTimeRange(long startTime, long endTime) {
-        Interval timeRange = new Interval(startTime, endTime);
-
+    public static int numberOfMealsInTimeRange(Range<LocalDateTime> timeRange) {
         int numberOfMeals = numberOfMeals(timeRange, START_OF_BREAKFAST_WINDOW, END_OF_BREAKFAST_WINDOW);
         numberOfMeals += numberOfMeals(timeRange, START_OF_LUNCH_WINDOW, END_OF_LUNCH_WINDOW);
         numberOfMeals += numberOfMeals(timeRange, START_OF_DINNER_WINDOW, END_OF_DINNER_WINDOW);
@@ -44,51 +43,48 @@ public class TimeUtil {
         return numberOfMeals;
     }
 
-    private static boolean isInBreakfastWindow(DateTime eventTime) {
+    public static LocalDateTime dateWithTime(LocalDateTime date, LocalTime time) {
+        return LocalDateTime.of(date.toLocalDate(), time);
+    }
+
+    private static boolean isInBreakfastWindow(LocalDateTime eventTime) {
         return isInWindow(eventTime, START_OF_BREAKFAST_WINDOW, END_OF_BREAKFAST_WINDOW);
     }
 
-    private static boolean isInLunchWindow(DateTime eventTime) {
+    private static boolean isInLunchWindow(LocalDateTime eventTime) {
         return isInWindow(eventTime, START_OF_LUNCH_WINDOW, END_OF_LUNCH_WINDOW);
     }
 
-    private static boolean isInDinnerWindow(DateTime eventTime) {
+    private static boolean isInDinnerWindow(LocalDateTime eventTime) {
         return isInWindow(eventTime, START_OF_DINNER_WINDOW, END_OF_DINNER_WINDOW);
     }
 
-    private static boolean isInWindow(DateTime eventTime, LocalTime startOfWindow, LocalTime endOfWindow) {
-        int eventMillis = eventTime.getMillisOfDay();
-        int startOfWindowMillis = startOfWindow.getMillisOfDay();
-        int endOfWindowMillis = endOfWindow.getMillisOfDay();
-        if (startOfWindowMillis < endOfWindowMillis) {
-            return eventMillis >= startOfWindowMillis && eventMillis < endOfWindowMillis;
+    private static boolean isInWindow(LocalDateTime eventTime, LocalTime startOfWindow, LocalTime endOfWindow) {
+        int eventSeconds = eventTime.toLocalTime().toSecondOfDay();
+        int startOfWindowSeconds = startOfWindow.toSecondOfDay();
+        int endOfWindowSeconds = endOfWindow.toSecondOfDay();
+        if (startOfWindowSeconds < endOfWindowSeconds) {
+            return eventSeconds >= startOfWindowSeconds && eventSeconds < endOfWindowSeconds;
         } else {
-            return eventMillis >= startOfWindowMillis || eventMillis < endOfWindowMillis;
+            return eventSeconds >= startOfWindowSeconds || eventSeconds < endOfWindowSeconds;
         }
     }
 
-    private static int numberOfMeals(Interval timeRange, LocalTime mealWindowStartTime, LocalTime mealWindowEndTime) {
+    private static int numberOfMeals(Range<LocalDateTime> timeRange, LocalTime mealWindowStartTime, LocalTime mealWindowEndTime) {
         int numberOfMeals = 0;
-        DateTime startOfMealWindow = fromDateAndTime(timeRange.getStart(), mealWindowStartTime);
-        DateTime endOfMealWindow = fromDateAndTime(timeRange.getStart(), mealWindowEndTime);
+        LocalDateTime startOfMealWindow = dateWithTime(timeRange.getStart(), mealWindowStartTime);
+        LocalDateTime endOfMealWindow = dateWithTime(timeRange.getStart(), mealWindowEndTime);
 
-        while (startOfMealWindow.isBefore(timeRange.getEndMillis())) {
+        while (startOfMealWindow.isBefore(timeRange.getEnd())) {
             numberOfMeals += overlaps(timeRange, startOfMealWindow, endOfMealWindow) ? 1 : 0;
             startOfMealWindow = startOfMealWindow.plusDays(1);
-            endOfMealWindow = endOfMealWindow.plus(1);
+            endOfMealWindow = endOfMealWindow.plusDays(1);
         }
 
         return numberOfMeals;
     }
 
-    private static DateTime fromDateAndTime(DateTime date, LocalTime time) {
-        return date.withTime(time.getHourOfDay(),
-                time.getMinuteOfHour(),
-                time.getSecondOfMinute(),
-                time.getMillisOfSecond());
-    }
-
-    private static boolean overlaps(Interval first, DateTime secondStart, DateTime secondEnd) {
-        return first.getStartMillis() < secondEnd.getMillis() && secondStart.getMillis() < first.getEndMillis();
+    private static boolean overlaps(Range<LocalDateTime> first, LocalDateTime secondStart, LocalDateTime secondEnd) {
+        return first.getStart().isBefore(secondEnd) && secondStart.isBefore(first.getEnd());
     }
 }

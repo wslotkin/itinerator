@@ -4,10 +4,10 @@ import itinerator.config.ItineratorConfig;
 import itinerator.data.DataLoader;
 import itinerator.datamodel.Activity;
 import itinerator.solver.ItinerarySolver.SolverResult;
-import org.joda.time.DateTime;
 
 import java.io.*;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +42,9 @@ public abstract class BaseMain {
         return itineratorConfig;
     }
 
-    protected abstract SolverResult getResult(List<Activity> activities, DateTime startTime, DateTime endTime) throws IOException;
+    protected abstract SolverResult getResult(List<Activity> activities,
+                                              LocalDateTime startTime,
+                                              LocalDateTime endTime) throws IOException;
 
     private static void logToOutputFile(SolverResult solverResult, String filename) throws FileNotFoundException {
         PrintStream printStream = new PrintStream(new FileOutputStream(new File(filename)));

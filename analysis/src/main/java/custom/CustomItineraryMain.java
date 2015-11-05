@@ -2,16 +2,16 @@ package custom;
 
 import com.google.common.collect.Iterables;
 import custom.data.CustomItineraryLoader;
-import itinerator.data.FileType;
 import itinerator.config.EvaluationConfig;
 import itinerator.config.ItineratorConfig;
+import itinerator.data.FileType;
 import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.main.BaseMain;
 import itinerator.solver.ItinerarySolver.SolverResult;
-import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static itinerator.data.FileType.CSV;
@@ -50,11 +50,11 @@ public class CustomItineraryMain extends BaseMain {
     }
 
     @Override
-    protected SolverResult getResult(List<Activity> activities, DateTime startTime, DateTime endTime) throws IOException {
+    protected SolverResult getResult(List<Activity> activities, LocalDateTime startTime, LocalDateTime endTime) throws IOException {
         List<Event> events = new CustomItineraryLoader(activities).getActivities(inputFilename, inputFileType);
 
-        DateTime start = events.get(0).getEventTime().getStart();
-        DateTime end = Iterables.getLast(events).getEventTime().getEnd().plusMinutes(BUFFER_PERIOD_MINUTES);
+        LocalDateTime start = events.get(0).getEventTime().getStart();
+        LocalDateTime end = Iterables.getLast(events).getEventTime().getEnd().plusMinutes(BUFFER_PERIOD_MINUTES);
 
         return generateResult(activities, start, end, events, evaluationConfig);
     }

@@ -16,8 +16,8 @@ import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
 import itinerator.itinerary.ItineraryFactory;
-import org.joda.time.DateTime;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -31,8 +31,8 @@ public class ItinerarySolver {
     private final ItineraryFactory itineraryFactory;
 
     public static ItinerarySolver createSolver(List<Activity> activities,
-                                               DateTime startTime,
-                                               DateTime endTime,
+                                               LocalDateTime startTime,
+                                               LocalDateTime endTime,
                                                GeneticAlgorithmConfig geneticAlgorithmConfig,
                                                EvaluationConfig evaluationConfig) {
         RoundingTravelTimeCalculator travelTimeCalculator = new RoundingTravelTimeCalculator(new TravelTimeCalculator(new DistanceCalculator()), 5.0);
@@ -56,8 +56,8 @@ public class ItinerarySolver {
     }
 
     public static SolverResult generateResult(List<Activity> activities,
-                                              DateTime startTime,
-                                              DateTime endTime,
+                                              LocalDateTime startTime,
+                                              LocalDateTime endTime,
                                               List<Event> events,
                                               EvaluationConfig evaluationConfig) {
         RoundingTravelTimeCalculator travelTimeCalculator = new RoundingTravelTimeCalculator(new TravelTimeCalculator(new DistanceCalculator()), 5.0);

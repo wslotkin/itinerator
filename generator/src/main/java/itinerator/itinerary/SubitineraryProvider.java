@@ -2,19 +2,21 @@ package itinerator.itinerary;
 
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import org.joda.time.DateTime;
+import itinerator.datamodel.Range;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SubitineraryProvider {
 
-    public static Itinerary subitinerary(Itinerary itinerary, DateTime start, DateTime end) {
+    public static Itinerary subitinerary(Itinerary itinerary, LocalDateTime start, LocalDateTime end) {
+        Range<LocalDateTime> subitineraryRange = new Range<>(start, end);
         List<Event> eventsInTimeRange = new ArrayList<>();
         for (Event event : itinerary.getEvents()) {
-            if (eventFallsInTimeRange(start, end, event)) {
+            if (eventFallsInTimeRange(subitineraryRange, event)) {
                 eventsInTimeRange.add(event);
-            } else if (rangeEndsBeforeStartOfEvent(end, event)) {
+            } else if (rangeEndsBeforeStartOfEvent(subitineraryRange, event)) {
                 break;
             }
         }
@@ -22,15 +24,11 @@ public class SubitineraryProvider {
         return new Itinerary(eventsInTimeRange);
     }
 
-    private static boolean eventFallsInTimeRange(DateTime start, DateTime end, Event event) {
-        return !rangeStartsAfterStartOfEvent(start, event) && !rangeEndsBeforeStartOfEvent(end, event);
+    private static boolean eventFallsInTimeRange(Range<LocalDateTime> range, Event event) {
+        return range.contains(event.getEventTime().getStart());
     }
 
-    private static boolean rangeStartsAfterStartOfEvent(DateTime start, Event event) {
-        return start.isAfter(event.getEventTime().getStartMillis());
-    }
-
-    private static boolean rangeEndsBeforeStartOfEvent(DateTime end, Event event) {
-        return end.isBefore(event.getEventTime().getStartMillis());
+    private static boolean rangeEndsBeforeStartOfEvent(Range<LocalDateTime> range, Event event) {
+        return range.getEnd().isBefore(event.getEventTime().getStart());
     }
 }

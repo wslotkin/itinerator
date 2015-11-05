@@ -22,11 +22,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.6</version>
-            </dependency>
-            <dependency>
                 <groupId>cz.cvut.fit.jcop</groupId>
                 <artifactId>jcop</artifactId>
                 <version>1.0.1</version>

@@ -4,9 +4,9 @@ import itinerator.config.OptimizationConfig;
 import itinerator.datamodel.Activity;
 import itinerator.solver.ItinerarySolver;
 import itinerator.solver.ItinerarySolver.SolverResult;
-import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static itinerator.solver.ItinerarySolver.createSolver;
@@ -24,7 +24,7 @@ public class OptimizerMain extends BaseMain {
     }
 
     @Override
-    protected SolverResult getResult(List<Activity> activities, DateTime startTime, DateTime endTime) throws IOException {
+    protected SolverResult getResult(List<Activity> activities, LocalDateTime startTime, LocalDateTime endTime) throws IOException {
         ItinerarySolver itinerarySolver = createSolver(activities,
                 startTime,
                 endTime,

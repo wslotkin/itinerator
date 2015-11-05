@@ -2,8 +2,9 @@ package itinerator.evaluator;
 
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import org.joda.time.DateTime;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.google.common.collect.Iterables.getLast;
@@ -21,8 +22,8 @@ class DaySubitineraryProvider {
 
         Event firstEvent = events.get(0);
         Event lastEvent = getLast(events);
-        DateTime currentStartTime = firstEvent.getEventTime().getStart().withTimeAtStartOfDay();
-        DateTime currentEndTime = currentStartTime.plusDays(1);
+        LocalDateTime currentStartTime = LocalDateTime.of(firstEvent.getEventTime().getStart().toLocalDate(), LocalTime.of(0, 0));
+        LocalDateTime currentEndTime = currentStartTime.plusDays(1);
 
         List<Itinerary> dailySubitineraries = newArrayList();
         while (currentStartTime.isBefore(lastEvent.getEventTime().getEnd())) {

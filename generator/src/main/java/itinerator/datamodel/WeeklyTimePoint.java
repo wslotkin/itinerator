@@ -1,25 +1,27 @@
 package itinerator.datamodel;
 
 import com.google.common.collect.ComparisonChain;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormatter;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-import static org.joda.time.format.DateTimeFormat.forPattern;
+import static java.time.format.DateTimeFormatter.ofPattern;
+
 
 public class WeeklyTimePoint implements Comparable<WeeklyTimePoint> {
-    private static final DateTimeFormatter FORMATTER = forPattern("HH:mm");
+    private static final DateTimeFormatter FORMATTER = ofPattern("HH:mm");
 
-    private final Day dayOfWeek;
+    private final DayOfWeek dayOfWeek;
     private final LocalTime timeOfDay;
 
-    public WeeklyTimePoint(Day dayOfWeek, LocalTime timeOfDay) {
+    public WeeklyTimePoint(DayOfWeek dayOfWeek, LocalTime timeOfDay) {
         this.dayOfWeek = dayOfWeek;
         this.timeOfDay = timeOfDay;
     }
 
-    public Day getDayOfWeek() {
+    public DayOfWeek getDayOfWeek() {
         return dayOfWeek;
     }
 
@@ -50,6 +52,6 @@ public class WeeklyTimePoint implements Comparable<WeeklyTimePoint> {
 
     @Override
     public String toString() {
-        return "(" + dayOfWeek + " " + FORMATTER.print(timeOfDay) + ')';
+        return "(" + dayOfWeek + " " + FORMATTER.format(timeOfDay) + ')';
     }
 }

@@ -2,14 +2,14 @@ package itinerator.data;
 
 import com.google.common.collect.Lists;
 import itinerator.datamodel.*;
-import org.joda.time.LocalTime;
 
+import java.time.LocalTime;
 import java.util.List;
 
-import static itinerator.datamodel.Day.valueOf;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
+import static java.time.DayOfWeek.of;
 
 class TextDataLoader extends AbstractDataLoader {
     private static final int ID_COLUMN = 2;
@@ -97,6 +97,6 @@ class TextDataLoader extends AbstractDataLoader {
         // input data stored as hourOfWeek of week starting with Sunday 00:00
         int dayOfWeek = hourOfWeek / 24 != 0 ? hourOfWeek / 24 : 7;
 
-        return new WeeklyTimePoint(valueOf(dayOfWeek), new LocalTime(hourOfWeek % 24, minute));
+        return new WeeklyTimePoint(of(dayOfWeek), LocalTime.of(hourOfWeek % 24, minute));
     }
 }

@@ -4,9 +4,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.TreeMultimap;
 import itinerator.calculators.RoundingTravelTimeCalculator;
 import itinerator.datamodel.*;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,28 +18,27 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Ordering.natural;
 import static itinerator.datamodel.ActivityType.*;
 import static itinerator.itinerary.TimeUtil.*;
-import static java.lang.Long.compare;
 import static java.lang.Math.max;
+import static java.time.Duration.between;
 import static java.util.Collections.sort;
-import static org.joda.time.Minutes.minutesBetween;
 
 class ItineraryBuilder {
     private static final Comparator<Activity> ARBITRARY_BUT_PREDICTABLE_ORDERING =
             (activity1, activity2) -> activity1.getId().compareTo(activity2.getId());
     private static final Comparator<Event> EVENT_COMPARATOR =
-            (event1, event2) -> compare(event1.getEventTime().getStartMillis(), event2.getEventTime().getStartMillis());
+            (event1, event2) -> event1.getEventTime().getStart().compareTo(event2.getEventTime().getStart());
     private static final long TARGET_HOURS_OF_SLEEP = TimeUnit.MINUTES.toHours(TARGET_MINUTES_OF_SLEEP);
 
-    private final DateTime startTime;
-    private final DateTime endTime;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
     private final TreeMultimap<Integer, Activity> activities;
     private final TreeMultimap<Integer, Activity> foods;
     private final TreeMultimap<Integer, Activity> hotels;
     private final RoundingTravelTimeCalculator travelTimeCalculator;
     private final List<Event> fixedEvents;
 
-    public ItineraryBuilder(DateTime startTime,
-                            DateTime endTime,
+    public ItineraryBuilder(LocalDateTime startTime,
+                            LocalDateTime endTime,
                             RoundingTravelTimeCalculator travelTimeCalculator,
                             List<Event> fixedEvents) {
         this.startTime = startTime;
@@ -87,7 +86,7 @@ class ItineraryBuilder {
                              Queue<Event> fixedEventQueue,
                              Activity hotel) {
         Event lastEvent = getLast(runningEventList, null);
-        DateTime currentDateTime = lastEvent != null ? lastEvent.getEventTime().getEnd() : startTime;
+        LocalDateTime currentDateTime = lastEvent != null ? lastEvent.getEventTime().getEnd() : startTime;
         if (wouldExceedNextFixedEvent(activityToAdd, fixedEventQueue, lastEvent)) {
             Event fixedEvent = fixedEventQueue.poll();
             Activity placeholderActivity = createPlaceholderActivity(fixedEvent, lastEvent);
@@ -132,17 +131,17 @@ class ItineraryBuilder {
 
     private Activity createPlaceholderActivity(Event fixedEvent, Event lastEvent) {
         final Location location;
-        final int duration;
+        final long duration;
         if (lastEvent != null) {
             location = lastEvent.getActivity().getLocation();
-            DateTime endOfLastEvent = lastEvent.getEventTime().getEnd();
+            LocalDateTime endOfLastEvent = lastEvent.getEventTime().getEnd();
             double travelTimeFromLastEvent = travelTime(lastEvent.getActivity(), fixedEvent.getActivity());
-            DateTime timeToStartFixedEvent = fixedEvent.getEventTime().getStart().minusMinutes((int) travelTimeFromLastEvent);
-            duration = minutesBetween(endOfLastEvent, timeToStartFixedEvent).getMinutes();
+            LocalDateTime timeToStartFixedEvent = fixedEvent.getEventTime().getStart().minusMinutes((int) travelTimeFromLastEvent);
+            duration = between(endOfLastEvent, timeToStartFixedEvent).toMinutes();
         } else {
             location = fixedEvent.getActivity().getLocation();
-            DateTime timeToStartFixedEvent = fixedEvent.getEventTime().getStart().minusMinutes(0);
-            duration = minutesBetween(startTime, timeToStartFixedEvent).getMinutes();
+            LocalDateTime timeToStartFixedEvent = fixedEvent.getEventTime().getStart();
+            duration = between(startTime, timeToStartFixedEvent).toMinutes();
         }
         return createActivity("placeholder event", duration, location, PLACEHOLDER);
     }
@@ -150,10 +149,10 @@ class ItineraryBuilder {
     private Event activityToEvent(Event previousEvent, Activity activity) {
         Activity previousActivity = previousEvent != null ? previousEvent.getActivity() : null;
         double travelTime = travelTime(previousActivity, activity);
-        DateTime previousEventEnd = previousEvent != null ? previousEvent.getEventTime().getEnd() : startTime;
-        DateTime activityStart = previousEventEnd.plusMinutes((int) travelTime);
-        DateTime activityEnd = activityStart.plusMinutes((int) activity.getDuration());
-        return new Event(activity, new Interval(activityStart, activityEnd), travelTime);
+        LocalDateTime previousEventEnd = previousEvent != null ? previousEvent.getEventTime().getEnd() : startTime;
+        LocalDateTime activityStart = previousEventEnd.plusMinutes((int) travelTime);
+        LocalDateTime activityEnd = activityStart.plusMinutes((int) activity.getDuration());
+        return new Event(activity, new Range<>(activityStart, activityEnd), travelTime);
     }
 
     private double travelTime(Activity firstActivity, Activity secondActivity) {
@@ -164,7 +163,7 @@ class ItineraryBuilder {
         }
     }
 
-    private static boolean wouldExceedTime(Event event, DateTime time) {
+    private static boolean wouldExceedTime(Event event, LocalDateTime time) {
         return event.getEventTime().getEnd().isAfter(time);
     }
 
@@ -182,9 +181,9 @@ class ItineraryBuilder {
                 : createActivity("default meal", 60L, location, FOOD);
     }
 
-    private Activity createSleepActivity(DateTime currentDateTime, Event lastEvent, Activity activityToAdd, Activity hotel) {
-        DateTime endTimeOfActivity = currentDateTime.plusMinutes(TARGET_MINUTES_OF_SLEEP).withTime(START_OF_DAY, 0, 0, 0);
-        long minutesUntilStartOfDay = minutesBetween(currentDateTime, endTimeOfActivity).getMinutes();
+    private Activity createSleepActivity(LocalDateTime currentDateTime, Event lastEvent, Activity activityToAdd, Activity hotel) {
+        LocalDateTime endTimeOfActivity = dateWithTime(currentDateTime.plusMinutes(TARGET_MINUTES_OF_SLEEP), LocalTime.of(START_OF_DAY, 0));
+        long minutesUntilStartOfDay = between(currentDateTime, endTimeOfActivity).toMinutes();
         long duration = max(minutesUntilStartOfDay - (long) travelTime(lastEvent.getActivity(), hotel), TARGET_MINUTES_OF_SLEEP);
         if (hotel != null) {
             return new ActivityBuilder()

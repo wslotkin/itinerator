@@ -1,11 +1,11 @@
 package itinerator.evaluator;
 
 import itinerator.datamodel.*;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
+import itinerator.datamodel.Range;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,16 +18,16 @@ import static org.junit.Assert.assertEquals;
 
 public class MealEvaluatorTest {
     private static final double INCORRECT_MEAL_PENALTY = -20.0;
-    private static final DateTime T_0 = new DateTime(2015, 2, 6, START_OF_DINNER_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_1 = new DateTime(2015, 2, 6, END_OF_DINNER_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_2 = new DateTime(2015, 2, 7, START_OF_BREAKFAST_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_3 = new DateTime(2015, 2, 7, END_OF_BREAKFAST_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_4 = new DateTime(2015, 2, 7, START_OF_LUNCH_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_5 = new DateTime(2015, 2, 7, END_OF_LUNCH_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_6 = new DateTime(2015, 2, 7, START_OF_DINNER_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_7 = new DateTime(2015, 2, 7, END_OF_DINNER_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_8 = new DateTime(2015, 2, 8, START_OF_BREAKFAST_WINDOW.getHourOfDay(), 0);
-    private static final DateTime T_9 = new DateTime(2015, 2, 8, END_OF_BREAKFAST_WINDOW.getHourOfDay(), 0);
+    private static final LocalDateTime T_0 = LocalDateTime.of(2015, 2, 6, START_OF_DINNER_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_1 = LocalDateTime.of(2015, 2, 6, END_OF_DINNER_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_2 = LocalDateTime.of(2015, 2, 7, START_OF_BREAKFAST_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_3 = LocalDateTime.of(2015, 2, 7, END_OF_BREAKFAST_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_4 = LocalDateTime.of(2015, 2, 7, START_OF_LUNCH_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_5 = LocalDateTime.of(2015, 2, 7, END_OF_LUNCH_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_6 = LocalDateTime.of(2015, 2, 7, START_OF_DINNER_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_7 = LocalDateTime.of(2015, 2, 7, END_OF_DINNER_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_8 = LocalDateTime.of(2015, 2, 8, START_OF_BREAKFAST_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_9 = LocalDateTime.of(2015, 2, 8, END_OF_BREAKFAST_WINDOW.getHour(), 0);
     private static final Event EVENT_1 = event(FOOD, T_0, T_1);
     private static final Event EVENT_2 = event(ACTIVITY, T_1, T_2);
     private static final Event EVENT_3 = event(FOOD, T_2, T_3);
@@ -90,12 +90,12 @@ public class MealEvaluatorTest {
         events.add(index, transformedEvent);
     }
 
-    private static Event event(ActivityType type, DateTime startTime, DateTime endTime) {
+    private static Event event(ActivityType type, LocalDateTime startTime, LocalDateTime endTime) {
         return new TestEventBuilder()
                 .setActivity(new ActivityBuilder()
                         .setType(type)
                         .build())
-                .setEventTime(new Interval(startTime, endTime))
+                .setEventTime(new Range<>(startTime, endTime))
                 .build();
     }
 }

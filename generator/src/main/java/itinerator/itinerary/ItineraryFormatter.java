@@ -2,12 +2,15 @@ package itinerator.itinerary;
 
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
-import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import itinerator.datamodel.Range;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class ItineraryFormatter {
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final int MAX_EVENT_IDENTIFIER = 35;
 
     public static String prettyPrint(Itinerary itinerary) {
@@ -34,7 +37,7 @@ public class ItineraryFormatter {
         return builder.toString();
     }
 
-    private static String intervalToString(Interval interval) {
-        return "[" + DATE_TIME_FORMATTER.print(interval.getStart()) + " - " + DATE_TIME_FORMATTER.print(interval.getEnd()) + "]";
+    private static String intervalToString(Range<LocalDateTime> range) {
+        return "[" + DATE_TIME_FORMATTER.format(range.getStart()) + " - " + DATE_TIME_FORMATTER.format(range.getEnd()) + "]";
     }
 }

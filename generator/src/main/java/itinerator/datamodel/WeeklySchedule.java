@@ -1,14 +1,11 @@
 package itinerator.datamodel;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.NavigableSet;
 import java.util.Objects;
 
 import static com.google.common.collect.Sets.newTreeSet;
-import static itinerator.datamodel.Day.valueOf;
 
 public class WeeklySchedule {
     private final NavigableSet<WeeklyShift> shifts;
@@ -18,12 +15,12 @@ public class WeeklySchedule {
         this.shifts.addAll(shifts);
     }
 
-    public boolean isValid(Interval interval) {
+    public boolean isValid(Range<LocalDateTime> range) {
         // will: this covers the case of missing hours of operation
         if (shifts.isEmpty()) return true;
 
         WeeklyShift eventShift =
-                new WeeklyShift(createTimePoint(interval.getStart()), createTimePoint(interval.getEnd()));
+                new WeeklyShift(createTimePoint(range.getStart()), createTimePoint(range.getEnd()));
 
         return isEventWithinAnyShift(eventShift);
     }
@@ -70,7 +67,7 @@ public class WeeklySchedule {
         }
     }
 
-    private static WeeklyTimePoint createTimePoint(DateTime dateTime) {
-        return new WeeklyTimePoint(valueOf(dateTime.dayOfWeek().get()), dateTime.toLocalTime());
+    private static WeeklyTimePoint createTimePoint(LocalDateTime dateTime) {
+        return new WeeklyTimePoint(dateTime.getDayOfWeek(), dateTime.toLocalTime());
     }
 }

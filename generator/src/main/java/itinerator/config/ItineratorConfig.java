@@ -1,6 +1,8 @@
 package itinerator.config;
 
-import org.joda.time.DateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class ItineratorConfig {
     public static final String[] NYC_DATA = {"nycplaces.csv"};
@@ -8,13 +10,13 @@ public class ItineratorConfig {
     public static final String[] SCRAPED_CHICAGO = {"scraped-data_updated_chicago_fixed.txt", "usa_chicago_restaurants_fixed.txt"};
     public static final String[] SCRAPED_BARCELONA = {"spain_barcelona_updated.txt"};
 
-    private final DateTime startTime;
-    private final DateTime endTime;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
     private final String[] inputDataFiles;
     private final String outputFile;
 
-    public ItineratorConfig(DateTime startTime,
-                            DateTime endTime,
+    public ItineratorConfig(LocalDateTime startTime,
+                            LocalDateTime endTime,
                             String[] inputDataFiles,
                             String outputFile) {
         this.startTime = startTime;
@@ -23,11 +25,11 @@ public class ItineratorConfig {
         this.outputFile = outputFile;
     }
 
-    public DateTime getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public DateTime getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
@@ -48,17 +50,17 @@ public class ItineratorConfig {
     }
 
     public static class Builder {
-        private DateTime startTime = new DateTime().withTime(19, 0, 0, 0);
-        private DateTime endTime = startTime.plusDays(2);
+        private LocalDateTime startTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(19, 0));
+        private LocalDateTime endTime = startTime.plusDays(2);
         private String[] inputDataFiles = BEIJING_DATA;
         private String outputFile = "itinerary.txt";
 
-        public Builder setStartTime(DateTime startTime) {
+        public Builder setStartTime(LocalDateTime startTime) {
             this.startTime = startTime;
             return this;
         }
 
-        public Builder setEndTime(DateTime endTime) {
+        public Builder setEndTime(LocalDateTime endTime) {
             this.endTime = endTime;
             return this;
         }

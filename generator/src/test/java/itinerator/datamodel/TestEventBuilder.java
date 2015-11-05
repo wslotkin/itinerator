@@ -1,11 +1,11 @@
 package itinerator.datamodel;
 
-import org.joda.time.Interval;
+import java.time.LocalDateTime;
 
 public class TestEventBuilder {
 
     private Activity activity = new ActivityBuilder().build();
-    private Interval eventTime = new Interval(0L, 1L);
+    private Range<LocalDateTime> eventTime = new Range<>(LocalDateTime.now(), LocalDateTime.now().plusSeconds(1));
     private double travelTime = 0.0;
 
     public TestEventBuilder setActivity(Activity activity) {
@@ -13,7 +13,7 @@ public class TestEventBuilder {
         return this;
     }
 
-    public TestEventBuilder setEventTime(Interval eventTime) {
+    public TestEventBuilder setEventTime(Range<LocalDateTime> eventTime) {
         this.eventTime = eventTime;
         return this;
     }

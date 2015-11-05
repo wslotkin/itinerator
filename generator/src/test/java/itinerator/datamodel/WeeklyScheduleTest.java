@@ -1,21 +1,23 @@
 package itinerator.datamodel;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.joda.time.LocalTime;
 import org.junit.Test;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static itinerator.datamodel.Day.*;
+import static java.time.DayOfWeek.*;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class WeeklyScheduleTest {
 
-    private static final List<Interval> EVENT_TIMES = newArrayList(createEventInterval(MONDAY, 1, 0),
+    @SuppressWarnings("unchecked")
+    private static final List<Range<LocalDateTime>> EVENT_TIMES = newArrayList(createEventInterval(MONDAY, 1, 0),
             createEventInterval(MONDAY, 9, 10),
             createEventInterval(MONDAY, 18, 20),
             createEventInterval(TUESDAY, 4, 30),
@@ -52,7 +54,7 @@ public class WeeklyScheduleTest {
     public void twentyFourSevenScheduleShouldConsiderAllEventsValid() {
         WeeklySchedule schedule = twentyFourSeven();
 
-        for (Interval eventTime : EVENT_TIMES) {
+        for (Range<LocalDateTime> eventTime : EVENT_TIMES) {
             assertTrue(schedule.isValid(eventTime));
         }
     }
@@ -72,38 +74,36 @@ public class WeeklyScheduleTest {
     public void emptyScheduleShouldConsiderAllEventsValid() {
         WeeklySchedule schedule = new WeeklySchedule(emptyList());
 
-        for (Interval eventTime : EVENT_TIMES) {
+        for (Range<LocalDateTime> eventTime : EVENT_TIMES) {
             assertTrue(schedule.isValid(eventTime));
         }
     }
 
     private static WeeklySchedule weekdaysNineToFive() {
-        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, new LocalTime(9, 0)), new WeeklyTimePoint(MONDAY, new LocalTime(17, 0))),
-                new WeeklyShift(new WeeklyTimePoint(TUESDAY, new LocalTime(9, 0)), new WeeklyTimePoint(TUESDAY, new LocalTime(17, 0))),
-                new WeeklyShift(new WeeklyTimePoint(WEDNESDAY, new LocalTime(9, 0)), new WeeklyTimePoint(WEDNESDAY, new LocalTime(17, 0))),
-                new WeeklyShift(new WeeklyTimePoint(THURSDAY, new LocalTime(9, 0)), new WeeklyTimePoint(THURSDAY, new LocalTime(17, 0))),
-                new WeeklyShift(new WeeklyTimePoint(FRIDAY, new LocalTime(9, 0)), new WeeklyTimePoint(FRIDAY, new LocalTime(17, 0)))));
+        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(MONDAY, LocalTime.of(17, 0))),
+                new WeeklyShift(new WeeklyTimePoint(TUESDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(TUESDAY, LocalTime.of(17, 0))),
+                new WeeklyShift(new WeeklyTimePoint(WEDNESDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(WEDNESDAY, LocalTime.of(17, 0))),
+                new WeeklyShift(new WeeklyTimePoint(THURSDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(THURSDAY, LocalTime.of(17, 0))),
+                new WeeklyShift(new WeeklyTimePoint(FRIDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(FRIDAY, LocalTime.of(17, 0)))));
     }
 
     private static WeeklySchedule twentyFourSeven() {
-        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, new LocalTime(0, 0)), new WeeklyTimePoint(MONDAY, new LocalTime(0, 0)))));
+        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, LocalTime.of(0, 0)), new WeeklyTimePoint(MONDAY, LocalTime.of(0, 0)))));
     }
 
     private static WeeklySchedule sundayToThursdayNights() {
-        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, new LocalTime(18, 0)), new WeeklyTimePoint(TUESDAY, new LocalTime(2, 0))),
-                new WeeklyShift(new WeeklyTimePoint(TUESDAY, new LocalTime(18, 0)), new WeeklyTimePoint(WEDNESDAY, new LocalTime(2, 0))),
-                new WeeklyShift(new WeeklyTimePoint(WEDNESDAY, new LocalTime(18, 0)), new WeeklyTimePoint(THURSDAY, new LocalTime(2, 0))),
-                new WeeklyShift(new WeeklyTimePoint(THURSDAY, new LocalTime(18, 0)), new WeeklyTimePoint(FRIDAY, new LocalTime(2, 0))),
-                new WeeklyShift(new WeeklyTimePoint(SUNDAY, new LocalTime(18, 0)), new WeeklyTimePoint(MONDAY, new LocalTime(2, 0)))));
+        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(TUESDAY, LocalTime.of(2, 0))),
+                new WeeklyShift(new WeeklyTimePoint(TUESDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(WEDNESDAY, LocalTime.of(2, 0))),
+                new WeeklyShift(new WeeklyTimePoint(WEDNESDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(THURSDAY, LocalTime.of(2, 0))),
+                new WeeklyShift(new WeeklyTimePoint(THURSDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(FRIDAY, LocalTime.of(2, 0))),
+                new WeeklyShift(new WeeklyTimePoint(SUNDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(MONDAY, LocalTime.of(2, 0)))));
     }
 
-    private static Interval createEventInterval(Day dayOfWeek, int hourOfDay, int minuteOfHour) {
-        DateTime start = new DateTime()
-                .withDayOfWeek(dayOfWeek.getDayOfWeek())
-                .withHourOfDay(hourOfDay)
-                .withMinuteOfHour(minuteOfHour)
-                .withSecondOfMinute(0)
-                .withMillisOfSecond(0);
-        return new Interval(start, start.plusHours(1));
+    private static Range<LocalDateTime> createEventInterval(DayOfWeek dayOfWeek, int hourOfDay, int minuteOfHour) {
+        LocalDateTime start = LocalDateTime.of(LocalDate.now(), java.time.LocalTime.of(hourOfDay, minuteOfHour));
+        while (start.getDayOfWeek() != dayOfWeek) {
+            start = start.plusDays(1);
+        }
+        return new Range<>(start, start.plusHours(1));
     }
 }

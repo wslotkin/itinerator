@@ -3,11 +3,10 @@ package itinerator.itinerary;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import itinerator.calculators.RoundingTravelTimeCalculator;
 import itinerator.datamodel.*;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +20,8 @@ public class ItineraryFactoryTest {
 
     private static final Configuration CONFIGURATION = new Configuration(newArrayList(3, 4, 2, 66, 44, 33, 65, 14, 35, 46, 36, 25, 333));
     private static final List<Activity> ACTIVITIES = createActivities();
-    private static final DateTime START_TIME = new DateTime(2015, 2, 21, 21, 0);
-    private static final DateTime END_TIME = START_TIME.plusDays(2);
+    private static final LocalDateTime START_TIME = LocalDateTime.of(2015, 2, 21, 21, 0);
+    private static final LocalDateTime END_TIME = START_TIME.plusDays(2);
 
     private RoundingTravelTimeCalculator travelTimeCalculator;
     private ItineraryFactory itineraryFactory;
@@ -52,7 +51,7 @@ public class ItineraryFactoryTest {
                         .setType(ActivityType.ACTIVITY)
                         .setDuration(0L)
                         .build())
-                .setEventTime(new Interval(new DateTime(2015, 2, 22, 16, 0), new DateTime(2015, 2, 22, 16, 0)))
+                .setEventTime(new Range<>(LocalDateTime.of(2015, 2, 22, 16, 0), LocalDateTime.of(2015, 2, 22, 16, 0)))
                 .build();
         itineraryFactory = new ItineraryFactory(ACTIVITIES, START_TIME, END_TIME, travelTimeCalculator, newArrayList(fixedEvent));
 
@@ -89,19 +88,19 @@ public class ItineraryFactoryTest {
 
     private static List<Event> expectedEvents() {
         return newArrayList(new TestEventBuilder().setActivity(ACTIVITIES.get(2)).setEventTime(createEventInterval(START_TIME)).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(0)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 22, 9, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(1)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 22, 12, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(7)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 22, 14, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(11)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 22, 16, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(5)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 22, 19, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(8)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 22, 21, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(10)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 23, 9, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(4)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 23, 12, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(9)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 23, 14, 0)))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(6)).setEventTime(new Interval(createEventInterval(new DateTime(2015, 2, 23, 16, 0)))).build());
+                new TestEventBuilder().setActivity(ACTIVITIES.get(0)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 9, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(1)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 12, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(7)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 14, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(11)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 16, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(5)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 19, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(8)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 21, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(10)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 9, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(4)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 12, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(9)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 14, 0))).build(),
+                new TestEventBuilder().setActivity(ACTIVITIES.get(6)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 16, 0))).build());
     }
 
-    private static Interval createEventInterval(DateTime startTime) {
-        return new Interval(startTime, startTime.plusHours(2));
+    private static Range<LocalDateTime> createEventInterval(LocalDateTime startTime) {
+        return new Range<>(startTime, startTime.plusHours(2));
     }
 }
