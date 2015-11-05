@@ -4,6 +4,7 @@ import itinerator.itinerary.ItineraryFormatter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import static itinerator.data.FileType.TEXT;
 
@@ -46,6 +47,6 @@ class TextItineraryLoader implements CustomItineraryLoader.CustomDataLoader {
     }
 
     private static String toStandardDateTimeString(String timeRangeElement) {
-        return ItineraryFormatter.DATE_TIME_FORMATTER.parse(timeRangeElement).toString();
+        return LocalDateTime.parse(timeRangeElement, ItineraryFormatter.DATE_TIME_FORMATTER).toString();
     }
 }
