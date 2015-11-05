@@ -10,3 +10,8 @@ Result "runOptimizer":
   (min, avg, max) = (4.413, 5.614, 6.558), stdev = 0.286
   CI (99.9%): [5.546, 5.681] (assumes normal distribution)
 
+11/4/15, commit d5f02d9, after switching from org.joda to java.time
+Result "runOptimizer":
+  11.624 ±(99.9%) 0.290 ops/s [Average]
+  (min, avg, max) = (6.344, 11.624, 13.584), stdev = 1.229
+  CI (99.9%): [11.334, 11.915] (assumes normal distribution)
