@@ -1,0 +1,12 @@
+11/3/15, commit a7e2331, baseline
+Result "runOptimizer":
+  4.849 ±(99.9%) 0.154 ops/s [Average]
+  (min, avg, max) = (1.984, 4.849, 6.041), stdev = 0.653
+  CI (99.9%): [4.695, 5.003] (assumes normal distribution)
+
+11/4/15, commit 045134d, after converting evaluators to lambdas
+Result "runOptimizer":
+  5.614 ±(99.9%) 0.067 ops/s [Average]
+  (min, avg, max) = (4.413, 5.614, 6.558), stdev = 0.286
+  CI (99.9%): [5.546, 5.681] (assumes normal distribution)
+
