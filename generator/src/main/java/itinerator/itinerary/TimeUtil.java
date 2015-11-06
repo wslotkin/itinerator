@@ -22,12 +22,15 @@ public class TimeUtil {
     @VisibleForTesting
     static final Range<LocalTime> SLEEP_WINDOW = Range.of(LocalTime.of(22, 0), LocalTime.of(START_OF_DAY, 0));
 
-    public static boolean isInMealWindow(LocalDateTime eventTime) {
-        return isInBreakfastWindow(eventTime) || isInLunchWindow(eventTime) || isInDinnerWindow(eventTime);
+    public static boolean isInMealWindow(LocalDateTime eventDateTime) {
+        LocalTime eventTime = eventDateTime.toLocalTime();
+        return isInWindow(eventTime, BREAKFAST_WINDOW)
+                || isInWindow(eventTime, LUNCH_WINDOW)
+                || isInWindow(eventTime, DINNER_WINDOW);
     }
 
     public static boolean isInSleepWindow(LocalDateTime eventTime) {
-        return SLEEP_WINDOW.contains(eventTime.toLocalTime());
+        return isInWindow(eventTime.toLocalTime(), SLEEP_WINDOW);
     }
 
     public static int numberOfMealsInTimeRange(Range<LocalDateTime> timeRange) {
@@ -38,16 +41,8 @@ public class TimeUtil {
         return LocalDateTime.of(date.toLocalDate(), time);
     }
 
-    private static boolean isInBreakfastWindow(LocalDateTime eventTime) {
-        return BREAKFAST_WINDOW.contains(eventTime.toLocalTime());
-    }
-
-    private static boolean isInLunchWindow(LocalDateTime eventTime) {
-        return LUNCH_WINDOW.contains(eventTime.toLocalTime());
-    }
-
-    private static boolean isInDinnerWindow(LocalDateTime eventTime) {
-        return DINNER_WINDOW.contains(eventTime.toLocalTime());
+    private static boolean isInWindow(LocalTime time, Range<LocalTime> window) {
+        return window.contains(time);
     }
 
     @SafeVarargs
