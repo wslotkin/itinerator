@@ -5,6 +5,9 @@ import itinerator.datamodel.Range;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.stream.Stream;
+
+import static java.time.Duration.between;
 
 public class TimeUtil {
 
@@ -28,11 +31,7 @@ public class TimeUtil {
     }
 
     public static int numberOfMealsInTimeRange(Range<LocalDateTime> timeRange) {
-        int numberOfMeals = numberOfMeals(timeRange, BREAKFAST_WINDOW.getStart(), BREAKFAST_WINDOW.getEnd());
-        numberOfMeals += numberOfMeals(timeRange, LUNCH_WINDOW.getStart(), LUNCH_WINDOW.getEnd());
-        numberOfMeals += numberOfMeals(timeRange, DINNER_WINDOW.getStart(), DINNER_WINDOW.getEnd());
-
-        return numberOfMeals;
+        return numberOfMeals(timeRange, BREAKFAST_WINDOW, LUNCH_WINDOW, DINNER_WINDOW);
     }
 
     public static LocalDateTime dateWithTime(LocalDateTime date, LocalTime time) {
@@ -51,21 +50,13 @@ public class TimeUtil {
         return DINNER_WINDOW.contains(eventTime.toLocalTime());
     }
 
-    private static int numberOfMeals(Range<LocalDateTime> timeRange, LocalTime mealWindowStartTime, LocalTime mealWindowEndTime) {
-        LocalDateTime startOfMealWindow = dateWithTime(timeRange.getStart(), mealWindowStartTime);
-        LocalDateTime endOfMealWindow = dateWithTime(timeRange.getStart(), mealWindowEndTime);
+    @SafeVarargs
+    private static int numberOfMeals(Range<LocalDateTime> timeRange, Range<LocalTime>... windowTimes) {
+        int numberOfFullDays = (int) between(timeRange.getStart(), timeRange.getEnd()).toDays();
+        Range<LocalTime> remainingRange = Range.of(timeRange.getStart().toLocalTime(), timeRange.getEnd().toLocalTime());
 
-        int numberOfMeals = 0;
-        while (startOfMealWindow.isBefore(timeRange.getEnd())) {
-            numberOfMeals += overlaps(timeRange, startOfMealWindow, endOfMealWindow) ? 1 : 0;
-            startOfMealWindow = startOfMealWindow.plusDays(1);
-            endOfMealWindow = endOfMealWindow.plusDays(1);
-        }
+        int additionalMeals = (int) Stream.of(windowTimes).filter(remainingRange::contains).count();
 
-        return numberOfMeals;
-    }
-
-    private static boolean overlaps(Range<LocalDateTime> first, LocalDateTime secondStart, LocalDateTime secondEnd) {
-        return first.getStart().isBefore(secondEnd) && secondStart.isBefore(first.getEnd());
+        return numberOfFullDays * windowTimes.length + additionalMeals;
     }
 }

@@ -8,7 +8,7 @@ public class Range<T extends Comparable<? super T>> {
     private final T end;
 
     public static <T extends Comparable<? super T>> Range<T> of(T start, T end) {
-        if (valueIsBefore(start, end)) {
+        if (valueIsAtOrAfter(end, start)) {
             return new Range<>(start, end);
         } else {
             return new WrappingRange<>(start, end);
@@ -34,10 +34,6 @@ public class Range<T extends Comparable<? super T>> {
 
     public boolean contains(Range<T> range) {
         return contains(range.start) && contains(range.end);
-    }
-
-    public boolean overlaps(Range<T> range) {
-        return isAtOrAfterStart(range.end) && isAtOrBeforeEnd(range.start);
     }
 
     private boolean isAtOrAfterStart(T value) {
@@ -82,7 +78,13 @@ public class Range<T extends Comparable<? super T>> {
 
         @Override
         public boolean contains(Range<T> range) {
-            return contains(range.start) && valueIsWithinBounds(range.end, range.start, getEnd());
+            boolean rangeStartIsBeforeEnd = valueIsAtOrAfter(getEnd(), range.start);
+            if (rangeStartIsBeforeEnd) {
+                return contains(range.start)
+                        && (valueIsAtOrAfter(range.end, range.start) && valueIsBefore(range.end, getEnd()));
+            } else {
+                return contains(range.start) && (valueIsWithinBounds(range.end, range.start, getEnd()));
+            }
         }
 
         private static <T extends Comparable<? super T>> boolean valueIsWithinBounds(T value, T lower, T upper) {
