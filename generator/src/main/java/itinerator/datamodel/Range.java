@@ -8,7 +8,11 @@ public class Range<T extends Comparable<? super T>> {
     private final T end;
 
     public static <T extends Comparable<? super T>> Range<T> of(T start, T end) {
-        return new Range<>(start, end);
+        if (valueIsBefore(start, end)) {
+            return new Range<>(start, end);
+        } else {
+            return new WrappingRange<>(start, end);
+        }
     }
 
     private Range(T start, T end) {
@@ -37,11 +41,19 @@ public class Range<T extends Comparable<? super T>> {
     }
 
     private boolean isAtOrAfterStart(T value) {
-        return value.compareTo(start) >= 0;
+        return valueIsAtOrAfter(value, start);
     }
 
     private boolean isAtOrBeforeEnd(T value) {
-        return value.compareTo(end) <= 0;
+        return valueIsBefore(value, end);
+    }
+
+    protected static <T extends Comparable<? super T>> boolean valueIsAtOrAfter(T value, T compare) {
+        return value.compareTo(compare) >= 0;
+    }
+
+    protected static <T extends Comparable<? super T>> boolean valueIsBefore(T value, T compare) {
+        return value.compareTo(compare) <= 0;
     }
 
     @Override
@@ -56,5 +68,25 @@ public class Range<T extends Comparable<? super T>> {
     @Override
     public int hashCode() {
         return Objects.hash(start, end);
+    }
+
+    private static class WrappingRange<T extends Comparable<? super T>> extends Range<T> {
+        private WrappingRange(T start, T end) {
+            super(start, end);
+        }
+
+        @Override
+        public boolean contains(T value) {
+            return valueIsWithinBounds(value, getStart(), getEnd());
+        }
+
+        @Override
+        public boolean contains(Range<T> range) {
+            return contains(range.start) && valueIsWithinBounds(range.end, range.start, getEnd());
+        }
+
+        private static <T extends Comparable<? super T>> boolean valueIsWithinBounds(T value, T lower, T upper) {
+            return valueIsAtOrAfter(value, lower) || valueIsBefore(value, upper);
+        }
     }
 }

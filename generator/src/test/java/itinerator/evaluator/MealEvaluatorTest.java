@@ -18,16 +18,16 @@ import static org.junit.Assert.assertEquals;
 
 public class MealEvaluatorTest {
     private static final double INCORRECT_MEAL_PENALTY = -20.0;
-    private static final LocalDateTime T_0 = LocalDateTime.of(2015, 2, 6, START_OF_DINNER_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_1 = LocalDateTime.of(2015, 2, 6, END_OF_DINNER_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_2 = LocalDateTime.of(2015, 2, 7, START_OF_BREAKFAST_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_3 = LocalDateTime.of(2015, 2, 7, END_OF_BREAKFAST_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_4 = LocalDateTime.of(2015, 2, 7, START_OF_LUNCH_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_5 = LocalDateTime.of(2015, 2, 7, END_OF_LUNCH_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_6 = LocalDateTime.of(2015, 2, 7, START_OF_DINNER_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_7 = LocalDateTime.of(2015, 2, 7, END_OF_DINNER_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_8 = LocalDateTime.of(2015, 2, 8, START_OF_BREAKFAST_WINDOW.getHour(), 0);
-    private static final LocalDateTime T_9 = LocalDateTime.of(2015, 2, 8, END_OF_BREAKFAST_WINDOW.getHour(), 0);
+    private static final LocalDateTime T_0 = LocalDateTime.of(2015, 2, 6, DINNER_WINDOW.getStart().getHour(), 0);
+    private static final LocalDateTime T_1 = LocalDateTime.of(2015, 2, 6, DINNER_WINDOW.getEnd().getHour(), 0);
+    private static final LocalDateTime T_2 = LocalDateTime.of(2015, 2, 7, BREAKFAST_WINDOW.getStart().getHour(), 0);
+    private static final LocalDateTime T_3 = LocalDateTime.of(2015, 2, 7, BREAKFAST_WINDOW.getEnd().getHour(), 0);
+    private static final LocalDateTime T_4 = LocalDateTime.of(2015, 2, 7, LUNCH_WINDOW.getStart().getHour(), 0);
+    private static final LocalDateTime T_5 = LocalDateTime.of(2015, 2, 7, LUNCH_WINDOW.getEnd().getHour(), 0);
+    private static final LocalDateTime T_6 = LocalDateTime.of(2015, 2, 7, DINNER_WINDOW.getStart().getHour(), 0);
+    private static final LocalDateTime T_7 = LocalDateTime.of(2015, 2, 7, DINNER_WINDOW.getEnd().getHour(), 0);
+    private static final LocalDateTime T_8 = LocalDateTime.of(2015, 2, 8, BREAKFAST_WINDOW.getStart().getHour(), 0);
+    private static final LocalDateTime T_9 = LocalDateTime.of(2015, 2, 8, BREAKFAST_WINDOW.getEnd().getHour(), 0);
     private static final Event EVENT_1 = event(FOOD, T_0, T_1);
     private static final Event EVENT_2 = event(ACTIVITY, T_1, T_2);
     private static final Event EVENT_3 = event(FOOD, T_2, T_3);
