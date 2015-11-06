@@ -95,7 +95,7 @@ public class MealEvaluatorTest {
                 .setActivity(new ActivityBuilder()
                         .setType(type)
                         .build())
-                .setEventTime(new Range<>(startTime, endTime))
+                .setEventTime(Range.of(startTime, endTime))
                 .build();
     }
 }

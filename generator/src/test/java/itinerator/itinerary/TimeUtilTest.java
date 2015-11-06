@@ -45,10 +45,10 @@ public class TimeUtilTest {
 
     @Test
     public void computesNumberOfMealsBetweenToTimes() {
-        assertEquals(0, numberOfMealsInTimeRange(new Range<>(START_OF_TODAY, START_OF_BREAKFAST_WINDOW.atDate(TODAY))));
-        assertEquals(1, numberOfMealsInTimeRange(new Range<>(START_OF_BREAKFAST_WINDOW.atDate(TODAY), END_OF_BREAKFAST_WINDOW.atDate(TODAY))));
-        assertEquals(1, numberOfMealsInTimeRange(new Range<>(START_OF_DINNER_WINDOW.atDate(TODAY), START_OF_TOMORROW)));
-        assertEquals(2, numberOfMealsInTimeRange(new Range<>(START_OF_LUNCH_WINDOW.atDate(TODAY), END_OF_DINNER_WINDOW.atDate(TODAY))));
-        assertEquals(3, numberOfMealsInTimeRange(new Range<>(START_OF_TODAY, START_OF_TOMORROW)));
+        assertEquals(0, numberOfMealsInTimeRange(Range.of(START_OF_TODAY, START_OF_BREAKFAST_WINDOW.atDate(TODAY))));
+        assertEquals(1, numberOfMealsInTimeRange(Range.of(START_OF_BREAKFAST_WINDOW.atDate(TODAY), END_OF_BREAKFAST_WINDOW.atDate(TODAY))));
+        assertEquals(1, numberOfMealsInTimeRange(Range.of(START_OF_DINNER_WINDOW.atDate(TODAY), START_OF_TOMORROW)));
+        assertEquals(2, numberOfMealsInTimeRange(Range.of(START_OF_LUNCH_WINDOW.atDate(TODAY), END_OF_DINNER_WINDOW.atDate(TODAY))));
+        assertEquals(3, numberOfMealsInTimeRange(Range.of(START_OF_TODAY, START_OF_TOMORROW)));
     }
 }

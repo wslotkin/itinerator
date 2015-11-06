@@ -11,7 +11,7 @@ import java.util.List;
 public class SubitineraryProvider {
 
     public static Itinerary subitinerary(Itinerary itinerary, LocalDateTime start, LocalDateTime end) {
-        Range<LocalDateTime> subitineraryRange = new Range<>(start, end);
+        Range<LocalDateTime> subitineraryRange = Range.of(start, end);
         List<Event> eventsInTimeRange = new ArrayList<>();
         for (Event event : itinerary.getEvents()) {
             if (eventFallsInTimeRange(subitineraryRange, event)) {

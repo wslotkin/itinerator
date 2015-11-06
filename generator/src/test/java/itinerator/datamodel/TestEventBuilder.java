@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class TestEventBuilder {
 
     private Activity activity = new ActivityBuilder().build();
-    private Range<LocalDateTime> eventTime = new Range<>(LocalDateTime.now(), LocalDateTime.now().plusSeconds(1));
+    private Range<LocalDateTime> eventTime = Range.of(LocalDateTime.now(), LocalDateTime.now().plusSeconds(1));
     private double travelTime = 0.0;
 
     public TestEventBuilder setActivity(Activity activity) {

@@ -7,7 +7,11 @@ public class Range<T extends Comparable<? super T>> {
     private final T start;
     private final T end;
 
-    public Range(T start, T end) {
+    public static <T extends Comparable<? super T>> Range<T> of(T start, T end) {
+        return new Range<>(start, end);
+    }
+
+    private Range(T start, T end) {
         this.start = start;
         this.end = end;
     }

@@ -104,6 +104,6 @@ public class WeeklyScheduleTest {
         while (start.getDayOfWeek() != dayOfWeek) {
             start = start.plusDays(1);
         }
-        return new Range<>(start, start.plusHours(1));
+        return Range.of(start, start.plusHours(1));
     }
 }

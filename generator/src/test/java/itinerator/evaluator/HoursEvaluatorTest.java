@@ -55,7 +55,7 @@ public class HoursEvaluatorTest {
         }
 
         return new TestEventBuilder()
-                .setEventTime(new Range<>(start, start.plusHours(1)))
+                .setEventTime(Range.of(start, start.plusHours(1)))
                 .setActivity(new ActivityBuilder().setWeeklySchedule(DEFAULT_SCHEDULE).build())
                 .build();
     }

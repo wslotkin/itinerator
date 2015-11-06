@@ -24,7 +24,7 @@ class MealEvaluator implements Evaluator<Itinerary> {
         Event firstEvent = events.get(0);
         Event lastEvent = getLast(events);
 
-        int expectedNumberOfMeals = numberOfMealsInTimeRange(new Range<>(firstEvent.getEventTime().getStart(),
+        int expectedNumberOfMeals = numberOfMealsInTimeRange(Range.of(firstEvent.getEventTime().getStart(),
                 lastEvent.getEventTime().getEnd()));
         int actualNumberOfMeals = events.stream()
                 .mapToInt(event -> eventIsMealEvent(event) ? 1 : 0)

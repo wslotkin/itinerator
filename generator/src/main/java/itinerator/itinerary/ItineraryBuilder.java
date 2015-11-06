@@ -152,7 +152,7 @@ class ItineraryBuilder {
         LocalDateTime previousEventEnd = previousEvent != null ? previousEvent.getEventTime().getEnd() : startTime;
         LocalDateTime activityStart = previousEventEnd.plusMinutes((int) travelTime);
         LocalDateTime activityEnd = activityStart.plusMinutes((int) activity.getDuration());
-        return new Event(activity, new Range<>(activityStart, activityEnd), travelTime);
+        return new Event(activity, Range.of(activityStart, activityEnd), travelTime);
     }
 
     private double travelTime(Activity firstActivity, Activity secondActivity) {

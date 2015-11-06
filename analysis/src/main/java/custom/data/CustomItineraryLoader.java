@@ -75,9 +75,9 @@ public class CustomItineraryLoader {
             // convention that generated events shared a location with the NEXT event instead of the current convention
             // of sharing the location of the PREVIOUS event. This isn't necessary for any itineraries generated after 5/16/2015
             long minutesToShift = between(START_OF_BREAKFAST_WINDOW, endTime.toLocalTime()).toMinutes();
-            return new Event(activity, new Range<>(startTime.minusMinutes(minutesToShift), endTime.minusMinutes(minutesToShift)), 0.0);
+            return new Event(activity, Range.of(startTime.minusMinutes(minutesToShift), endTime.minusMinutes(minutesToShift)), 0.0);
         } else {
-            return new Event(activity, new Range<>(startTime, endTime), 0.0);
+            return new Event(activity, Range.of(startTime, endTime), 0.0);
         }
     }
 

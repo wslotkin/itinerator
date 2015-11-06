@@ -51,7 +51,7 @@ public class ItineraryFactoryTest {
                         .setType(ActivityType.ACTIVITY)
                         .setDuration(0L)
                         .build())
-                .setEventTime(new Range<>(LocalDateTime.of(2015, 2, 22, 16, 0), LocalDateTime.of(2015, 2, 22, 16, 0)))
+                .setEventTime(Range.of(LocalDateTime.of(2015, 2, 22, 16, 0), LocalDateTime.of(2015, 2, 22, 16, 0)))
                 .build();
         itineraryFactory = new ItineraryFactory(ACTIVITIES, START_TIME, END_TIME, travelTimeCalculator, newArrayList(fixedEvent));
 
@@ -101,6 +101,6 @@ public class ItineraryFactoryTest {
     }
 
     private static Range<LocalDateTime> createEventInterval(LocalDateTime startTime) {
-        return new Range<>(startTime, startTime.plusHours(2));
+        return Range.of(startTime, startTime.plusHours(2));
     }
 }
