@@ -2,14 +2,14 @@ package itinerator.datamodel;
 
 import java.util.Objects;
 
-public class Range<T extends Comparable<? super T>> {
+public abstract class Range<T extends Comparable<? super T>> {
 
-    private final T start;
-    private final T end;
+    protected final T start;
+    protected final T end;
 
     public static <T extends Comparable<? super T>> Range<T> of(T start, T end) {
         if (valueIsAtOrAfter(end, start)) {
-            return new Range<>(start, end);
+            return new OrderedRange<>(start, end);
         } else {
             return new WrappingRange<>(start, end);
         }
@@ -28,29 +28,19 @@ public class Range<T extends Comparable<? super T>> {
         return end;
     }
 
-    public boolean contains(T value) {
-        return isAtOrAfterStart(value) && isAtOrBeforeEnd(value);
-    }
+    public abstract boolean contains(T value);
 
     public boolean contains(Range<T> range) {
-        return contains(range.start) && contains(range.end);
+        if (range instanceof OrderedRange) {
+            return containsOrderedRange((OrderedRange<T>) range);
+        } else {
+            return containsWrappingRange((WrappingRange<T>) range);
+        }
     }
 
-    private boolean isAtOrAfterStart(T value) {
-        return valueIsAtOrAfter(value, start);
-    }
+    protected abstract boolean containsOrderedRange(OrderedRange<T> range);
 
-    private boolean isAtOrBeforeEnd(T value) {
-        return valueIsBefore(value, end);
-    }
-
-    protected static <T extends Comparable<? super T>> boolean valueIsAtOrAfter(T value, T compare) {
-        return value.compareTo(compare) >= 0;
-    }
-
-    protected static <T extends Comparable<? super T>> boolean valueIsBefore(T value, T compare) {
-        return value.compareTo(compare) <= 0;
-    }
+    protected abstract boolean containsWrappingRange(WrappingRange<T> range);
 
     @Override
     public boolean equals(Object o) {
@@ -66,14 +56,57 @@ public class Range<T extends Comparable<? super T>> {
         return Objects.hash(start, end);
     }
 
+    @Override
+    public String toString() {
+        return "Range{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
+    }
+
+    private static <T extends Comparable<? super T>> boolean valueIsAtOrAfter(T value, T compare) {
+        return value.compareTo(compare) >= 0;
+    }
+
+    private static <T extends Comparable<? super T>> boolean valueIsBefore(T value, T compare) {
+        return value.compareTo(compare) <= 0;
+    }
+
+    private static <T extends Comparable<? super T>> boolean valueIsWithinBounds(T value, T lower, T upper) {
+        return valueIsAtOrAfter(value, lower) || valueIsBefore(value, upper);
+    }
+
+    private static class OrderedRange<T extends Comparable<? super T>> extends Range<T> {
+
+        private OrderedRange(T start, T end) {
+            super(start, end);
+        }
+
+        public boolean contains(T value) {
+            return valueIsAtOrAfter(value, start) && valueIsBefore(value, end);
+        }
+
+        @Override
+        protected boolean containsOrderedRange(OrderedRange<T> range) {
+            return contains(range.start) && contains(range.end);
+        }
+
+        @Override
+        protected boolean containsWrappingRange(WrappingRange<T> range) {
+            return false;
+        }
+
+    }
+
     private static class WrappingRange<T extends Comparable<? super T>> extends Range<T> {
+
         private WrappingRange(T start, T end) {
             super(start, end);
         }
 
         @Override
         public boolean contains(T value) {
-            return valueIsWithinBounds(value, getStart(), getEnd());
+            return valueIsWithinBounds(value, start, end);
         }
 
         @Override
@@ -87,8 +120,18 @@ public class Range<T extends Comparable<? super T>> {
             }
         }
 
-        private static <T extends Comparable<? super T>> boolean valueIsWithinBounds(T value, T lower, T upper) {
-            return valueIsAtOrAfter(value, lower) || valueIsBefore(value, upper);
+        @Override
+        protected boolean containsOrderedRange(OrderedRange<T> range) {
+            if (valueIsAtOrAfter(range.start, start)) {
+                return valueIsAtOrAfter(range.end, start);
+            } else {
+                return valueIsBefore(range.start, end) && valueIsBefore(range.end, end);
+            }
+        }
+
+        @Override
+        protected boolean containsWrappingRange(WrappingRange<T> range) {
+            return contains(range.start) && contains(range.end);
         }
     }
 }
