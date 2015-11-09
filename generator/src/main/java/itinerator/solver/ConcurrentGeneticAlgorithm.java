@@ -60,9 +60,12 @@ public class ConcurrentGeneticAlgorithm extends GeneticAlgorithm {
         List<Chromosome> newGeneration = new ArrayList<>(populationSize);
         selection.init(population);
 
-        List<OptimizerJob> batches = new ArrayList<>(internalAlgorithms.size());
+        List<Callable<Void>> batches = new ArrayList<>(internalAlgorithms.size());
         for (MutableGeneticAlgorithm internalAlgorithm : internalAlgorithms) {
-            batches.add(new OptimizerJob(internalAlgorithm));
+            batches.add(() -> {
+                internalAlgorithm.optimize();
+                return null;
+            });
         }
 
         try {
@@ -86,20 +89,6 @@ public class ConcurrentGeneticAlgorithm extends GeneticAlgorithm {
     public void cleanUp() {
         super.cleanUp();
         executorService.shutdown();
-    }
-
-    private class OptimizerJob implements Callable<Void> {
-        private final MutableGeneticAlgorithm optimizer;
-
-        private OptimizerJob(MutableGeneticAlgorithm optimizer) {
-            this.optimizer = optimizer;
-        }
-
-        @Override
-        public Void call() throws Exception {
-            this.optimizer.optimize();
-            return null;
-        }
     }
 
     private static class MutableGeneticAlgorithm extends GeneticAlgorithm {
