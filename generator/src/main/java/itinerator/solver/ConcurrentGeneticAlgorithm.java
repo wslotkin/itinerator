@@ -24,7 +24,7 @@ public class ConcurrentGeneticAlgorithm extends GeneticAlgorithm {
     public ConcurrentGeneticAlgorithm(int populationSize,
                                       double mutationRate,
                                       ExecutorService executorService,
-                                      int parallelism) throws IllegalArgumentException {
+                                      int parallelism) {
         super(populationSize, mutationRate);
         this.executorService = executorService;
         internalAlgorithms = new ArrayList<>(Math.max(1, parallelism));
@@ -92,7 +92,7 @@ public class ConcurrentGeneticAlgorithm extends GeneticAlgorithm {
     }
 
     private static class MutableGeneticAlgorithm extends GeneticAlgorithm {
-        public MutableGeneticAlgorithm(int populationSize, double mutationRate) throws IllegalArgumentException {
+        public MutableGeneticAlgorithm(int populationSize, double mutationRate) {
             super(populationSize, mutationRate);
         }
 
