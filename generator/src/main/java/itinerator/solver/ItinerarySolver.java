@@ -39,16 +39,16 @@ public class ItinerarySolver {
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory, evaluationConfig);
         GeneticAlgorithm geneticAlgorithm = createGeneticAlgorithm(geneticAlgorithmConfig.getPopulationSize(),
                 geneticAlgorithmConfig.getMutationRate(),
-                geneticAlgorithmConfig.getNumberOfThreads());
+                geneticAlgorithmConfig.getParallelized());
         SimpleSolver solver = new SimpleSolver(geneticAlgorithm, itineraryProblem);
         solver.addStopCondition(new IterationCondition(geneticAlgorithmConfig.getMaxIterations()));
         solver.addStopCondition(new TimeoutCondition(geneticAlgorithmConfig.getMaxDuration()));
         return new ItinerarySolver(solver, itineraryFactory);
     }
 
-    private static GeneticAlgorithm createGeneticAlgorithm(int populationSize, double mutationRate, int numberOfThreads) {
-        if (numberOfThreads > 1) {
-            return new ConcurrentGeneticAlgorithm(populationSize, mutationRate, numberOfThreads);
+    private static GeneticAlgorithm createGeneticAlgorithm(int populationSize, double mutationRate, boolean parallelized) {
+        if (parallelized) {
+            return new ParallelGeneticAlgorithm(populationSize, mutationRate);
         } else {
             return new GeneticAlgorithm(populationSize, mutationRate);
         }

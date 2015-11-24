@@ -5,18 +5,18 @@ public class GeneticAlgorithmConfig {
     private final int populationSize;
     private final int maxIterations;
     private final long maxDuration;
-    private final int numberOfThreads;
+    private final boolean parallelized;
 
     public GeneticAlgorithmConfig(double mutationRate,
                                   int populationSize,
                                   int maxIterations,
                                   long maxDuration,
-                                  int numberOfThreads) {
+                                  boolean parallelized) {
         this.mutationRate = mutationRate;
         this.populationSize = populationSize;
         this.maxIterations = maxIterations;
         this.maxDuration = maxDuration;
-        this.numberOfThreads = numberOfThreads;
+        this.parallelized = parallelized;
     }
 
     public double getMutationRate() {
@@ -35,8 +35,8 @@ public class GeneticAlgorithmConfig {
         return maxDuration;
     }
 
-    public int getNumberOfThreads() {
-        return numberOfThreads;
+    public boolean getParallelized() {
+        return parallelized;
     }
 
     public Builder toBuilder() {
@@ -45,7 +45,7 @@ public class GeneticAlgorithmConfig {
                 .setPopulationSize(populationSize)
                 .setMaxIterations(maxIterations)
                 .setMaxDuration(maxDuration)
-                .setNumberOfThreads(numberOfThreads);
+                .setParallelized(parallelized);
     }
 
     public static class Builder {
@@ -53,7 +53,7 @@ public class GeneticAlgorithmConfig {
         private int populationSize = 1000;
         private int maxIterations = 100;
         private long maxDuration = Integer.MAX_VALUE;
-        private int numberOfThreads = 2;
+        private boolean parallelized = true;
 
         public Builder setMutationRate(double mutationRate) {
             this.mutationRate = mutationRate;
@@ -75,8 +75,8 @@ public class GeneticAlgorithmConfig {
             return this;
         }
 
-        public Builder setNumberOfThreads(int numberOfThreads) {
-            this.numberOfThreads = numberOfThreads;
+        public Builder setParallelized(boolean parallelized) {
+            this.parallelized = parallelized;
             return this;
         }
 
@@ -85,7 +85,7 @@ public class GeneticAlgorithmConfig {
                     populationSize,
                     maxIterations,
                     maxDuration,
-                    numberOfThreads);
+                    parallelized);
         }
     }
 }
