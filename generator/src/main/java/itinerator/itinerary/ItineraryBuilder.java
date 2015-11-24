@@ -7,10 +7,7 @@ import itinerator.datamodel.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Iterables.getLast;
@@ -20,13 +17,10 @@ import static itinerator.datamodel.ActivityType.*;
 import static itinerator.itinerary.TimeUtil.*;
 import static java.lang.Math.max;
 import static java.time.Duration.between;
-import static java.util.Collections.sort;
+import static java.util.Comparator.comparing;
 
 class ItineraryBuilder {
-    private static final Comparator<Activity> ARBITRARY_BUT_PREDICTABLE_ORDERING =
-            (activity1, activity2) -> activity1.getId().compareTo(activity2.getId());
-    private static final Comparator<Event> EVENT_COMPARATOR =
-            (event1, event2) -> event1.getEventTime().getStart().compareTo(event2.getEventTime().getStart());
+    private static final Comparator<Activity> ARBITRARY_BUT_PREDICTABLE_ORDERING = comparing(Activity::getId);
     private static final long TARGET_HOURS_OF_SLEEP = TimeUnit.MINUTES.toHours(TARGET_MINUTES_OF_SLEEP);
 
     private final LocalDateTime startTime;
@@ -35,7 +29,7 @@ class ItineraryBuilder {
     private final TreeMultimap<Integer, Activity> foods;
     private final TreeMultimap<Integer, Activity> hotels;
     private final RoundingTravelTimeCalculator travelTimeCalculator;
-    private final List<Event> fixedEvents;
+    private final LinkedList<Event> fixedEvents;
 
     public ItineraryBuilder(LocalDateTime startTime,
                             LocalDateTime endTime,
@@ -44,10 +38,11 @@ class ItineraryBuilder {
         this.startTime = startTime;
         this.endTime = endTime;
         this.travelTimeCalculator = travelTimeCalculator;
-        this.fixedEvents = fixedEvents;
+        this.fixedEvents = newLinkedList(fixedEvents);
         activities = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
         foods = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
         hotels = TreeMultimap.create(natural(), ARBITRARY_BUT_PREDICTABLE_ORDERING);
+        this.fixedEvents.sort(comparing(event -> event.getEventTime().getStart()));
     }
 
     public ItineraryBuilder addActivityAtPosition(Activity activity, Integer position) {
@@ -68,12 +63,11 @@ class ItineraryBuilder {
     public Itinerary build() {
         List<Event> events = new ArrayList<>();
         Queue<Activity> mealQueue = newLinkedList(foods.values());
-        sort(fixedEvents, EVENT_COMPARATOR);
-        Queue<Event> fixedEventQueue = newLinkedList(fixedEvents);
+
         Activity hotel = !hotels.isEmpty() ? Iterables.get(hotels.values(), 0) : null;
 
         for (Activity activity : activities.values()) {
-            boolean wasAdded = addEvent(events, activity, mealQueue, fixedEventQueue, hotel);
+            boolean wasAdded = addEvent(events, activity, mealQueue, fixedEvents, hotel);
             if (!wasAdded) break;
         }
 
