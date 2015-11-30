@@ -27,3 +27,9 @@ Result "runOptimizer":
   14.877 ±(99.9%) 0.301 ops/s [Average]
   (min, avg, max) = (11.223, 14.877, 16.921), stdev = 1.273
   CI (99.9%): [14.576, 15.177] (assumes normal distribution)
+
+11/29/15 commit 2744423, change to parallel streams and refactor Range
+Result "runOptimizer":
+  12.642 ±(99.9%) 0.280 ops/s [Average]
+  (min, avg, max) = (6.745, 12.642, 15.294), stdev = 1.187
+  CI (99.9%): [12.362, 12.923] (assumes normal distribution)
