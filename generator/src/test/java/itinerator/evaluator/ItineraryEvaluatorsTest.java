@@ -22,45 +22,26 @@ public class ItineraryEvaluatorsTest {
     private static final Itinerary SUBITINERARY_2 = new Itinerary(newArrayList(EVENT_2));
     private static final double EVALUATOR_1_SUBITINERARY_1_SCORE = 1.2;
     private static final double EVALUATOR_1_SUBITINERARY_2_SCORE = 4.3;
-    private static final double EVALUATOR_2_SUBITINERARY_1_SCORE = 5.6;
-    private static final double EVALUATOR_2_SUBITINERARY_2_SCORE = 8.7;
 
     private Evaluator<Itinerary> firstEvaluator;
-    private Evaluator<Itinerary> secondEvaluator;
     private DaySubitineraryProvider subitineraryProvider;
 
     @Before
     public void before() {
         firstEvaluator = mockGeneric(Evaluator.class);
-        secondEvaluator = mockGeneric(Evaluator.class);
         subitineraryProvider = mock(DaySubitineraryProvider.class);
 
         when(firstEvaluator.applyAsDouble(SUBITINERARY_1)).thenReturn(EVALUATOR_1_SUBITINERARY_1_SCORE);
         when(firstEvaluator.applyAsDouble(SUBITINERARY_2)).thenReturn(EVALUATOR_1_SUBITINERARY_2_SCORE);
-        when(secondEvaluator.applyAsDouble(SUBITINERARY_1)).thenReturn(EVALUATOR_2_SUBITINERARY_1_SCORE);
-        when(secondEvaluator.applyAsDouble(SUBITINERARY_2)).thenReturn(EVALUATOR_2_SUBITINERARY_2_SCORE);
         when(subitineraryProvider.getPerDaySubitineraries(ITINERARY)).thenReturn(newArrayList(SUBITINERARY_1, SUBITINERARY_2));
     }
 
     @Test
-    public void whenOneEvaluatorShouldReturnResultOfEvaluator() {
+    public void shouldReturnSumOfEachSubitineraryScore() {
         ItineraryEvaluators compositeEvaluator = new ItineraryEvaluators(subitineraryProvider, firstEvaluator);
         double result = compositeEvaluator.applyAsDouble(ITINERARY);
 
         double expectedResult = EVALUATOR_1_SUBITINERARY_1_SCORE + EVALUATOR_1_SUBITINERARY_2_SCORE;
-
-        assertEquals(expectedResult, result, DELTA);
-    }
-
-    @Test
-    public void whenMultipleEvaluatorShouldReturnSumOfResultsOfEvaluators() {
-        ItineraryEvaluators compositeEvaluator = new ItineraryEvaluators(subitineraryProvider, firstEvaluator, secondEvaluator);
-        double result = compositeEvaluator.applyAsDouble(ITINERARY);
-
-        double expectedResult = EVALUATOR_1_SUBITINERARY_1_SCORE
-                + EVALUATOR_1_SUBITINERARY_2_SCORE
-                + EVALUATOR_2_SUBITINERARY_1_SCORE
-                + EVALUATOR_2_SUBITINERARY_2_SCORE;
 
         assertEquals(expectedResult, result, DELTA);
     }

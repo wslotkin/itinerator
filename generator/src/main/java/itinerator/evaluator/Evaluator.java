@@ -4,13 +4,7 @@ import java.util.function.ToDoubleFunction;
 
 @FunctionalInterface
 public interface Evaluator<T> extends ToDoubleFunction<T> {
-    @SafeVarargs
-    static <T> Evaluator<T> compose(Evaluator<T> first, Evaluator<T>... rest) {
-        Evaluator<T> finalResult = first;
-        for (Evaluator<T> next : rest) {
-            final Evaluator<T> currentResult = finalResult;
-            finalResult = input -> currentResult.applyAsDouble(input) + next.applyAsDouble(input);
-        }
-        return finalResult;
+    default Evaluator<T> andThen(Evaluator<T> nextEvaluator) {
+        return input -> applyAsDouble(input) + nextEvaluator.applyAsDouble(input);
     }
 }

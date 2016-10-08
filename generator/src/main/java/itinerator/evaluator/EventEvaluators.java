@@ -6,7 +6,6 @@ import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
 
 import static itinerator.datamodel.ActivityType.SLEEP;
-import static itinerator.evaluator.Evaluator.compose;
 import static itinerator.itinerary.TimeUtil.TARGET_MINUTES_OF_SLEEP;
 import static java.lang.Math.max;
 
@@ -14,18 +13,17 @@ class EventEvaluators implements Evaluator<Itinerary> {
     private final Evaluator<Event> evaluator;
 
     public static Evaluator<Itinerary> createEvaluators(EvaluationConfig config) {
-        return new EventEvaluators(funEvaluator(),
-                costEvaluator(config.getCostPenalty()),
-                hoursEvaluator(config.getInvalidHoursPenalty()),
-                movementEvaluator(config.getAreaHoppingPenalty(), config.getAreaHoppingThreshold()),
-                sleepEvaluator(config.getMissingSleepMinutesPenalty()),
-                travelEvaluator(config.getTravelTimePenalty()));
+        return new EventEvaluators(funEvaluator()
+                .andThen(costEvaluator(config.getCostPenalty()))
+                .andThen(hoursEvaluator(config.getInvalidHoursPenalty()))
+                .andThen(movementEvaluator(config.getAreaHoppingPenalty(), config.getAreaHoppingThreshold()))
+                .andThen(sleepEvaluator(config.getMissingSleepMinutesPenalty()))
+                .andThen(travelEvaluator(config.getTravelTimePenalty())));
     }
 
-    @SafeVarargs
     @VisibleForTesting
-    EventEvaluators(Evaluator<Event> firstEvaluator, Evaluator<Event>... otherEvaluators) {
-        this.evaluator = compose(firstEvaluator, otherEvaluators);
+    EventEvaluators(Evaluator<Event> eventEvaluator) {
+        this.evaluator = eventEvaluator;
     }
 
     @Override

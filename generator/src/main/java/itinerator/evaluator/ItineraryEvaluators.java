@@ -4,33 +4,29 @@ import com.google.common.annotations.VisibleForTesting;
 import itinerator.config.EvaluationConfig;
 import itinerator.datamodel.Itinerary;
 
-import static itinerator.evaluator.Evaluator.compose;
-
 public class ItineraryEvaluators implements Evaluator<Itinerary> {
 
-    private final Evaluator<Itinerary> evaluator;
+    private final Evaluator<Itinerary> subitineraryEvaluator;
     private final DaySubitineraryProvider subitineraryProvider;
 
     public static Evaluator<Itinerary> createEvaluators(EvaluationConfig config) {
         return new ItineraryEvaluators(new DaySubitineraryProvider(),
-                EventEvaluators.createEvaluators(config),
-                new SleepEventEvaluator(config.getIncorrectSleepPenalty()),
-                new MealEvaluator(config.getIncorrectMealPenalty()));
+                EventEvaluators.createEvaluators(config)
+                        .andThen(new SleepEventEvaluator(config.getIncorrectSleepPenalty()))
+                        .andThen(new MealEvaluator(config.getIncorrectMealPenalty())));
     }
 
     @VisibleForTesting
-    @SafeVarargs
     ItineraryEvaluators(DaySubitineraryProvider subitineraryProvider,
-                        Evaluator<Itinerary> first,
-                        Evaluator<Itinerary>... rest) {
+                        Evaluator<Itinerary> subitineraryEvaluator) {
         this.subitineraryProvider = subitineraryProvider;
-        this.evaluator = compose(first, rest);
+        this.subitineraryEvaluator = subitineraryEvaluator;
     }
 
     @Override
     public double applyAsDouble(Itinerary itinerary) {
         return subitineraryProvider.getPerDaySubitineraries(itinerary).stream()
-                .mapToDouble(evaluator::applyAsDouble)
+                .mapToDouble(subitineraryEvaluator::applyAsDouble)
                 .sum();
     }
 }
