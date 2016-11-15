@@ -54,16 +54,20 @@ public class ParallelGeneticAlgorithm extends GeneticAlgorithm {
 
         @Override
         public boolean add(Chromosome element) {
-            if (element.getFitness() > bestFitness) {
-                bestFitness = element.getFitness();
-                bestConfiguration = element.getConfiguration();
-            }
+            updateBest(element);
             return super.add(element);
         }
 
         @Override
         protected List<Chromosome> delegate() {
             return population;
+        }
+
+        private synchronized void updateBest(Chromosome element) {
+            if (element.getFitness() > bestFitness) {
+                bestFitness = element.getFitness();
+                bestConfiguration = element.getConfiguration();
+            }
         }
     }
 }
