@@ -7,13 +7,14 @@ import itinerator.datamodel.Activity;
 import itinerator.datamodel.Event;
 import itinerator.datamodel.Itinerary;
 import itinerator.evaluator.Evaluator;
-import itinerator.evaluator.ItineraryEvaluators;
 import itinerator.evaluator.ItineraryFitness;
 import itinerator.itinerary.ItineraryFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static itinerator.evaluator.ItineraryEvaluatorFactory.createEvaluators;
 
 public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem, RandomConfigurationProblem {
 
@@ -52,7 +53,7 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        Evaluator<Itinerary> evaluator = ItineraryEvaluators.createEvaluators(evaluationConfig);
+        Evaluator<Itinerary> evaluator = createEvaluators(evaluationConfig, activities);
         return new ItineraryFitness(evaluator, itineraryFactory);
     }
 

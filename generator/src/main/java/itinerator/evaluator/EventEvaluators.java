@@ -12,7 +12,7 @@ import static java.lang.Math.max;
 class EventEvaluators implements Evaluator<Itinerary> {
     private final Evaluator<Event> evaluator;
 
-    public static Evaluator<Itinerary> createEvaluators(EvaluationConfig config) {
+    public static Evaluator<Itinerary> eventEvaluators(EvaluationConfig config) {
         return new EventEvaluators(funEvaluator()
                 .andThen(costEvaluator(config.getCostPenalty()))
                 .andThen(hoursEvaluator(config.getInvalidHoursPenalty()))

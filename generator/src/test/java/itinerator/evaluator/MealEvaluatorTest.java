@@ -45,7 +45,7 @@ public class MealEvaluatorTest {
     public void before() {
         events = newArrayList(EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5, EVENT_6, EVENT_7, EVENT_8, EVENT_9);
 
-        mealEvaluator = new ItineraryEvaluators(new DaySubitineraryProvider(), new MealEvaluator(INCORRECT_MEAL_PENALTY));
+        mealEvaluator = new SubitineraryEvaluators(new DaySubitineraryProvider(), new MealEvaluator(INCORRECT_MEAL_PENALTY));
     }
 
     @Test

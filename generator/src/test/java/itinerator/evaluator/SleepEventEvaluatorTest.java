@@ -36,7 +36,7 @@ public class SleepEventEvaluatorTest {
     public void before() {
         events = newArrayList(EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5);
 
-        sleepEventEvaluator = new ItineraryEvaluators(new DaySubitineraryProvider(), new SleepEventEvaluator(INCORRECT_SLEEP_PENALTY));
+        sleepEventEvaluator = new SubitineraryEvaluators(new DaySubitineraryProvider(), new SleepEventEvaluator(INCORRECT_SLEEP_PENALTY));
     }
 
     @Test

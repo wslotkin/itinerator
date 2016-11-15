@@ -1,5 +1,8 @@
 package itinerator.config;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class EvaluationConfig {
     private final double costPenalty;
     private final double incorrectMealPenalty;
@@ -9,6 +12,8 @@ public class EvaluationConfig {
     private final double travelTimePenalty;
     private final double invalidHoursPenalty;
     private final double missingSleepMinutesPenalty;
+    private final double missingRequiredEventPenalty;
+    private final Set<String> requiredActivities;
 
     public EvaluationConfig(double costPenalty,
                             double incorrectMealPenalty,
@@ -17,7 +22,9 @@ public class EvaluationConfig {
                             double incorrectSleepPenalty,
                             double travelTimePenalty,
                             double invalidHoursPenalty,
-                            double missingSleepMinutesPenalty) {
+                            double missingSleepMinutesPenalty,
+                            double missingRequiredEventPenalty,
+                            Set<String> requiredActivities) {
         this.costPenalty = costPenalty;
         this.incorrectMealPenalty = incorrectMealPenalty;
         this.areaHoppingPenalty = areaHoppingPenalty;
@@ -26,6 +33,8 @@ public class EvaluationConfig {
         this.travelTimePenalty = travelTimePenalty;
         this.invalidHoursPenalty = invalidHoursPenalty;
         this.missingSleepMinutesPenalty = missingSleepMinutesPenalty;
+        this.missingRequiredEventPenalty = missingRequiredEventPenalty;
+        this.requiredActivities = requiredActivities;
     }
 
     public double getCostPenalty() {
@@ -60,6 +69,14 @@ public class EvaluationConfig {
         return missingSleepMinutesPenalty;
     }
 
+    public double getMissingRequiredEventPenalty() {
+        return missingRequiredEventPenalty;
+    }
+
+    public Set<String> getRequiredActivities() {
+        return requiredActivities;
+    }
+
     public Builder toBuilder() {
         return new Builder()
                 .setCostPenalty(costPenalty)
@@ -69,7 +86,8 @@ public class EvaluationConfig {
                 .setIncorrectSleepPenalty(incorrectSleepPenalty)
                 .setTravelTimePenalty(travelTimePenalty)
                 .setInvalidHoursPenalty(invalidHoursPenalty)
-                .setMissingSleepMinutesPenalty(missingSleepMinutesPenalty);
+                .setMissingSleepMinutesPenalty(missingSleepMinutesPenalty)
+                .setMissingRequiredEventPenalty(missingRequiredEventPenalty);
     }
 
     public static class Builder {
@@ -81,6 +99,8 @@ public class EvaluationConfig {
         private double travelTimePenalty = -20.0;
         private double invalidHoursPenalty = -75.0;
         private double missingSleepMinutesPenalty = -5.0;
+        private double missingRequiredEventPenalty = -100.0;
+        private Set<String> requiredActivities = new HashSet<>();
 
         public Builder setCostPenalty(double costPenalty) {
             this.costPenalty = costPenalty;
@@ -122,6 +142,16 @@ public class EvaluationConfig {
             return this;
         }
 
+        public Builder setMissingRequiredEventPenalty(double missingRequiredEventPenalty) {
+            this.missingRequiredEventPenalty = missingRequiredEventPenalty;
+            return this;
+        }
+
+        public Builder setRequiredActivities(Set<String> requiredActivities) {
+            this.requiredActivities = requiredActivities;
+            return this;
+        }
+
         public EvaluationConfig build() {
             return new EvaluationConfig(costPenalty,
                     incorrectMealPenalty,
@@ -130,7 +160,9 @@ public class EvaluationConfig {
                     incorrectSleepPenalty,
                     travelTimePenalty,
                     invalidHoursPenalty,
-                    missingSleepMinutesPenalty);
+                    missingSleepMinutesPenalty,
+                    missingRequiredEventPenalty,
+                    requiredActivities);
         }
     }
 }

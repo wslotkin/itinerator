@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ItineraryEvaluatorsTest {
+public class SubitineraryEvaluatorsTest {
     private static final Event EVENT_1 = event("1");
     private static final Event EVENT_2 = event("2");
     private static final Itinerary ITINERARY = new Itinerary(newArrayList(EVENT_1, EVENT_2));
@@ -38,7 +38,7 @@ public class ItineraryEvaluatorsTest {
 
     @Test
     public void shouldReturnSumOfEachSubitineraryScore() {
-        ItineraryEvaluators compositeEvaluator = new ItineraryEvaluators(subitineraryProvider, firstEvaluator);
+        SubitineraryEvaluators compositeEvaluator = new SubitineraryEvaluators(subitineraryProvider, firstEvaluator);
         double result = compositeEvaluator.applyAsDouble(ITINERARY);
 
         double expectedResult = EVALUATOR_1_SUBITINERARY_1_SCORE + EVALUATOR_1_SUBITINERARY_2_SCORE;
