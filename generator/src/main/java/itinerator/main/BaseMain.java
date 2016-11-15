@@ -14,6 +14,7 @@ import java.util.List;
 import static itinerator.data.DataLoaderFactory.createForFile;
 import static itinerator.itinerary.ItineraryFormatter.prettyPrint;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 public abstract class BaseMain {
 
@@ -26,7 +27,11 @@ public abstract class BaseMain {
     public SolverResult run() throws IOException {
         List<Activity> activities = loadActivities(itineratorConfig.getInputDataFiles());
 
-        SolverResult bestResult = getResult(activities,
+        List<Activity> filteredActivities = activities.stream()
+                .filter(activity -> !itineratorConfig.getExcludedActivityIds().contains(activity.getId()))
+                .collect(toList());
+
+        SolverResult bestResult = getResult(filteredActivities,
                 itineratorConfig.getStartTime(),
                 itineratorConfig.getEndTime());
 

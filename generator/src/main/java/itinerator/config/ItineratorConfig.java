@@ -3,6 +3,8 @@ package itinerator.config;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ItineratorConfig {
     public static final String[] NYC_DATA = {"nycplaces.csv"};
@@ -14,15 +16,18 @@ public class ItineratorConfig {
     private final LocalDateTime endTime;
     private final String[] inputDataFiles;
     private final String outputFile;
+    private final Set<String> excludedActivityIds;
 
     public ItineratorConfig(LocalDateTime startTime,
                             LocalDateTime endTime,
                             String[] inputDataFiles,
-                            String outputFile) {
+                            String outputFile,
+                            Set<String> excludedActivityIds) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.inputDataFiles = inputDataFiles;
         this.outputFile = outputFile;
+        this.excludedActivityIds = excludedActivityIds;
     }
 
     public LocalDateTime getStartTime() {
@@ -41,6 +46,10 @@ public class ItineratorConfig {
         return outputFile;
     }
 
+    public Set<String> getExcludedActivityIds() {
+        return excludedActivityIds;
+    }
+
     public Builder toBuilder() {
         return new Builder()
                 .setStartTime(startTime)
@@ -54,6 +63,7 @@ public class ItineratorConfig {
         private LocalDateTime endTime = startTime.plusDays(2);
         private String[] inputDataFiles = BEIJING_DATA;
         private String outputFile = "itinerary.txt";
+        private Set<String> excludedActivityIds = new HashSet<>();
 
         public Builder setStartTime(LocalDateTime startTime) {
             this.startTime = startTime;
@@ -75,12 +85,17 @@ public class ItineratorConfig {
             return this;
         }
 
+        public Builder setExcludedActivityIds(Set<String> excludedActivityIds) {
+            this.excludedActivityIds = excludedActivityIds;
+            return this;
+        }
+
         public ItineratorConfig build() {
             return new ItineratorConfig(startTime,
                     endTime,
                     inputDataFiles,
-                    outputFile
-            );
+                    outputFile,
+                    excludedActivityIds);
         }
     }
 }
