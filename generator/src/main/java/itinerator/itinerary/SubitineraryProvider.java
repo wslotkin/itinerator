@@ -1,6 +1,7 @@
 package itinerator.itinerary;
 
 import itinerator.datamodel.Event;
+import itinerator.datamodel.ImmutableItinerary;
 import itinerator.datamodel.Itinerary;
 import itinerator.datamodel.Range;
 
@@ -21,7 +22,7 @@ public class SubitineraryProvider {
             }
         }
 
-        return new Itinerary(eventsInTimeRange);
+        return ImmutableItinerary.of(eventsInTimeRange);
     }
 
     private static boolean eventFallsInTimeRange(Range<LocalDateTime> range, Event event) {

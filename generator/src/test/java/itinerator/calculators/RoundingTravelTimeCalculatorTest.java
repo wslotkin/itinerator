@@ -1,7 +1,7 @@
 package itinerator.calculators;
 
 import itinerator.datamodel.Activity;
-import itinerator.datamodel.ActivityBuilder;
+import itinerator.datamodel.ImmutableActivity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,8 +11,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RoundingTravelTimeCalculatorTest {
-    private static final Activity FIRST_EVENT = new ActivityBuilder().setId("firstEvent").build();
-    private static final Activity SECOND_EVENT = new ActivityBuilder().setId("secondEvent").build();
+    private static final Activity FIRST_EVENT = ImmutableActivity.builder().id("firstEvent").build();
+    private static final Activity SECOND_EVENT = ImmutableActivity.builder().id("secondEvent").build();
 
     private TravelTimeCalculator calculator;
     private RoundingTravelTimeCalculator roundingCalculator;

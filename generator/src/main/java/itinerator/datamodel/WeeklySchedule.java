@@ -11,16 +11,17 @@ public class WeeklySchedule {
     private final NavigableSet<WeeklyShift> shifts;
 
     public WeeklySchedule(Collection<WeeklyShift> shifts) {
-        this.shifts = newTreeSet((o1, o2) -> o1.getStartTime().compareTo(o2.getStartTime()));
-        this.shifts.addAll(shifts);
+        this.shifts = newTreeSet(shifts);
     }
 
     public boolean isValid(Range<LocalDateTime> range) {
         // will: this covers the case of missing hours of operation
         if (shifts.isEmpty()) return true;
 
-        WeeklyShift eventShift =
-                new WeeklyShift(createTimePoint(range.getStart()), createTimePoint(range.getEnd()));
+        WeeklyShift eventShift = ImmutableWeeklyShift.builder()
+                .startTime(createTimePoint(range.getStart()))
+                .endTime(createTimePoint(range.getEnd()))
+                .build();
 
         return isEventWithinAnyShift(eventShift);
     }
@@ -68,6 +69,9 @@ public class WeeklySchedule {
     }
 
     private static WeeklyTimePoint createTimePoint(LocalDateTime dateTime) {
-        return new WeeklyTimePoint(dateTime.getDayOfWeek(), dateTime.toLocalTime());
+        return ImmutableWeeklyTimePoint.builder()
+                .dayOfWeek(dateTime.getDayOfWeek())
+                .timeOfDay(dateTime.toLocalTime())
+                .build();
     }
 }

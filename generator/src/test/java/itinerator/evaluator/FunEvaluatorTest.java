@@ -1,9 +1,6 @@
 package itinerator.evaluator;
 
-import itinerator.datamodel.ActivityBuilder;
-import itinerator.datamodel.Event;
-import itinerator.datamodel.Itinerary;
-import itinerator.datamodel.TestEventBuilder;
+import itinerator.datamodel.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,14 +29,14 @@ public class FunEvaluatorTest {
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = funEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
+        double result = funEvaluator.applyAsDouble(ImmutableItinerary.of(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenItineraryHasOnlyOneEventReturnsScoreTimesDurationOfEvent() {
-        double result = funEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT)));
+        double result = funEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(FIRST_EVENT)));
 
         double expectedResult = FIRST_ACTIVITY_DURATION * FIRST_ACTIVITY_SCORE;
 
@@ -48,7 +45,7 @@ public class FunEvaluatorTest {
 
     @Test
     public void returnsSumOfScoreTimesDurationOfAllActivities() {
-        double result = funEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
+        double result = funEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(FIRST_EVENT, SECOND_EVENT)));
 
         double expectedResult = FIRST_ACTIVITY_DURATION * FIRST_ACTIVITY_SCORE
                 + SECOND_ACTIVITY_DURATION * SECOND_ACTIVITY_SCORE;
@@ -57,10 +54,10 @@ public class FunEvaluatorTest {
     }
 
     private static Event createEvent(long activityDuration, double activityScore) {
-        return new TestEventBuilder()
-                .setActivity(new ActivityBuilder()
-                        .setDuration(activityDuration)
-                        .setScore(activityScore)
+        return ImmutableEvent.builder()
+                .activity(ImmutableActivity.builder()
+                        .duration(activityDuration)
+                        .score(activityScore)
                         .build())
                 .build();
     }

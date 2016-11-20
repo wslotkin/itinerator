@@ -1,9 +1,6 @@
 package itinerator.evaluator;
 
-import itinerator.datamodel.ActivityBuilder;
-import itinerator.datamodel.Event;
-import itinerator.datamodel.Itinerary;
-import itinerator.datamodel.TestEventBuilder;
+import itinerator.datamodel.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,9 +14,9 @@ import static org.mockito.Mockito.when;
 public class SubitineraryEvaluatorsTest {
     private static final Event EVENT_1 = event("1");
     private static final Event EVENT_2 = event("2");
-    private static final Itinerary ITINERARY = new Itinerary(newArrayList(EVENT_1, EVENT_2));
-    private static final Itinerary SUBITINERARY_1 = new Itinerary(newArrayList(EVENT_1));
-    private static final Itinerary SUBITINERARY_2 = new Itinerary(newArrayList(EVENT_2));
+    private static final Itinerary ITINERARY = ImmutableItinerary.of(newArrayList(EVENT_1, EVENT_2));
+    private static final Itinerary SUBITINERARY_1 = ImmutableItinerary.of(newArrayList(EVENT_1));
+    private static final Itinerary SUBITINERARY_2 = ImmutableItinerary.of(newArrayList(EVENT_2));
     private static final double EVALUATOR_1_SUBITINERARY_1_SCORE = 1.2;
     private static final double EVALUATOR_1_SUBITINERARY_2_SCORE = 4.3;
 
@@ -47,6 +44,6 @@ public class SubitineraryEvaluatorsTest {
     }
 
     private static Event event(String id) {
-        return new TestEventBuilder().setActivity(new ActivityBuilder().setId(id).build()).build();
+        return ImmutableEvent.builder().activity(ImmutableActivity.builder().id(id).build()).build();
     }
 }

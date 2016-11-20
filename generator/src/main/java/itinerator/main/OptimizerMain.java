@@ -1,5 +1,6 @@
 package itinerator.main;
 
+import itinerator.config.ImmutableOptimizationConfig;
 import itinerator.config.OptimizationConfig;
 import itinerator.datamodel.Activity;
 import itinerator.solver.ItinerarySolver;
@@ -15,7 +16,7 @@ public class OptimizerMain extends BaseMain {
     private final OptimizationConfig optimizationConfig;
 
     public static void main(String[] args) throws IOException {
-        new OptimizerMain(new OptimizationConfig.Builder().build()).run();
+        new OptimizerMain(ImmutableOptimizationConfig.builder().build()).run();
     }
 
     public OptimizerMain(OptimizationConfig optimizationConfig) {

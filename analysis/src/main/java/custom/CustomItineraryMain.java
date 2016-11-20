@@ -3,6 +3,8 @@ package custom;
 import com.google.common.collect.Iterables;
 import custom.data.CustomItineraryLoader;
 import itinerator.config.EvaluationConfig;
+import itinerator.config.ImmutableEvaluationConfig;
+import itinerator.config.ImmutableItineratorConfig;
 import itinerator.config.ItineratorConfig;
 import itinerator.data.FileType;
 import itinerator.datamodel.Activity;
@@ -28,8 +30,8 @@ public class CustomItineraryMain extends BaseMain {
     public static void main(String[] args) throws IOException {
         runCustomItinerary(filePath("customItineraries") + "/Sheet 1-Table 1-1",
                 CSV,
-                new ItineratorConfig.Builder().build(),
-                new EvaluationConfig.Builder().build());
+                ImmutableItineratorConfig.builder().build(),
+                ImmutableEvaluationConfig.builder().build());
     }
 
     protected static SolverResult runCustomItinerary(String fileBase,
@@ -43,7 +45,7 @@ public class CustomItineraryMain extends BaseMain {
                                String outputFilename,
                                FileType inputFileType,
                                ItineratorConfig itineratorConfig, EvaluationConfig evaluationConfig) {
-        super(itineratorConfig.toBuilder().setOutputFile(fileBase + outputFilename).build());
+        super(ImmutableItineratorConfig.builder().from(itineratorConfig).outputFile(fileBase + outputFilename).build());
         this.inputFileType = inputFileType;
         this.evaluationConfig = evaluationConfig;
         inputFilename = fileBase + inputFileType.getExtenstion();

@@ -2,9 +2,11 @@ package analysis;
 
 import com.google.common.base.Joiner;
 import custom.CustomItineraryMain;
-import itinerator.data.FileType;
 import itinerator.config.EvaluationConfig;
+import itinerator.config.ImmutableEvaluationConfig;
+import itinerator.config.ImmutableItineratorConfig;
 import itinerator.config.ItineratorConfig;
+import itinerator.data.FileType;
 import itinerator.solver.ItinerarySolver;
 
 import java.io.*;
@@ -55,8 +57,8 @@ public class AnalysisMain extends CustomItineraryMain {
 
             ItinerarySolver.SolverResult solverResult = runCustomItinerary(filePathBase,
                     TEXT,
-                    new ItineratorConfig.Builder().build(),
-                    new EvaluationConfig.Builder().build());
+                    ImmutableItineratorConfig.builder().build(),
+                    ImmutableEvaluationConfig.builder().build());
 
             results.add(new AnalysisSolverResult(id, solverResult, referenceScore));
         }

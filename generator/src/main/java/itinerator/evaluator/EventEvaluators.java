@@ -29,7 +29,7 @@ class EventEvaluators implements Evaluator<Itinerary> {
     @Override
     public double applyAsDouble(Itinerary itinerary) {
         return itinerary.getEvents().stream()
-                .mapToDouble(evaluator::applyAsDouble)
+                .mapToDouble(evaluator)
                 .sum();
     }
 

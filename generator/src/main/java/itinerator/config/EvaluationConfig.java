@@ -1,168 +1,56 @@
 package itinerator.config;
 
-import java.util.HashSet;
+import org.immutables.value.Value.Default;
+import org.immutables.value.Value.Immutable;
+
 import java.util.Set;
 
-public class EvaluationConfig {
-    private final double costPenalty;
-    private final double incorrectMealPenalty;
-    private final double areaHoppingPenalty;
-    private final double areaHoppingThreshold;
-    private final double incorrectSleepPenalty;
-    private final double travelTimePenalty;
-    private final double invalidHoursPenalty;
-    private final double missingSleepMinutesPenalty;
-    private final double missingRequiredEventPenalty;
-    private final Set<String> requiredActivities;
-
-    public EvaluationConfig(double costPenalty,
-                            double incorrectMealPenalty,
-                            double areaHoppingPenalty,
-                            double areaHoppingThreshold,
-                            double incorrectSleepPenalty,
-                            double travelTimePenalty,
-                            double invalidHoursPenalty,
-                            double missingSleepMinutesPenalty,
-                            double missingRequiredEventPenalty,
-                            Set<String> requiredActivities) {
-        this.costPenalty = costPenalty;
-        this.incorrectMealPenalty = incorrectMealPenalty;
-        this.areaHoppingPenalty = areaHoppingPenalty;
-        this.areaHoppingThreshold = areaHoppingThreshold;
-        this.incorrectSleepPenalty = incorrectSleepPenalty;
-        this.travelTimePenalty = travelTimePenalty;
-        this.invalidHoursPenalty = invalidHoursPenalty;
-        this.missingSleepMinutesPenalty = missingSleepMinutesPenalty;
-        this.missingRequiredEventPenalty = missingRequiredEventPenalty;
-        this.requiredActivities = requiredActivities;
+@Immutable
+public interface EvaluationConfig {
+    @Default
+    default double getCostPenalty() {
+        return -10.0;
     }
 
-    public double getCostPenalty() {
-        return costPenalty;
+    @Default
+    default double getIncorrectMealPenalty() {
+        return -20.0;
     }
 
-    public double getIncorrectMealPenalty() {
-        return incorrectMealPenalty;
+    @Default
+    default double getAreaHoppingPenalty() {
+        return -50.0;
     }
 
-    public double getAreaHoppingPenalty() {
-        return areaHoppingPenalty;
+    @Default
+    default double getAreaHoppingThreshold() {
+        return 15.0;
     }
 
-    public double getAreaHoppingThreshold() {
-        return areaHoppingThreshold;
+    @Default
+    default double getIncorrectSleepPenalty() {
+        return -100.0;
     }
 
-    public double getIncorrectSleepPenalty() {
-        return incorrectSleepPenalty;
+    @Default
+    default double getTravelTimePenalty() {
+        return -20.0;
     }
 
-    public double getTravelTimePenalty() {
-        return travelTimePenalty;
+    @Default
+    default double getInvalidHoursPenalty() {
+        return -75.0;
     }
 
-    public double getInvalidHoursPenalty() {
-        return invalidHoursPenalty;
+    @Default
+    default double getMissingSleepMinutesPenalty() {
+        return -5.0;
     }
 
-    public double getMissingSleepMinutesPenalty() {
-        return missingSleepMinutesPenalty;
+    @Default
+    default double getMissingRequiredEventPenalty() {
+        return -100.0;
     }
 
-    public double getMissingRequiredEventPenalty() {
-        return missingRequiredEventPenalty;
-    }
-
-    public Set<String> getRequiredActivities() {
-        return requiredActivities;
-    }
-
-    public Builder toBuilder() {
-        return new Builder()
-                .setCostPenalty(costPenalty)
-                .setIncorrectMealPenalty(incorrectMealPenalty)
-                .setAreaHoppingPenalty(areaHoppingPenalty)
-                .setAreaHoppingThreshold(areaHoppingThreshold)
-                .setIncorrectSleepPenalty(incorrectSleepPenalty)
-                .setTravelTimePenalty(travelTimePenalty)
-                .setInvalidHoursPenalty(invalidHoursPenalty)
-                .setMissingSleepMinutesPenalty(missingSleepMinutesPenalty)
-                .setMissingRequiredEventPenalty(missingRequiredEventPenalty);
-    }
-
-    public static class Builder {
-        private double costPenalty = -10.0;
-        private double incorrectMealPenalty = -20.0;
-        private double areaHoppingPenalty = -50.0;
-        private double areaHoppingThreshold = 15.0;
-        private double incorrectSleepPenalty = -100.0;
-        private double travelTimePenalty = -20.0;
-        private double invalidHoursPenalty = -75.0;
-        private double missingSleepMinutesPenalty = -5.0;
-        private double missingRequiredEventPenalty = -100.0;
-        private Set<String> requiredActivities = new HashSet<>();
-
-        public Builder setCostPenalty(double costPenalty) {
-            this.costPenalty = costPenalty;
-            return this;
-        }
-
-        public Builder setIncorrectMealPenalty(double incorrectMealPenalty) {
-            this.incorrectMealPenalty = incorrectMealPenalty;
-            return this;
-        }
-
-        public Builder setAreaHoppingPenalty(double areaHoppingPenalty) {
-            this.areaHoppingPenalty = areaHoppingPenalty;
-            return this;
-        }
-
-        public Builder setAreaHoppingThreshold(double areaHoppingThreshold) {
-            this.areaHoppingThreshold = areaHoppingThreshold;
-            return this;
-        }
-
-        public Builder setIncorrectSleepPenalty(double incorrectSleepPenalty) {
-            this.incorrectSleepPenalty = incorrectSleepPenalty;
-            return this;
-        }
-
-        public Builder setTravelTimePenalty(double travelTimePenalty) {
-            this.travelTimePenalty = travelTimePenalty;
-            return this;
-        }
-
-        public Builder setInvalidHoursPenalty(double invalidHoursPenalty) {
-            this.invalidHoursPenalty = invalidHoursPenalty;
-            return this;
-        }
-
-        public Builder setMissingSleepMinutesPenalty(double missingSleepMinutesPenalty) {
-            this.missingSleepMinutesPenalty = missingSleepMinutesPenalty;
-            return this;
-        }
-
-        public Builder setMissingRequiredEventPenalty(double missingRequiredEventPenalty) {
-            this.missingRequiredEventPenalty = missingRequiredEventPenalty;
-            return this;
-        }
-
-        public Builder setRequiredActivities(Set<String> requiredActivities) {
-            this.requiredActivities = requiredActivities;
-            return this;
-        }
-
-        public EvaluationConfig build() {
-            return new EvaluationConfig(costPenalty,
-                    incorrectMealPenalty,
-                    areaHoppingPenalty,
-                    areaHoppingThreshold,
-                    incorrectSleepPenalty,
-                    travelTimePenalty,
-                    invalidHoursPenalty,
-                    missingSleepMinutesPenalty,
-                    missingRequiredEventPenalty,
-                    requiredActivities);
-        }
-    }
+    Set<String> getRequiredActivities();
 }

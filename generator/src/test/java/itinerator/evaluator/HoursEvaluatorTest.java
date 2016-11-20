@@ -1,7 +1,6 @@
 package itinerator.evaluator;
 
 import itinerator.datamodel.*;
-import itinerator.datamodel.Range;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,9 +17,9 @@ import static org.junit.Assert.assertEquals;
 
 public class HoursEvaluatorTest {
     private static final double INVALID_HOURS_PENALTY = -60.0;
-    private static final WeeklySchedule DEFAULT_SCHEDULE = new WeeklySchedule(newArrayList(new WeeklyShift(
-            new WeeklyTimePoint(MONDAY, LocalTime.of(9, 0)),
-            new WeeklyTimePoint(MONDAY, LocalTime.of(17, 0)))));
+    private static final WeeklySchedule DEFAULT_SCHEDULE = new WeeklySchedule(newArrayList(ImmutableWeeklyShift.of(
+            ImmutableWeeklyTimePoint.of(MONDAY, LocalTime.of(9, 0)),
+            ImmutableWeeklyTimePoint.of(MONDAY, LocalTime.of(17, 0)))));
 
     private Evaluator<Itinerary> hoursEvaluator;
 
@@ -31,14 +30,14 @@ public class HoursEvaluatorTest {
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = hoursEvaluator.applyAsDouble(new Itinerary(emptyList()));
+        double result = hoursEvaluator.applyAsDouble(ImmutableItinerary.of(emptyList()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void shouldReturnNumberOfInvalidEventsMultipliedByPenalty() {
-        double result = hoursEvaluator.applyAsDouble(new Itinerary(newArrayList(createEventWithStart(7),
+        double result = hoursEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(createEventWithStart(7),
                 createEventWithStart(8),
                 createEventWithStart(10),
                 createEventWithStart(11))));
@@ -54,9 +53,9 @@ public class HoursEvaluatorTest {
             start = start.plusDays(1);
         }
 
-        return new TestEventBuilder()
-                .setEventTime(Range.of(start, start.plusHours(1)))
-                .setActivity(new ActivityBuilder().setWeeklySchedule(DEFAULT_SCHEDULE).build())
+        return ImmutableEvent.builder()
+                .eventTime(Range.of(start, start.plusHours(1)))
+                .activity(ImmutableActivity.builder().weeklySchedule(DEFAULT_SCHEDULE).build())
                 .build();
     }
 }

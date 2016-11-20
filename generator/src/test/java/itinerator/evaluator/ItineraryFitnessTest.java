@@ -1,6 +1,7 @@
 package itinerator.evaluator;
 
 import cz.cvut.felk.cig.jcop.problem.Configuration;
+import itinerator.datamodel.ImmutableItinerary;
 import itinerator.datamodel.Itinerary;
 import itinerator.itinerary.ItineraryFactory;
 import org.junit.Before;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.*;
 public class ItineraryFitnessTest {
 
     private static final Configuration CONFIGURATION = new Configuration(new ArrayList<>());
-    private static final Itinerary ITINERARY = new Itinerary(new ArrayList<>());
+    private static final Itinerary ITINERARY = ImmutableItinerary.of(new ArrayList<>());
     private static final double FITNESS_SCORE = 1.2;
 
     private Evaluator<Itinerary> evaluator;

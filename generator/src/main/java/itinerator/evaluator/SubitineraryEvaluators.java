@@ -25,7 +25,7 @@ public class SubitineraryEvaluators implements Evaluator<Itinerary> {
     @Override
     public double applyAsDouble(Itinerary itinerary) {
         return subitineraryProvider.getPerDaySubitineraries(itinerary).stream()
-                .mapToDouble(subitineraryEvaluator::applyAsDouble)
+                .mapToDouble(subitineraryEvaluator)
                 .sum();
     }
 }

@@ -1,9 +1,6 @@
 package itinerator.data;
 
-import itinerator.datamodel.Activity;
-import itinerator.datamodel.ActivityBuilder;
-import itinerator.datamodel.ActivityType;
-import itinerator.datamodel.Location;
+import itinerator.datamodel.*;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Long.parseLong;
@@ -27,18 +24,18 @@ class CsvDataLoader extends AbstractDataLoader {
     @Override
     protected Activity parseRowElements(String[] rowElements) {
         String[] coordinates = rowElements[LOCATION_COLUMN].split(SEMICOLON);
-        Location location = new Location(parseDouble(coordinates[LATITUDE_INDEX]),
+        Location location = ImmutableLocation.of(parseDouble(coordinates[LATITUDE_INDEX]),
                 parseDouble(coordinates[LONGITUDE_INDEX]));
 
-        ActivityBuilder activityBuilder = new ActivityBuilder()
-                .setId(rowElements[ID_COLUMN])
-                .setLocation(location)
-                .setDuration(parseLong(rowElements[DURATION_COLUMN]))
-                .setScore(parseDouble(rowElements[SCORE_COLUMN]))
-                .setType(ActivityType.valueOf(rowElements[TYPE_COLUMN].toUpperCase()));
+        ImmutableActivity.Builder activityBuilder = ImmutableActivity.builder()
+                .id(rowElements[ID_COLUMN])
+                .location(location)
+                .duration(parseLong(rowElements[DURATION_COLUMN]))
+                .score(parseDouble(rowElements[SCORE_COLUMN]))
+                .type(ActivityType.valueOf(rowElements[TYPE_COLUMN].toUpperCase()));
 
         if (rowElements.length > COST_COLUMN) {
-            activityBuilder = activityBuilder.setCost(parseDouble(rowElements[COST_COLUMN]));
+            activityBuilder = activityBuilder.cost(parseDouble(rowElements[COST_COLUMN]));
         }
 
         return activityBuilder.build();

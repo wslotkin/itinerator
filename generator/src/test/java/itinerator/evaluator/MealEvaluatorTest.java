@@ -1,7 +1,6 @@
 package itinerator.evaluator;
 
 import itinerator.datamodel.*;
-import itinerator.datamodel.Range;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,14 +49,14 @@ public class MealEvaluatorTest {
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = mealEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
+        double result = mealEvaluator.applyAsDouble(ImmutableItinerary.of(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenItineraryHasCorrectMealEventsShouldReturnZero() {
-        double result = mealEvaluator.applyAsDouble(new Itinerary(events));
+        double result = mealEvaluator.applyAsDouble(ImmutableItinerary.of(events));
 
         assertEquals(0.0, result, DELTA);
     }
@@ -65,7 +64,7 @@ public class MealEvaluatorTest {
     @Test
     public void whenItineraryIsMissingExpectedMealEventShouldReturnPenalty() {
         transformEventAtIndexToType(0, ACTIVITY);
-        double result = mealEvaluator.applyAsDouble(new Itinerary(events));
+        double result = mealEvaluator.applyAsDouble(ImmutableItinerary.of(events));
 
         assertEquals(INCORRECT_MEAL_PENALTY, result, DELTA);
     }
@@ -73,29 +72,29 @@ public class MealEvaluatorTest {
     @Test
     public void whenItineraryHasExtraMealEventShouldReturnPenalty() {
         transformEventAtIndexToType(1, FOOD);
-        double result = mealEvaluator.applyAsDouble(new Itinerary(events));
+        double result = mealEvaluator.applyAsDouble(ImmutableItinerary.of(events));
 
         assertEquals(INCORRECT_MEAL_PENALTY, result, DELTA);
     }
 
     private void transformEventAtIndexToType(int index, ActivityType type) {
         Event event = events.get(index);
-        Event transformedEvent = new TestEventBuilder()
-                .setActivity(new ActivityBuilder()
-                        .setType(type)
+        Event transformedEvent = ImmutableEvent.builder()
+                .activity(ImmutableActivity.builder()
+                        .type(type)
                         .build())
-                .setEventTime(event.getEventTime())
+                .eventTime(event.getEventTime())
                 .build();
         events.remove(event);
         events.add(index, transformedEvent);
     }
 
     private static Event event(ActivityType type, LocalDateTime startTime, LocalDateTime endTime) {
-        return new TestEventBuilder()
-                .setActivity(new ActivityBuilder()
-                        .setType(type)
+        return ImmutableEvent.builder()
+                .activity(ImmutableActivity.builder()
+                        .type(type)
                         .build())
-                .setEventTime(Range.of(startTime, endTime))
+                .eventTime(Range.of(startTime, endTime))
                 .build();
     }
 }

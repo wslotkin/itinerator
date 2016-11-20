@@ -27,14 +27,14 @@ public class SleepDurationEvaluatorTest {
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = sleepDurationEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
+        double result = sleepDurationEvaluator.applyAsDouble(ImmutableItinerary.of(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenAllSleepEventsAreTargetDurationOrLongerShouldReturnZero() {
-        double result = sleepDurationEvaluator.applyAsDouble(new Itinerary(newArrayList(createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP),
+        double result = sleepDurationEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP),
                 createEvent(ACTIVITY, 60),
                 createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP + 60))));
 
@@ -46,7 +46,7 @@ public class SleepDurationEvaluatorTest {
         int deficitOnFirstEvent = 10;
         int deficitOnSecondEvent = 20;
 
-        double result = sleepDurationEvaluator.applyAsDouble(new Itinerary(newArrayList(createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP - deficitOnFirstEvent),
+        double result = sleepDurationEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP - deficitOnFirstEvent),
                 createEvent(ACTIVITY, 60),
                 createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP - deficitOnSecondEvent))));
 
@@ -59,7 +59,7 @@ public class SleepDurationEvaluatorTest {
     public void aSleepEventLongerThanTargetDurationDoesNotAffectTotalDeficit() {
         int increment = 10;
 
-        double result = sleepDurationEvaluator.applyAsDouble(new Itinerary(newArrayList(createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP - increment),
+        double result = sleepDurationEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP - increment),
                 createEvent(ACTIVITY, 60),
                 createEvent(SLEEP, TARGET_MINUTES_OF_SLEEP + increment))));
 
@@ -69,10 +69,10 @@ public class SleepDurationEvaluatorTest {
     }
 
     private static Event createEvent(ActivityType type, int duration) {
-        return new TestEventBuilder()
-                .setActivity(new ActivityBuilder()
-                        .setType(type)
-                        .setDuration(duration)
+        return ImmutableEvent.builder()
+                .activity(ImmutableActivity.builder()
+                        .type(type)
+                        .duration(duration)
                         .build())
                 .build();
     }

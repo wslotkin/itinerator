@@ -80,23 +80,23 @@ public class WeeklyScheduleTest {
     }
 
     private static WeeklySchedule weekdaysNineToFive() {
-        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(MONDAY, LocalTime.of(17, 0))),
-                new WeeklyShift(new WeeklyTimePoint(TUESDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(TUESDAY, LocalTime.of(17, 0))),
-                new WeeklyShift(new WeeklyTimePoint(WEDNESDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(WEDNESDAY, LocalTime.of(17, 0))),
-                new WeeklyShift(new WeeklyTimePoint(THURSDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(THURSDAY, LocalTime.of(17, 0))),
-                new WeeklyShift(new WeeklyTimePoint(FRIDAY, LocalTime.of(9, 0)), new WeeklyTimePoint(FRIDAY, LocalTime.of(17, 0)))));
+        return new WeeklySchedule(newArrayList(ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(MONDAY, LocalTime.of(9, 0)), ImmutableWeeklyTimePoint.of(MONDAY, LocalTime.of(17, 0))),
+                ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(TUESDAY, LocalTime.of(9, 0)), ImmutableWeeklyTimePoint.of(TUESDAY, LocalTime.of(17, 0))),
+                ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(WEDNESDAY, LocalTime.of(9, 0)), ImmutableWeeklyTimePoint.of(WEDNESDAY, LocalTime.of(17, 0))),
+                ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(THURSDAY, LocalTime.of(9, 0)), ImmutableWeeklyTimePoint.of(THURSDAY, LocalTime.of(17, 0))),
+                ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(FRIDAY, LocalTime.of(9, 0)), ImmutableWeeklyTimePoint.of(FRIDAY, LocalTime.of(17, 0)))));
     }
 
     private static WeeklySchedule twentyFourSeven() {
-        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, LocalTime.of(0, 0)), new WeeklyTimePoint(MONDAY, LocalTime.of(0, 0)))));
+        return new WeeklySchedule(newArrayList(ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(MONDAY, LocalTime.of(0, 0)), ImmutableWeeklyTimePoint.of(MONDAY, LocalTime.of(0, 0)))));
     }
 
     private static WeeklySchedule sundayToThursdayNights() {
-        return new WeeklySchedule(newArrayList(new WeeklyShift(new WeeklyTimePoint(MONDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(TUESDAY, LocalTime.of(2, 0))),
-                new WeeklyShift(new WeeklyTimePoint(TUESDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(WEDNESDAY, LocalTime.of(2, 0))),
-                new WeeklyShift(new WeeklyTimePoint(WEDNESDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(THURSDAY, LocalTime.of(2, 0))),
-                new WeeklyShift(new WeeklyTimePoint(THURSDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(FRIDAY, LocalTime.of(2, 0))),
-                new WeeklyShift(new WeeklyTimePoint(SUNDAY, LocalTime.of(18, 0)), new WeeklyTimePoint(MONDAY, LocalTime.of(2, 0)))));
+        return new WeeklySchedule(newArrayList(ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(MONDAY, LocalTime.of(18, 0)), ImmutableWeeklyTimePoint.of(TUESDAY, LocalTime.of(2, 0))),
+                ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(TUESDAY, LocalTime.of(18, 0)), ImmutableWeeklyTimePoint.of(WEDNESDAY, LocalTime.of(2, 0))),
+                ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(WEDNESDAY, LocalTime.of(18, 0)), ImmutableWeeklyTimePoint.of(THURSDAY, LocalTime.of(2, 0))),
+                ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(THURSDAY, LocalTime.of(18, 0)), ImmutableWeeklyTimePoint.of(FRIDAY, LocalTime.of(2, 0))),
+                ImmutableWeeklyShift.of(ImmutableWeeklyTimePoint.of(SUNDAY, LocalTime.of(18, 0)), ImmutableWeeklyTimePoint.of(MONDAY, LocalTime.of(2, 0)))));
     }
 
     private static Range<LocalDateTime> createEventInterval(DayOfWeek dayOfWeek, int hourOfDay, int minuteOfHour) {

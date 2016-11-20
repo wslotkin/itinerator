@@ -71,7 +71,7 @@ class ItineraryBuilder {
             if (!wasAdded) break;
         }
 
-        return new Itinerary(events);
+        return ImmutableItinerary.of(events);
     }
 
     private boolean addEvent(List<Event> runningEventList,
@@ -146,7 +146,7 @@ class ItineraryBuilder {
         LocalDateTime previousEventEnd = previousEvent != null ? previousEvent.getEventTime().getEnd() : startTime;
         LocalDateTime activityStart = previousEventEnd.plusMinutes((int) travelTime);
         LocalDateTime activityEnd = activityStart.plusMinutes((int) activity.getDuration());
-        return new Event(activity, Range.of(activityStart, activityEnd), travelTime);
+        return ImmutableEvent.of(activity, Range.of(activityStart, activityEnd), travelTime);
     }
 
     private double travelTime(Activity firstActivity, Activity secondActivity) {
@@ -180,13 +180,13 @@ class ItineraryBuilder {
         long minutesUntilStartOfDay = between(currentDateTime, endTimeOfActivity).toMinutes();
         long duration = max(minutesUntilStartOfDay - (long) travelTime(lastEvent.getActivity(), hotel), TARGET_MINUTES_OF_SLEEP);
         if (hotel != null) {
-            return new ActivityBuilder()
-                    .setId("Sleep at " + hotel.getId())
-                    .setLocation(hotel.getLocation())
-                    .setDuration(duration)
-                    .setCost(hotel.getCost())
-                    .setScore(hotel.getScore() / TARGET_HOURS_OF_SLEEP)
-                    .setType(SLEEP)
+            return ImmutableActivity.builder()
+                    .id("Sleep at " + hotel.getId())
+                    .location(hotel.getLocation())
+                    .duration(duration)
+                    .cost(hotel.getCost())
+                    .score(hotel.getScore() / TARGET_HOURS_OF_SLEEP)
+                    .type(SLEEP)
                     .build();
         } else {
             return createActivity("default sleep", duration, locationForGeneratedActivity(lastEvent, activityToAdd), SLEEP);
@@ -198,11 +198,11 @@ class ItineraryBuilder {
     }
 
     private static Activity createActivity(String activityId, long duration, Location location, ActivityType type) {
-        return new ActivityBuilder()
-                .setId(activityId)
-                .setLocation(location)
-                .setDuration(duration)
-                .setType(type)
+        return ImmutableActivity.builder()
+                .id(activityId)
+                .location(location)
+                .duration(duration)
+                .type(type)
                 .build();
     }
 }

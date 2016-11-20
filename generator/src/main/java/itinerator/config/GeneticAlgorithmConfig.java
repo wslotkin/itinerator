@@ -1,91 +1,32 @@
 package itinerator.config;
 
-public class GeneticAlgorithmConfig {
-    private final double mutationRate;
-    private final int populationSize;
-    private final int maxIterations;
-    private final long maxDuration;
-    private final boolean parallelized;
+import org.immutables.value.Value.Default;
+import org.immutables.value.Value.Immutable;
 
-    public GeneticAlgorithmConfig(double mutationRate,
-                                  int populationSize,
-                                  int maxIterations,
-                                  long maxDuration,
-                                  boolean parallelized) {
-        this.mutationRate = mutationRate;
-        this.populationSize = populationSize;
-        this.maxIterations = maxIterations;
-        this.maxDuration = maxDuration;
-        this.parallelized = parallelized;
+@Immutable
+public interface GeneticAlgorithmConfig {
+    @Default
+    default double getMutationRate() {
+        return 0.2;
     }
 
-    public double getMutationRate() {
-        return mutationRate;
+    @Default
+    default int getPopulationSize() {
+        return 1000;
     }
 
-    public int getPopulationSize() {
-        return populationSize;
+    @Default
+    default int getMaxIterations() {
+        return 100;
     }
 
-    public int getMaxIterations() {
-        return maxIterations;
+    @Default
+    default long getMaxDuration() {
+        return Integer.MAX_VALUE;
     }
 
-    public long getMaxDuration() {
-        return maxDuration;
-    }
-
-    public boolean getParallelized() {
-        return parallelized;
-    }
-
-    public Builder toBuilder() {
-        return new Builder()
-                .setMutationRate(mutationRate)
-                .setPopulationSize(populationSize)
-                .setMaxIterations(maxIterations)
-                .setMaxDuration(maxDuration)
-                .setParallelized(parallelized);
-    }
-
-    public static class Builder {
-        private double mutationRate = 0.2;
-        private int populationSize = 1000;
-        private int maxIterations = 100;
-        private long maxDuration = Integer.MAX_VALUE;
-        private boolean parallelized = true;
-
-        public Builder setMutationRate(double mutationRate) {
-            this.mutationRate = mutationRate;
-            return this;
-        }
-
-        public Builder setPopulationSize(int populationSize) {
-            this.populationSize = populationSize;
-            return this;
-        }
-
-        public Builder setMaxIterations(int maxIterations) {
-            this.maxIterations = maxIterations;
-            return this;
-        }
-
-        public Builder setMaxDuration(long maxDuration) {
-            this.maxDuration = maxDuration;
-            return this;
-        }
-
-        public Builder setParallelized(boolean parallelized) {
-            this.parallelized = parallelized;
-            return this;
-        }
-
-        public GeneticAlgorithmConfig build() {
-            return new GeneticAlgorithmConfig(mutationRate,
-                    populationSize,
-                    maxIterations,
-                    maxDuration,
-                    parallelized);
-        }
+    @Default
+    default boolean getParallelized() {
+        return true;
     }
 }

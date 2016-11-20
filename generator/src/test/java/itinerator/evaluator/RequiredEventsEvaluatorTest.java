@@ -49,9 +49,7 @@ public class RequiredEventsEvaluatorTest {
     public void whenItineraryHasAllButOneRequiredEventsShouldReturnPenalty() {
         double result = requiredEventsEvaluator.applyAsDouble(toItinerary(newArrayList(FIRST_ACTIVITY, SECOND_ACTIVITY)));
 
-        double expectedResult = PER_EVENT_PENALTY;
-
-        assertEquals(expectedResult, result, DELTA);
+        assertEquals(PER_EVENT_PENALTY, result, DELTA);
     }
 
     @Test
@@ -63,12 +61,12 @@ public class RequiredEventsEvaluatorTest {
 
     private static Itinerary toItinerary(List<Activity> activities) {
         List<Event> events = activities.stream()
-                .map(activity -> new TestEventBuilder().setActivity(activity).build())
+                .map(activity -> ImmutableEvent.builder().activity(activity).build())
                 .collect(toList());
-        return new Itinerary(events);
+        return ImmutableItinerary.of(events);
     }
 
     private static Activity activity(String name) {
-        return new ActivityBuilder().setId(name).build();
+        return ImmutableActivity.builder().id(name).build();
     }
 }

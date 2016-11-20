@@ -1,8 +1,9 @@
 package itinerator.calculators;
 
 import itinerator.datamodel.Activity;
+import itinerator.datamodel.ImmutableActivity;
+import itinerator.datamodel.ImmutableLocation;
 import itinerator.datamodel.Location;
-import itinerator.datamodel.ActivityBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,10 +13,10 @@ import static org.mockito.Mockito.*;
 
 public class TravelTimeCalculatorTest {
 
-    private static final Location FIRST_LOCATION = new Location(1.2, 2.3);
-    private static final Location SECOND_LOCATION = new Location(3.4, 4.5);
-    private static final Activity FIRST_ACTIVITY = new ActivityBuilder().setLocation(FIRST_LOCATION).build();
-    private static final Activity SECOND_ACTIVITY = new ActivityBuilder().setLocation(SECOND_LOCATION).build();
+    private static final Location FIRST_LOCATION = ImmutableLocation.of(1.2, 2.3);
+    private static final Location SECOND_LOCATION = ImmutableLocation.of(3.4, 4.5);
+    private static final Activity FIRST_ACTIVITY = ImmutableActivity.builder().location(FIRST_LOCATION).build();
+    private static final Activity SECOND_ACTIVITY = ImmutableActivity.builder().location(SECOND_LOCATION).build();
     private static final double DISTANCE = 5.6;
 
     private DistanceCalculator distanceCalculator;

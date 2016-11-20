@@ -1,9 +1,6 @@
 package itinerator.evaluator;
 
-import itinerator.datamodel.ActivityBuilder;
-import itinerator.datamodel.Event;
-import itinerator.datamodel.Itinerary;
-import itinerator.datamodel.TestEventBuilder;
+import itinerator.datamodel.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,14 +27,14 @@ public class CostEvaluatorTest {
 
     @Test
     public void whenItineraryIsEmptyShouldReturnZero() {
-        double result = costEvaluator.applyAsDouble(new Itinerary(new ArrayList<>()));
+        double result = costEvaluator.applyAsDouble(ImmutableItinerary.of(new ArrayList<>()));
 
         assertEquals(0.0, result, DELTA);
     }
 
     @Test
     public void whenItineraryHasOnlyOneEventReturnsCostOfEventScaledByMultiplier() {
-        double result = costEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT)));
+        double result = costEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(FIRST_EVENT)));
 
         double expectedResult = FIRST_EVENT_COST * COST_PENALTY;
 
@@ -46,7 +43,7 @@ public class CostEvaluatorTest {
 
     @Test
     public void returnsSumOfCostsOfAllEventsScaledByMultiplier() {
-        double result = costEvaluator.applyAsDouble(new Itinerary(newArrayList(FIRST_EVENT, SECOND_EVENT)));
+        double result = costEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(FIRST_EVENT, SECOND_EVENT)));
 
         double expectedResult = (FIRST_EVENT_COST + SECOND_EVENT_COST) * COST_PENALTY;
 
@@ -54,9 +51,9 @@ public class CostEvaluatorTest {
     }
 
     private static Event eventWithCost(double cost) {
-        return new TestEventBuilder()
-                .setActivity(new ActivityBuilder()
-                        .setCost(cost)
+        return ImmutableEvent.builder()
+                .activity(ImmutableActivity.builder()
+                        .cost(cost)
                         .build())
                 .build();
     }

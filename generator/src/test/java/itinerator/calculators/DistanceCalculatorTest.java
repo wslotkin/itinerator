@@ -1,5 +1,6 @@
 package itinerator.calculators;
 
+import itinerator.datamodel.ImmutableLocation;
 import itinerator.datamodel.Location;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +10,8 @@ import static org.junit.Assert.assertEquals;
 
 public class DistanceCalculatorTest {
 
-    private static final Location START_LOCATION = new Location(40.775525, -73.961227);
-    private static final Location END_LOCATION = new Location(41.122106, -73.372485);
+    private static final Location START_LOCATION = ImmutableLocation.of(40.775525, -73.961227);
+    private static final Location END_LOCATION = ImmutableLocation.of(41.122106, -73.372485);
 
     private DistanceCalculator distanceCalculator;
 

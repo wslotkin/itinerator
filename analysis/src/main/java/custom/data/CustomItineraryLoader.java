@@ -1,11 +1,7 @@
 package custom.data;
 
 import itinerator.data.FileType;
-import itinerator.datamodel.Activity;
-import itinerator.datamodel.ActivityBuilder;
-import itinerator.datamodel.ActivityType;
-import itinerator.datamodel.Event;
-import itinerator.datamodel.Range;
+import itinerator.datamodel.*;
 import itinerator.itinerary.TimeUtil;
 
 import java.io.BufferedReader;
@@ -75,19 +71,19 @@ public class CustomItineraryLoader {
             // convention that generated events shared a location with the NEXT event instead of the current convention
             // of sharing the location of the PREVIOUS event. This isn't necessary for any itineraries generated after 5/16/2015
             long minutesToShift = between(TimeUtil.BREAKFAST_WINDOW.getStart(), endTime.toLocalTime()).toMinutes();
-            return new Event(activity, Range.of(startTime.minusMinutes(minutesToShift), endTime.minusMinutes(minutesToShift)), 0.0);
+            return ImmutableEvent.of(activity, Range.of(startTime.minusMinutes(minutesToShift), endTime.minusMinutes(minutesToShift)), 0.0);
         } else {
-            return new Event(activity, Range.of(startTime, endTime), 0.0);
+            return ImmutableEvent.of(activity, Range.of(startTime, endTime), 0.0);
         }
     }
 
     private static Activity createActivity(String activityId, String type, long duration, Event previousEvent) {
         ActivityType activityType = ActivityType.valueOf(type);
-        return new ActivityBuilder()
-                .setId(activityId)
-                .setLocation(previousEvent.getActivity().getLocation())
-                .setDuration(duration)
-                .setType(activityType)
+        return ImmutableActivity.builder()
+                .id(activityId)
+                .location(previousEvent.getActivity().getLocation())
+                .duration(duration)
+                .type(activityType)
                 .build();
     }
 

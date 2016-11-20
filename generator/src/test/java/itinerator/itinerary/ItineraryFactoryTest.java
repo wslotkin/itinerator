@@ -45,13 +45,13 @@ public class ItineraryFactoryTest {
 
     @Test
     public void correctlyAddsFixedEventsIntoExpectedItinerary() {
-        Event fixedEvent = new TestEventBuilder()
-                .setActivity(new ActivityBuilder()
-                        .setId("fixed event")
-                        .setType(ActivityType.ACTIVITY)
-                        .setDuration(0L)
+        Event fixedEvent = ImmutableEvent.builder()
+                .activity(ImmutableActivity.builder()
+                        .id("fixed event")
+                        .type(ActivityType.ACTIVITY)
+                        .duration(0L)
                         .build())
-                .setEventTime(Range.of(LocalDateTime.of(2015, 2, 22, 16, 0), LocalDateTime.of(2015, 2, 22, 16, 0)))
+                .eventTime(Range.of(LocalDateTime.of(2015, 2, 22, 16, 0), LocalDateTime.of(2015, 2, 22, 16, 0)))
                 .build();
         itineraryFactory = new ItineraryFactory(ACTIVITIES, START_TIME, END_TIME, travelTimeCalculator, newArrayList(fixedEvent));
 
@@ -71,33 +71,33 @@ public class ItineraryFactoryTest {
     }
 
     private static List<Activity> createActivities() {
-        return newArrayList(new ActivityBuilder().setId("1").setDuration(120L).build(),
-                new ActivityBuilder().setId("2").setDuration(120L).build(),
-                new ActivityBuilder().setId("3").setDuration(120L).build(),
-                new ActivityBuilder().setId("4").setDuration(120L).build(),
-                new ActivityBuilder().setId("5").setDuration(120L).build(),
-                new ActivityBuilder().setId("6").setDuration(120L).build(),
-                new ActivityBuilder().setId("7").setDuration(120L).build(),
-                new ActivityBuilder().setId("8").setDuration(120L).build(),
-                new ActivityBuilder().setId("9").setDuration(120L).build(),
-                new ActivityBuilder().setId("10").setDuration(120L).build(),
-                new ActivityBuilder().setId("11").setDuration(120L).build(),
-                new ActivityBuilder().setId("12").setDuration(120L).build(),
-                new ActivityBuilder().setId("13").setDuration(120L).build());
+        return newArrayList(ImmutableActivity.builder().id("1").duration(120L).build(),
+                ImmutableActivity.builder().id("2").duration(120L).build(),
+                ImmutableActivity.builder().id("3").duration(120L).build(),
+                ImmutableActivity.builder().id("4").duration(120L).build(),
+                ImmutableActivity.builder().id("5").duration(120L).build(),
+                ImmutableActivity.builder().id("6").duration(120L).build(),
+                ImmutableActivity.builder().id("7").duration(120L).build(),
+                ImmutableActivity.builder().id("8").duration(120L).build(),
+                ImmutableActivity.builder().id("9").duration(120L).build(),
+                ImmutableActivity.builder().id("10").duration(120L).build(),
+                ImmutableActivity.builder().id("11").duration(120L).build(),
+                ImmutableActivity.builder().id("12").duration(120L).build(),
+                ImmutableActivity.builder().id("13").duration(120L).build());
     }
 
     private static List<Event> expectedEvents() {
-        return newArrayList(new TestEventBuilder().setActivity(ACTIVITIES.get(2)).setEventTime(createEventInterval(START_TIME)).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(0)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 9, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(1)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 12, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(7)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 14, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(11)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 16, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(5)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 19, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(8)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 21, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(10)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 9, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(4)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 12, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(9)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 14, 0))).build(),
-                new TestEventBuilder().setActivity(ACTIVITIES.get(6)).setEventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 16, 0))).build());
+        return newArrayList(ImmutableEvent.builder().activity(ACTIVITIES.get(2)).eventTime(createEventInterval(START_TIME)).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(0)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 9, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(1)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 12, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(7)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 14, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(11)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 16, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(5)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 19, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(8)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 22, 21, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(10)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 9, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(4)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 12, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(9)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 14, 0))).build(),
+                ImmutableEvent.builder().activity(ACTIVITIES.get(6)).eventTime(createEventInterval(LocalDateTime.of(2015, 2, 23, 16, 0))).build());
     }
 
     private static Range<LocalDateTime> createEventInterval(LocalDateTime startTime) {

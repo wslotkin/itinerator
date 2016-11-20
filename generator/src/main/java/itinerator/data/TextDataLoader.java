@@ -30,19 +30,19 @@ class TextDataLoader extends AbstractDataLoader {
     protected Activity parseRowElements(String[] rowElements) {
         WeeklySchedule weeklySchedule = parseHours(rowElements[HOURS_COLUMN]);
         double score = getScore(rowElements);
-        Location location = new Location(optionalDouble(rowElements[LATITUDE_COLUMN]),
+        Location location = ImmutableLocation.of(optionalDouble(rowElements[LATITUDE_COLUMN]),
                 optionalDouble(rowElements[LONGITUDE_COLUMN]));
 
-        ActivityBuilder activityBuilder = new ActivityBuilder()
-                .setId(rowElements[ID_COLUMN])
-                .setWeeklySchedule(weeklySchedule)
-                .setScore(score)
-                .setLocation(location)
-                .setType(ActivityType.valueOf(rowElements[TYPE_COLUMN].toUpperCase()));
+        ImmutableActivity.Builder activityBuilder = ImmutableActivity.builder()
+                .id(rowElements[ID_COLUMN])
+                .weeklySchedule(weeklySchedule)
+                .score(score)
+                .location(location)
+                .type(ActivityType.valueOf(rowElements[TYPE_COLUMN].toUpperCase()));
 
         String durationString = rowElements[DURATION_COLUMN];
         if (!durationString.isEmpty()) {
-            activityBuilder = activityBuilder.setDuration(parseLong(durationString));
+            activityBuilder = activityBuilder.duration(parseLong(durationString));
         }
 
         return activityBuilder.build();
@@ -85,7 +85,7 @@ class TextDataLoader extends AbstractDataLoader {
     private static WeeklyShift parseShift(String shift) {
         String[] hoursRange = shift.split("-");
 
-        return new WeeklyShift(parseTimePoint(hoursRange[0]), parseTimePoint(hoursRange[1]));
+        return ImmutableWeeklyShift.of(parseTimePoint(hoursRange[0]), parseTimePoint(hoursRange[1]));
     }
 
     private static WeeklyTimePoint parseTimePoint(String inputString) {
@@ -97,6 +97,6 @@ class TextDataLoader extends AbstractDataLoader {
         // input data stored as hourOfWeek of week starting with Sunday 00:00
         int dayOfWeek = hourOfWeek / 24 != 0 ? hourOfWeek / 24 : 7;
 
-        return new WeeklyTimePoint(of(dayOfWeek), LocalTime.of(hourOfWeek % 24, minute));
+        return ImmutableWeeklyTimePoint.of(of(dayOfWeek), LocalTime.of(hourOfWeek % 24, minute));
     }
 }

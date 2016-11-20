@@ -31,16 +31,14 @@ public abstract class Range<T extends Comparable<? super T>> {
     public abstract boolean contains(T value);
 
     public boolean contains(Range<T> range) {
-        if (range instanceof OrderedRange) {
-            return containsOrderedRange((OrderedRange<T>) range);
-        } else {
-            return containsWrappingRange((WrappingRange<T>) range);
-        }
+        return range.isContainedByRange(this);
     }
 
     protected abstract boolean containsOrderedRange(OrderedRange<T> range);
 
     protected abstract boolean containsWrappingRange(WrappingRange<T> range);
+
+    protected abstract boolean isContainedByRange(Range<T> range);
 
     @Override
     public boolean equals(Object o) {
@@ -97,6 +95,11 @@ public abstract class Range<T extends Comparable<? super T>> {
             return false;
         }
 
+        @Override
+        protected boolean isContainedByRange(Range<T> range) {
+            return range.containsOrderedRange(this);
+        }
+
     }
 
     private static class WrappingRange<T extends Comparable<? super T>> extends Range<T> {
@@ -118,6 +121,11 @@ public abstract class Range<T extends Comparable<? super T>> {
         @Override
         protected boolean containsWrappingRange(WrappingRange<T> range) {
             return contains(range.start) && contains(range.end);
+        }
+
+        @Override
+        protected boolean isContainedByRange(Range<T> range) {
+            return range.containsWrappingRange(this);
         }
     }
 }
