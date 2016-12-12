@@ -17,7 +17,7 @@
     <groupId>com.github.wslotkin</groupId>
     <artifactId>itinerator</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.1</version>
+    <version> 0.1.2-SNAPSHOT</version>
     <modules>
         <module>generator</module>
         <module>analysis</module>
@@ -154,7 +154,7 @@
         <connection>scm:git:git://github.com/wslotkin/itinerator.git</connection>
         <developerConnection>scm:git:git@github.com:wslotkin/itinerator.git</developerConnection>
         <url>https://github.com/wslotkin/itinerator</url>
-      <tag>0.1.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <developers>
