@@ -1,23 +1,22 @@
 package com.github.wslotkin.itinerator.analysis;
 
-import com.github.wslotkin.itinerator.analysis.custom.CustomItineraryMain;
-import com.github.wslotkin.itinerator.generator.config.EvaluationConfig;
 import com.github.wslotkin.itinerator.generator.config.ImmutableEvaluationConfig;
 import com.github.wslotkin.itinerator.generator.config.ImmutableItineratorConfig;
-import com.github.wslotkin.itinerator.generator.config.ItineratorConfig;
-import com.github.wslotkin.itinerator.generator.data.FileType;
-import com.github.wslotkin.itinerator.generator.solver.ItinerarySolver;
+import com.github.wslotkin.itinerator.generator.datamodel.SolverResult;
 import com.google.common.base.Joiner;
 
 import java.io.*;
 import java.util.List;
 
+import static com.github.wslotkin.itinerator.analysis.custom.CustomItineraryMain.filePath;
+import static com.github.wslotkin.itinerator.analysis.custom.CustomItineraryMain.runCustomItinerary;
 import static com.github.wslotkin.itinerator.generator.data.FileType.TEXT;
+import static com.github.wslotkin.itinerator.generator.main.FileBasedItineraryGeneratorRunner.BEIJING_DATA;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Double.parseDouble;
 import static java.lang.String.format;
 
-public class AnalysisMain extends CustomItineraryMain {
+public class AnalysisMain {
     private static final String ROOT_DIR = filePath("beijingItineraries");
     private static final String FILE_PREFIX = "itinerary";
     private static final String PATH_PREFIX = ROOT_DIR + File.separator + FILE_PREFIX;
@@ -39,10 +38,6 @@ public class AnalysisMain extends CustomItineraryMain {
         output(results, correlation);
     }
 
-    public AnalysisMain(String fileBase, String outputFilename, FileType inputFileType, ItineratorConfig itineratorConfig, EvaluationConfig evaluationConfig) {
-        super(fileBase, outputFilename, inputFileType, itineratorConfig, evaluationConfig);
-    }
-
     private static List<AnalysisSolverResult> generateResults(BufferedReader reader,
                                                               int idColumnIndex,
                                                               int rankColumnIndex) throws IOException {
@@ -55,10 +50,11 @@ public class AnalysisMain extends CustomItineraryMain {
 
             String filePathBase = Joiner.on("_").join(PATH_PREFIX, id);
 
-            ItinerarySolver.SolverResult solverResult = runCustomItinerary(filePathBase,
+            SolverResult solverResult = runCustomItinerary(filePathBase,
                     TEXT,
                     ImmutableItineratorConfig.builder().build(),
-                    ImmutableEvaluationConfig.builder().build());
+                    ImmutableEvaluationConfig.builder().build(),
+                    BEIJING_DATA);
 
             results.add(new AnalysisSolverResult(id, solverResult, referenceScore));
         }

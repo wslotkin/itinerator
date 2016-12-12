@@ -5,9 +5,7 @@ import com.github.wslotkin.itinerator.generator.calculators.RoundingTravelTimeCa
 import com.github.wslotkin.itinerator.generator.calculators.TravelTimeCalculator;
 import com.github.wslotkin.itinerator.generator.config.EvaluationConfig;
 import com.github.wslotkin.itinerator.generator.config.GeneticAlgorithmConfig;
-import com.github.wslotkin.itinerator.generator.datamodel.Activity;
-import com.github.wslotkin.itinerator.generator.datamodel.Event;
-import com.github.wslotkin.itinerator.generator.datamodel.Itinerary;
+import com.github.wslotkin.itinerator.generator.datamodel.*;
 import com.github.wslotkin.itinerator.generator.itinerary.ItineraryFactory;
 import cz.cvut.felk.cig.jcop.algorithm.geneticalgorithm.GeneticAlgorithm;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
@@ -67,7 +65,7 @@ public class ItinerarySolver {
         Configuration configuration = new Configuration(attributes);
         Itinerary itinerary = itineraryFactory.create(configuration);
         double score = itineraryProblem.getDefaultFitness().getValue(configuration);
-        return new SolverResult(itinerary, configuration, score, 0L);
+        return ImmutableSolverResult.of(itinerary, configuration, score, 0L);
     }
 
     public ItinerarySolver(Solver solver, ItineraryFactory itineraryFactory) {
@@ -85,36 +83,6 @@ public class ItinerarySolver {
         Itinerary bestItinerary = itineraryFactory.create(bestConfiguration);
         double score = onlyResult.getBestFitness();
         long duration = onlyResult.getStopTimestamp().getClockTime() - onlyResult.getStartTimestamp().getClockTime();
-        return new SolverResult(bestItinerary, bestConfiguration, score, duration);
-    }
-
-    public static class SolverResult {
-        private final Itinerary itinerary;
-        private final Configuration configuration;
-        private final double score;
-        private final long duration;
-
-        public SolverResult(Itinerary itinerary, Configuration configuration, double score, long duration) {
-            this.itinerary = itinerary;
-            this.score = score;
-            this.configuration = configuration;
-            this.duration = duration;
-        }
-
-        public Itinerary getItinerary() {
-            return itinerary;
-        }
-
-        public Configuration getConfiguration() {
-            return configuration;
-        }
-
-        public double getScore() {
-            return score;
-        }
-
-        public long getDuration() {
-            return duration;
-        }
+        return ImmutableSolverResult.of(bestItinerary, bestConfiguration, score, duration);
     }
 }

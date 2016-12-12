@@ -1,13 +1,13 @@
 package com.github.wslotkin.itinerator.analysis;
 
-import com.github.wslotkin.itinerator.generator.solver.ItinerarySolver;
+import com.github.wslotkin.itinerator.generator.datamodel.SolverResult;
 
 class AnalysisSolverResult {
     private final String id;
-    private final ItinerarySolver.SolverResult result;
+    private final SolverResult result;
     private final double referenceScore;
 
-    public AnalysisSolverResult(String id, ItinerarySolver.SolverResult result, double referenceScore) {
+    public AnalysisSolverResult(String id, SolverResult result, double referenceScore) {
         this.id = id;
         this.result = result;
         this.referenceScore = referenceScore;
@@ -17,7 +17,7 @@ class AnalysisSolverResult {
         return id;
     }
 
-    public ItinerarySolver.SolverResult getResult() {
+    public SolverResult getResult() {
         return result;
     }
 

@@ -1,37 +1,26 @@
 package com.github.wslotkin.itinerator.generator.main;
 
+import com.github.wslotkin.itinerator.generator.ItineraryOptimizer;
 import com.github.wslotkin.itinerator.generator.config.ImmutableOptimizationConfig;
 import com.github.wslotkin.itinerator.generator.config.OptimizationConfig;
-import com.github.wslotkin.itinerator.generator.datamodel.Activity;
-import com.github.wslotkin.itinerator.generator.solver.ItinerarySolver;
-import com.github.wslotkin.itinerator.generator.solver.ItinerarySolver.SolverResult;
+import com.github.wslotkin.itinerator.generator.datamodel.SolverResult;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
 
-import static com.github.wslotkin.itinerator.generator.solver.ItinerarySolver.createSolver;
+import static com.github.wslotkin.itinerator.generator.main.FileBasedItineraryGeneratorRunner.BEIJING_DATA;
 
-public class OptimizerMain extends BaseMain {
-    private final OptimizationConfig optimizationConfig;
+public class OptimizerMain {
 
     public static void main(String[] args) throws IOException {
-        new OptimizerMain(ImmutableOptimizationConfig.builder().build()).run();
+        OptimizationConfig optimizationConfig = ImmutableOptimizationConfig.builder().build();
+        runOptimization(optimizationConfig);
     }
 
-    public OptimizerMain(OptimizationConfig optimizationConfig) {
-        super(optimizationConfig.getItineratorConfig());
-        this.optimizationConfig = optimizationConfig;
-    }
-
-    @Override
-    protected SolverResult getResult(List<Activity> activities, LocalDateTime startTime, LocalDateTime endTime) throws IOException {
-        ItinerarySolver itinerarySolver = createSolver(activities,
-                startTime,
-                endTime,
-                optimizationConfig.getGeneticAlgorithmConfig(),
-                optimizationConfig.getEvaluationConfig());
-        itinerarySolver.run();
-        return itinerarySolver.getBestResult();
+    public static SolverResult runOptimization(OptimizationConfig optimizationConfig) throws FileNotFoundException {
+        return new FileBasedItineraryGeneratorRunner(optimizationConfig.getItineratorConfig(),
+                new ItineraryOptimizer(optimizationConfig),
+                BEIJING_DATA,
+                "output.txt").run();
     }
 }
