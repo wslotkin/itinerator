@@ -19,8 +19,8 @@ public class WeeklySchedule {
         if (shifts.isEmpty()) return true;
 
         WeeklyShift eventShift = ImmutableWeeklyShift.builder()
-                .startTime(createTimePoint(range.getStart()))
-                .endTime(createTimePoint(range.getEnd()))
+                .startTime(toTimePoint(range.getStart()))
+                .endTime(toTimePoint(range.getEnd()))
                 .build();
 
         return isEventWithinAnyShift(eventShift);
@@ -68,10 +68,7 @@ public class WeeklySchedule {
         }
     }
 
-    private static WeeklyTimePoint createTimePoint(LocalDateTime dateTime) {
-        return ImmutableWeeklyTimePoint.builder()
-                .dayOfWeek(dateTime.getDayOfWeek())
-                .timeOfDay(dateTime.toLocalTime())
-                .build();
+    private static WeeklyTimePoint toTimePoint(LocalDateTime dateTime) {
+        return ImmutableWeeklyTimePoint.of(dateTime.getDayOfWeek(), dateTime.toLocalTime());
     }
 }
