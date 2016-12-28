@@ -36,6 +36,7 @@ public class ItineraryGeneratorRunner {
                 .collect(toList());
 
         return itineraryGenerator.getResult(filteredActivities,
+                activityProvider.getFixedEvents(),
                 itineratorConfig.getStartTime(),
                 itineratorConfig.getEndTime());
     }

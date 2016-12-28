@@ -32,7 +32,10 @@ class CustomItineraryGenerator implements ItineraryGenerator {
     }
 
     @Override
-    public SolverResult getResult(List<Activity> activities, LocalDateTime startTime, LocalDateTime endTime) {
+    public SolverResult getResult(List<Activity> activities,
+                                  List<Event> fixedEvents,
+                                  LocalDateTime startTime,
+                                  LocalDateTime endTime) {
         List<Event> events = getEvents(activities);
 
         LocalDateTime start = events.get(0).getEventTime().getStart();

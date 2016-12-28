@@ -16,7 +16,6 @@ import cz.cvut.felk.cig.jcop.solver.condition.IterationCondition;
 import cz.cvut.felk.cig.jcop.solver.condition.TimeoutCondition;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,12 +27,13 @@ public class ItinerarySolver {
     private final ItineraryFactory itineraryFactory;
 
     public static ItinerarySolver createSolver(List<Activity> activities,
+                                               List<Event> fixedEvents,
                                                LocalDateTime startTime,
                                                LocalDateTime endTime,
                                                GeneticAlgorithmConfig geneticAlgorithmConfig,
                                                EvaluationConfig evaluationConfig) {
         RoundingTravelTimeCalculator travelTimeCalculator = new RoundingTravelTimeCalculator(new TravelTimeCalculator(new DistanceCalculator()), 5.0);
-        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, new ArrayList<>());
+        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, fixedEvents);
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory, evaluationConfig);
         GeneticAlgorithm geneticAlgorithm = createGeneticAlgorithm(geneticAlgorithmConfig.getPopulationSize(),
                 geneticAlgorithmConfig.getMutationRate(),

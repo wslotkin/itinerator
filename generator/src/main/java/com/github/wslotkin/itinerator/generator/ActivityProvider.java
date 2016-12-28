@@ -1,6 +1,7 @@
 package com.github.wslotkin.itinerator.generator;
 
 import com.github.wslotkin.itinerator.generator.datamodel.Activity;
+import com.github.wslotkin.itinerator.generator.datamodel.Event;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,4 +18,8 @@ public interface ActivityProvider {
     }
 
     List<Activity> doGetActivities() throws IOException;
+
+    default List<Event> getFixedEvents() {
+        return new ArrayList<>();
+    }
 }

@@ -2,6 +2,7 @@ package com.github.wslotkin.itinerator.generator;
 
 import com.github.wslotkin.itinerator.generator.config.OptimizationConfig;
 import com.github.wslotkin.itinerator.generator.datamodel.Activity;
+import com.github.wslotkin.itinerator.generator.datamodel.Event;
 import com.github.wslotkin.itinerator.generator.datamodel.SolverResult;
 import com.github.wslotkin.itinerator.generator.solver.ItinerarySolver;
 
@@ -19,11 +20,15 @@ public class ItineraryOptimizer implements ItineraryGenerator {
     }
 
     @Override
-    public SolverResult getResult(List<Activity> activities, LocalDateTime startTime, LocalDateTime endTime) {
+    public SolverResult getResult(List<Activity> activities,
+                                  List<Event> fixedEvents,
+                                  LocalDateTime startTime,
+                                  LocalDateTime endTime) {
         System.out.println("Input configuration: " + optimizationConfig);
         System.out.println("Input activities: " + activities);
 
         ItinerarySolver itinerarySolver = createSolver(activities,
+                fixedEvents,
                 startTime,
                 endTime,
                 optimizationConfig.getGeneticAlgorithmConfig(),
