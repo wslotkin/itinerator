@@ -8,6 +8,7 @@ import com.github.wslotkin.itinerator.generator.solver.ItinerarySolver;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.github.wslotkin.itinerator.generator.itinerary.ItineraryFormatter.prettyPrint;
 import static com.github.wslotkin.itinerator.generator.solver.ItinerarySolver.createSolver;
 
 public class ItineraryOptimizer implements ItineraryGenerator {
@@ -28,6 +29,9 @@ public class ItineraryOptimizer implements ItineraryGenerator {
                 optimizationConfig.getGeneticAlgorithmConfig(),
                 optimizationConfig.getEvaluationConfig());
         itinerarySolver.run();
-        return itinerarySolver.getBestResult();
+
+        SolverResult bestResult = itinerarySolver.getBestResult();
+        System.out.println("Output itinerary: " + prettyPrint(bestResult.getItinerary()));
+        return bestResult;
     }
 }
