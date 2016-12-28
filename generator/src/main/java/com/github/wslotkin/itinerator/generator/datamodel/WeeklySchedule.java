@@ -10,7 +10,7 @@ import static com.google.common.collect.Sets.newTreeSet;
 public class WeeklySchedule {
     private final NavigableSet<WeeklyShift> shifts;
 
-    public WeeklySchedule(Collection<WeeklyShift> shifts) {
+    public WeeklySchedule(Collection<? extends WeeklyShift> shifts) {
         this.shifts = newTreeSet(shifts);
     }
 
