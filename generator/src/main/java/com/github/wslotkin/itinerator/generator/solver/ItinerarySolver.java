@@ -79,10 +79,20 @@ public class ItinerarySolver {
 
     public SolverResult getBestResult() {
         ResultEntry onlyResult = getOnlyElement(solver.getResult().getResultEntries());
+        throwIfInvalidResult(onlyResult);
+
         Configuration bestConfiguration = onlyResult.getBestConfiguration();
         Itinerary bestItinerary = itineraryFactory.create(bestConfiguration);
         double score = onlyResult.getBestFitness();
         long duration = onlyResult.getStopTimestamp().getClockTime() - onlyResult.getStartTimestamp().getClockTime();
         return ImmutableSolverResult.of(bestItinerary, bestConfiguration, score, duration);
+    }
+
+    private static void throwIfInvalidResult(ResultEntry resultEntry) {
+        Configuration bestConfiguration = resultEntry.getBestConfiguration();
+        Exception exception = resultEntry.getException();
+        if (bestConfiguration == null && exception != null) {
+            throw new RuntimeException(exception);
+        }
     }
 }
