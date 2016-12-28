@@ -64,6 +64,28 @@ public class ItineraryFactoryTest {
         assertTrue(itinerary.getEvents().contains(fixedEvent));
     }
 
+    @Test
+    public void handlesStartTimeInSleepWindow() {
+        itineraryFactory = new ItineraryFactory(ACTIVITIES, LocalDateTime.of(2015, 2, 21, 23, 0), END_TIME, travelTimeCalculator, new ArrayList<>());
+
+        Itinerary itinerary = itineraryFactory.create(CONFIGURATION);
+
+        assertEquals(2, numberOfEventsMatchingType(itinerary, SLEEP));
+        assertEquals(6, numberOfEventsMatchingType(itinerary, FOOD));
+        assertEquals(11, numberOfEventsMatchingType(itinerary, ACTIVITY));
+    }
+
+    @Test
+    public void handlesStartTimeInMealWindow() {
+        itineraryFactory = new ItineraryFactory(ACTIVITIES, LocalDateTime.of(2015, 2, 21, 19, 0), END_TIME, travelTimeCalculator, new ArrayList<>());
+
+        Itinerary itinerary = itineraryFactory.create(CONFIGURATION);
+
+        assertEquals(2, numberOfEventsMatchingType(itinerary, SLEEP));
+        assertEquals(7, numberOfEventsMatchingType(itinerary, FOOD));
+        assertEquals(12, numberOfEventsMatchingType(itinerary, ACTIVITY));
+    }
+
     private static long numberOfEventsMatchingType(Itinerary itinerary, ActivityType activityType) {
         return itinerary.getEvents().stream()
                 .filter(a -> a.getActivity().getType() == activityType)

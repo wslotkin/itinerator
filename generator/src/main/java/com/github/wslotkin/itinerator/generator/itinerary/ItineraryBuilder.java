@@ -175,7 +175,8 @@ class ItineraryBuilder {
     private Activity createSleepActivity(LocalDateTime currentDateTime, Event lastEvent, Activity activityToAdd, Activity hotel) {
         LocalDateTime endTimeOfActivity = TimeUtil.dateWithTime(currentDateTime.plusMinutes(TimeUtil.TARGET_MINUTES_OF_SLEEP), LocalTime.of(TimeUtil.START_OF_DAY, 0));
         long minutesUntilStartOfDay = between(currentDateTime, endTimeOfActivity).toMinutes();
-        long duration = Math.max(minutesUntilStartOfDay - (long) travelTime(lastEvent.getActivity(), hotel), TimeUtil.TARGET_MINUTES_OF_SLEEP);
+        Activity lastActivity = lastEvent != null ? lastEvent.getActivity() : null;
+        long duration = Math.max(minutesUntilStartOfDay - (long) travelTime(lastActivity, hotel), TimeUtil.TARGET_MINUTES_OF_SLEEP);
         if (hotel != null) {
             return ImmutableActivity.builder()
                     .id("Sleep at " + hotel.getId())
