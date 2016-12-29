@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static com.github.wslotkin.itinerator.generator.evaluator.EventEvaluators.FUN_NORMALIZATION_FACTOR;
 import static com.github.wslotkin.itinerator.generator.evaluator.EventEvaluators.funEvaluator;
 import static com.github.wslotkin.itinerator.generator.performance.TestUtil.DELTA;
 import static com.google.common.collect.Lists.newArrayList;
@@ -35,20 +36,20 @@ public class FunEvaluatorTest {
     }
 
     @Test
-    public void whenItineraryHasOnlyOneEventReturnsScoreTimesDurationOfEvent() {
+    public void whenItineraryHasOnlyOneEventReturnsScoreSquaredTimesDurationOfEvent() {
         double result = funEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(FIRST_EVENT)));
 
-        double expectedResult = FIRST_ACTIVITY_DURATION * FIRST_ACTIVITY_SCORE;
+        double expectedResult = FIRST_ACTIVITY_DURATION * FIRST_ACTIVITY_SCORE * FIRST_ACTIVITY_SCORE / FUN_NORMALIZATION_FACTOR;
 
         assertEquals(expectedResult, result, DELTA);
     }
 
     @Test
-    public void returnsSumOfScoreTimesDurationOfAllActivities() {
+    public void returnsSumOfScoreSquaredTimesDurationOfAllActivities() {
         double result = funEvaluator.applyAsDouble(ImmutableItinerary.of(newArrayList(FIRST_EVENT, SECOND_EVENT)));
 
-        double expectedResult = FIRST_ACTIVITY_DURATION * FIRST_ACTIVITY_SCORE
-                + SECOND_ACTIVITY_DURATION * SECOND_ACTIVITY_SCORE;
+        double expectedResult = FIRST_ACTIVITY_DURATION * FIRST_ACTIVITY_SCORE * FIRST_ACTIVITY_SCORE / FUN_NORMALIZATION_FACTOR
+                + SECOND_ACTIVITY_DURATION * SECOND_ACTIVITY_SCORE * SECOND_ACTIVITY_SCORE / FUN_NORMALIZATION_FACTOR;
 
         assertEquals(expectedResult, result, DELTA);
     }
