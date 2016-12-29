@@ -6,7 +6,7 @@ import com.google.common.annotations.VisibleForTesting;
 public class TravelTimeCalculator {
 
     @VisibleForTesting
-    static final double SPEED_IN_KM_PER_MINUTE = .5;
+    static final double SPEED_IN_KM_PER_MINUTE = .1;
 
     private final DistanceCalculator distanceCalculator;
 
