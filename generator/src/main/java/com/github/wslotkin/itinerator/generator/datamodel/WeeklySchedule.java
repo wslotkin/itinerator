@@ -18,10 +18,7 @@ public class WeeklySchedule {
         // will: this covers the case of missing hours of operation
         if (shifts.isEmpty()) return true;
 
-        WeeklyShift eventShift = ImmutableWeeklyShift.builder()
-                .startTime(toTimePoint(range.getStart()))
-                .endTime(toTimePoint(range.getEnd()))
-                .build();
+        WeeklyShift eventShift = ImmutableWeeklyShift.of(toTimePoint(range.getStart()), toTimePoint(range.getEnd()));
 
         return isEventWithinAnyShift(eventShift);
     }
