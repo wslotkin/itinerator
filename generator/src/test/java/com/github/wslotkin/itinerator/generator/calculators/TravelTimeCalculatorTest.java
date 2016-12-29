@@ -15,9 +15,12 @@ public class TravelTimeCalculatorTest {
 
     private static final Location FIRST_LOCATION = ImmutableLocation.of(1.2, 2.3);
     private static final Location SECOND_LOCATION = ImmutableLocation.of(3.4, 4.5);
+    private static final Location DISTANT_LOCATION = ImmutableLocation.of(100.1, 200.2);
     private static final Activity FIRST_ACTIVITY = ImmutableActivity.builder().location(FIRST_LOCATION).build();
     private static final Activity SECOND_ACTIVITY = ImmutableActivity.builder().location(SECOND_LOCATION).build();
-    private static final double DISTANCE = 5.6;
+    private static final Activity DISTANT_ACTIVITY = ImmutableActivity.builder().location(DISTANT_LOCATION).build();
+    private static final double DISTANCE = 1.2;
+    private static final double FAR_DISTANCE = 100.2;
 
     private DistanceCalculator distanceCalculator;
     private TravelTimeCalculator travelTimeCalculator;
@@ -27,18 +30,30 @@ public class TravelTimeCalculatorTest {
         distanceCalculator = mock(DistanceCalculator.class);
 
         when(distanceCalculator.calculate(FIRST_LOCATION, SECOND_LOCATION)).thenReturn(DISTANCE);
+        when(distanceCalculator.calculate(FIRST_LOCATION, DISTANT_LOCATION)).thenReturn(FAR_DISTANCE);
 
         travelTimeCalculator = new TravelTimeCalculator(distanceCalculator);
     }
 
     @Test
-    public void returnsDistanceDividedByTravelSpeed() {
+    public void whenDistanceIsWalkableShouldReturnsDistanceDividedByWalkingSpeed() {
         double result = travelTimeCalculator.calculate(FIRST_ACTIVITY, SECOND_ACTIVITY);
 
-        double expectedResult = DISTANCE / TravelTimeCalculator.SPEED_IN_KM_PER_MINUTE;
+        double expectedResult = DISTANCE / TravelTimeCalculator.WALKING_SPEED_IN_KM_PER_MINUTE;
 
         Assert.assertEquals(expectedResult, result, TestUtil.DELTA);
 
         verify(distanceCalculator).calculate(FIRST_LOCATION, SECOND_LOCATION);
+    }
+
+    @Test
+    public void whenDistanceIsFarShouldReturnsDistanceDividedByDrivingSpeed() {
+        double result = travelTimeCalculator.calculate(FIRST_ACTIVITY, DISTANT_ACTIVITY);
+
+        double expectedResult = FAR_DISTANCE / TravelTimeCalculator.DRIVING_SPEED_IN_KM_PER_MINUTE;
+
+        Assert.assertEquals(expectedResult, result, TestUtil.DELTA);
+
+        verify(distanceCalculator).calculate(FIRST_LOCATION, DISTANT_LOCATION);
     }
 }

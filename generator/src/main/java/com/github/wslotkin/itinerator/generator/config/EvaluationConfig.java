@@ -24,7 +24,7 @@ public interface EvaluationConfig {
 
     @Default
     default double getAreaHoppingThreshold() {
-        return 15.0;
+        return 20.0;
     }
 
     @Default
