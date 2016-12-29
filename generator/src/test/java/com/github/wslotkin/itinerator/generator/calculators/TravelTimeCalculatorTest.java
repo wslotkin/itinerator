@@ -1,14 +1,14 @@
 package com.github.wslotkin.itinerator.generator.calculators;
 
+import com.github.wslotkin.itinerator.generator.TestUtil;
 import com.github.wslotkin.itinerator.generator.datamodel.Activity;
 import com.github.wslotkin.itinerator.generator.datamodel.ImmutableActivity;
 import com.github.wslotkin.itinerator.generator.datamodel.ImmutableLocation;
 import com.github.wslotkin.itinerator.generator.datamodel.Location;
-import com.github.wslotkin.itinerator.generator.performance.TestUtil;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class TravelTimeCalculatorTest {
@@ -41,7 +41,7 @@ public class TravelTimeCalculatorTest {
 
         double expectedResult = DISTANCE / TravelTimeCalculator.WALKING_SPEED_IN_KM_PER_MINUTE;
 
-        Assert.assertEquals(expectedResult, result, TestUtil.DELTA);
+        assertEquals(expectedResult, result, TestUtil.DELTA);
 
         verify(distanceCalculator).calculate(FIRST_LOCATION, SECOND_LOCATION);
     }
@@ -52,7 +52,7 @@ public class TravelTimeCalculatorTest {
 
         double expectedResult = FAR_DISTANCE / TravelTimeCalculator.DRIVING_SPEED_IN_KM_PER_MINUTE;
 
-        Assert.assertEquals(expectedResult, result, TestUtil.DELTA);
+        assertEquals(expectedResult, result, TestUtil.DELTA);
 
         verify(distanceCalculator).calculate(FIRST_LOCATION, DISTANT_LOCATION);
     }

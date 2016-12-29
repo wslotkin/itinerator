@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import static com.github.wslotkin.itinerator.generator.evaluator.EventEvaluators.FUN_NORMALIZATION_FACTOR;
 import static com.github.wslotkin.itinerator.generator.evaluator.EventEvaluators.funEvaluator;
-import static com.github.wslotkin.itinerator.generator.performance.TestUtil.DELTA;
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.assertEquals;
 

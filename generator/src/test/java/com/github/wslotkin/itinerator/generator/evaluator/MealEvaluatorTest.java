@@ -11,7 +11,7 @@ import java.util.List;
 import static com.github.wslotkin.itinerator.generator.datamodel.ActivityType.ACTIVITY;
 import static com.github.wslotkin.itinerator.generator.datamodel.ActivityType.FOOD;
 import static com.github.wslotkin.itinerator.generator.itinerary.TimeUtil.*;
-import static com.github.wslotkin.itinerator.generator.performance.TestUtil.DELTA;
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.assertEquals;
 

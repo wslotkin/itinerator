@@ -1,9 +1,7 @@
 package com.github.wslotkin.itinerator.generator.evaluator;
 
 import com.github.wslotkin.itinerator.generator.datamodel.*;
-import com.github.wslotkin.itinerator.generator.performance.TestUtil;
 import com.google.common.collect.Lists;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,9 +9,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.time.DayOfWeek.MONDAY;
 import static java.util.Collections.emptyList;
+import static org.junit.Assert.assertEquals;
 
 public class HoursEvaluatorTest {
     private static final double INVALID_HOURS_PENALTY = -60.0;
@@ -32,7 +32,7 @@ public class HoursEvaluatorTest {
     public void whenItineraryIsEmptyShouldReturnZero() {
         double result = hoursEvaluator.applyAsDouble(ImmutableItinerary.of(emptyList()));
 
-        Assert.assertEquals(0.0, result, TestUtil.DELTA);
+        assertEquals(0.0, result, DELTA);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class HoursEvaluatorTest {
 
         double expectedResult = INVALID_HOURS_PENALTY * 2;
 
-        Assert.assertEquals(expectedResult, result, TestUtil.DELTA);
+        assertEquals(expectedResult, result, DELTA);
     }
 
     private static Event createEventWithStart(int hourOfDay) {

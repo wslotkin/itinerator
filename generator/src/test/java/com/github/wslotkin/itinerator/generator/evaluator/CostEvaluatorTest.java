@@ -1,14 +1,14 @@
 package com.github.wslotkin.itinerator.generator.evaluator;
 
 import com.github.wslotkin.itinerator.generator.datamodel.*;
-import com.github.wslotkin.itinerator.generator.performance.TestUtil;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.junit.Assert.assertEquals;
 
 public class CostEvaluatorTest {
     private static final double COST_PENALTY = -10.0;
@@ -28,7 +28,7 @@ public class CostEvaluatorTest {
     public void whenItineraryIsEmptyShouldReturnZero() {
         double result = costEvaluator.applyAsDouble(ImmutableItinerary.of(new ArrayList<>()));
 
-        Assert.assertEquals(0.0, result, TestUtil.DELTA);
+        assertEquals(0.0, result, DELTA);
     }
 
     @Test
@@ -37,7 +37,7 @@ public class CostEvaluatorTest {
 
         double expectedResult = FIRST_EVENT_COST * COST_PENALTY;
 
-        Assert.assertEquals(expectedResult, result, TestUtil.DELTA);
+        assertEquals(expectedResult, result, DELTA);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class CostEvaluatorTest {
 
         double expectedResult = (FIRST_EVENT_COST + SECOND_EVENT_COST) * COST_PENALTY;
 
-        Assert.assertEquals(expectedResult, result, TestUtil.DELTA);
+        assertEquals(expectedResult, result, DELTA);
     }
 
     private static Event eventWithCost(double cost) {

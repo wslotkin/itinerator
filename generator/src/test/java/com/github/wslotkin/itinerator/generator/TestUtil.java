@@ -1,4 +1,4 @@
-package com.github.wslotkin.itinerator.generator.performance;
+package com.github.wslotkin.itinerator.generator;
 
 import static org.mockito.Mockito.mock;
 

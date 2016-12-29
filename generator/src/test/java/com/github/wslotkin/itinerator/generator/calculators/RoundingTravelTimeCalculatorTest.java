@@ -2,11 +2,11 @@ package com.github.wslotkin.itinerator.generator.calculators;
 
 import com.github.wslotkin.itinerator.generator.datamodel.Activity;
 import com.github.wslotkin.itinerator.generator.datamodel.ImmutableActivity;
-import com.github.wslotkin.itinerator.generator.performance.TestUtil;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +30,7 @@ public class RoundingTravelTimeCalculatorTest {
 
         double result = roundingCalculator.calculate(FIRST_EVENT, SECOND_EVENT);
 
-        Assert.assertEquals(originalResult, result, TestUtil.DELTA);
+        assertEquals(originalResult, result, DELTA);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class RoundingTravelTimeCalculatorTest {
 
         double result = roundingCalculator.calculate(FIRST_EVENT, SECOND_EVENT);
 
-        Assert.assertEquals(15.0, result, TestUtil.DELTA);
+        assertEquals(15.0, result, DELTA);
     }
 
     @Test
@@ -50,6 +50,6 @@ public class RoundingTravelTimeCalculatorTest {
 
         double result = roundingCalculator.calculate(FIRST_EVENT, SECOND_EVENT);
 
-        Assert.assertEquals(15.0, result, TestUtil.DELTA);
+        assertEquals(15.0, result, DELTA);
     }
 }

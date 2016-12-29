@@ -1,12 +1,13 @@
 package com.github.wslotkin.itinerator.generator.evaluator;
 
+import com.github.wslotkin.itinerator.generator.TestUtil;
 import com.github.wslotkin.itinerator.generator.datamodel.*;
-import com.github.wslotkin.itinerator.generator.performance.TestUtil;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +40,7 @@ public class SubitineraryEvaluatorsTest {
 
         double expectedResult = EVALUATOR_1_SUBITINERARY_1_SCORE + EVALUATOR_1_SUBITINERARY_2_SCORE;
 
-        Assert.assertEquals(expectedResult, result, TestUtil.DELTA);
+        assertEquals(expectedResult, result, DELTA);
     }
 
     private static Event event(String id) {

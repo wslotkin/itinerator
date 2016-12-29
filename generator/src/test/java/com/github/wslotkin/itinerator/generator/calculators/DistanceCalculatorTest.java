@@ -5,7 +5,7 @@ import com.github.wslotkin.itinerator.generator.datamodel.Location;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.github.wslotkin.itinerator.generator.performance.TestUtil.DELTA;
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
 import static org.junit.Assert.assertEquals;
 
 public class DistanceCalculatorTest {

@@ -1,7 +1,6 @@
 package com.github.wslotkin.itinerator.generator.solver;
 
 import com.google.common.collect.ForwardingList;
-import cz.cvut.felk.cig.jcop.algorithm.CannotContinueException;
 import cz.cvut.felk.cig.jcop.algorithm.geneticalgorithm.Chromosome;
 import cz.cvut.felk.cig.jcop.algorithm.geneticalgorithm.GeneticAlgorithm;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toCollection;
 
-public class ParallelGeneticAlgorithm extends GeneticAlgorithm {
+class ParallelGeneticAlgorithm extends GeneticAlgorithm {
     private final List<Integer> list;
 
     public ParallelGeneticAlgorithm(int populationSize, double mutationRate) {
@@ -23,7 +22,7 @@ public class ParallelGeneticAlgorithm extends GeneticAlgorithm {
     }
 
     @Override
-    public void optimize() throws CannotContinueException {
+    public void optimize() {
         selection.init(population);
 
         PopulationAndFitness populationAndFitness = list.parallelStream()

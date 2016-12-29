@@ -10,7 +10,7 @@ import java.util.List;
 
 import static com.github.wslotkin.itinerator.generator.datamodel.ActivityType.ACTIVITY;
 import static com.github.wslotkin.itinerator.generator.datamodel.ActivityType.SLEEP;
-import static com.github.wslotkin.itinerator.generator.performance.TestUtil.DELTA;
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.assertEquals;
 

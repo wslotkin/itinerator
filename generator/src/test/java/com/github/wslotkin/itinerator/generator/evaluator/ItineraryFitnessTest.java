@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static com.github.wslotkin.itinerator.generator.performance.TestUtil.DELTA;
-import static com.github.wslotkin.itinerator.generator.performance.TestUtil.mockGeneric;
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
+import static com.github.wslotkin.itinerator.generator.TestUtil.mockGeneric;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 

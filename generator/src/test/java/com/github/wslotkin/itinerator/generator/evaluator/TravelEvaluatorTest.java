@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static com.github.wslotkin.itinerator.generator.evaluator.EventEvaluators.travelEvaluator;
-import static com.github.wslotkin.itinerator.generator.performance.TestUtil.DELTA;
+import static com.github.wslotkin.itinerator.generator.TestUtil.DELTA;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.assertEquals;
 
