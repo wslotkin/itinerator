@@ -7,6 +7,8 @@ import com.github.wslotkin.itinerator.generator.datamodel.Itinerary;
 import com.github.wslotkin.itinerator.generator.itinerary.TimeUtil;
 import com.google.common.annotations.VisibleForTesting;
 
+import static com.github.wslotkin.itinerator.generator.evaluator.EvaluatorFactory.evaluator;
+import static com.github.wslotkin.itinerator.generator.evaluator.EvaluatorType.*;
 import static java.lang.Math.pow;
 
 class EventEvaluators implements Evaluator<Itinerary> {
@@ -15,13 +17,13 @@ class EventEvaluators implements Evaluator<Itinerary> {
 
     private final Evaluator<Event> evaluator;
 
-    public static Evaluator<Itinerary> eventEvaluators(EvaluationConfig config) {
-        return new EventEvaluators(funEvaluator()
-                .andThen(costEvaluator(config.getCostPenalty()))
-                .andThen(hoursEvaluator(config.getInvalidHoursPenalty()))
-                .andThen(movementEvaluator(config.getAreaHoppingPenalty(), config.getAreaHoppingThreshold()))
-                .andThen(sleepEvaluator(config.getMissingSleepMinutesPenalty()))
-                .andThen(travelEvaluator(config.getTravelTimePenalty())));
+    public static Evaluator<Itinerary> eventEvaluators(EvaluationConfig config, EvaluatorState evaluatorState) {
+        return new EventEvaluators(evaluator(funEvaluator(), evaluatorState, FUN)
+                .andThen(evaluator(costEvaluator(config.getCostPenalty()), evaluatorState, COST))
+                .andThen(evaluator(hoursEvaluator(config.getInvalidHoursPenalty()), evaluatorState, HOURS))
+                .andThen(evaluator(movementEvaluator(config.getAreaHoppingPenalty(), config.getAreaHoppingThreshold()), evaluatorState, MOVEMENT))
+                .andThen(evaluator(sleepEvaluator(config.getMissingSleepMinutesPenalty()), evaluatorState, SLEEP))
+                .andThen(evaluator(travelEvaluator(config.getTravelTimePenalty()), evaluatorState, TRAVEL)));
     }
 
     @VisibleForTesting

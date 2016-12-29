@@ -4,15 +4,19 @@ import com.github.wslotkin.itinerator.generator.config.EvaluationConfig;
 import com.github.wslotkin.itinerator.generator.datamodel.Itinerary;
 import com.google.common.annotations.VisibleForTesting;
 
-public class SubitineraryEvaluators implements Evaluator<Itinerary> {
+import static com.github.wslotkin.itinerator.generator.evaluator.EvaluatorFactory.evaluator;
+import static com.github.wslotkin.itinerator.generator.evaluator.EvaluatorType.MEAL_EVENT;
+import static com.github.wslotkin.itinerator.generator.evaluator.EvaluatorType.SLEEP_EVENT;
+
+class SubitineraryEvaluators implements Evaluator<Itinerary> {
 
     private final Evaluator<Itinerary> subitineraryEvaluator;
     private final DaySubitineraryProvider subitineraryProvider;
 
-    public static Evaluator<Itinerary> subitineraryEvaluators(EvaluationConfig config) {
+    public static Evaluator<Itinerary> subitineraryEvaluators(EvaluationConfig config, EvaluatorState evaluatorState) {
         return new SubitineraryEvaluators(new DaySubitineraryProvider(),
-                new SleepEventEvaluator(config.getIncorrectSleepPenalty())
-                        .andThen(new MealEvaluator(config.getIncorrectMealPenalty())));
+                evaluator(new SleepEventEvaluator(config.getIncorrectSleepPenalty()), evaluatorState, SLEEP_EVENT)
+                        .andThen(evaluator(new MealEvaluator(config.getIncorrectMealPenalty()), evaluatorState, MEAL_EVENT)));
     }
 
     @VisibleForTesting

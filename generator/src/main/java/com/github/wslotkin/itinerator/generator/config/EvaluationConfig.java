@@ -53,4 +53,9 @@ public interface EvaluationConfig {
     }
 
     Set<String> getRequiredActivities();
+
+    @Default
+    default boolean shouldLogEvaluatorResults() {
+        return false;
+    }
 }

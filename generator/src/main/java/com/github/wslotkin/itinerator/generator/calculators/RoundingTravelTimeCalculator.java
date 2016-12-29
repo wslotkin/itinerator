@@ -1,12 +1,18 @@
 package com.github.wslotkin.itinerator.generator.calculators;
 
 import com.github.wslotkin.itinerator.generator.datamodel.Activity;
+import com.google.common.annotations.VisibleForTesting;
 
 public class RoundingTravelTimeCalculator {
     private final TravelTimeCalculator calculator;
     private final double timeIncrement;
 
-    public RoundingTravelTimeCalculator(TravelTimeCalculator calculator, double timeIncrement) {
+    public static RoundingTravelTimeCalculator roundingTravelTimeCalculator() {
+        return new RoundingTravelTimeCalculator(new TravelTimeCalculator(new DistanceCalculator()), 5.0);
+    }
+
+    @VisibleForTesting
+    RoundingTravelTimeCalculator(TravelTimeCalculator calculator, double timeIncrement) {
         this.calculator = calculator;
         this.timeIncrement = timeIncrement;
     }

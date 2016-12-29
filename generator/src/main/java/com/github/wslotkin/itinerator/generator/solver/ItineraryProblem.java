@@ -5,7 +5,6 @@ import com.github.wslotkin.itinerator.generator.datamodel.Activity;
 import com.github.wslotkin.itinerator.generator.datamodel.Event;
 import com.github.wslotkin.itinerator.generator.datamodel.Itinerary;
 import com.github.wslotkin.itinerator.generator.evaluator.Evaluator;
-import com.github.wslotkin.itinerator.generator.evaluator.ItineraryEvaluatorFactory;
 import com.github.wslotkin.itinerator.generator.evaluator.ItineraryFitness;
 import com.github.wslotkin.itinerator.generator.itinerary.ItineraryFactory;
 import cz.cvut.felk.cig.jcop.problem.*;
@@ -14,6 +13,8 @@ import cz.cvut.felk.cig.jcop.util.JcopRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.wslotkin.itinerator.generator.evaluator.ItineraryEvaluatorFactory.createEvaluators;
 
 public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem, RandomConfigurationProblem {
 
@@ -52,7 +53,7 @@ public class ItineraryProblem extends BaseProblem implements GlobalSearchProblem
 
     @Override
     public Fitness getDefaultFitness() {
-        Evaluator<Itinerary> evaluator = ItineraryEvaluatorFactory.createEvaluators(evaluationConfig, activities);
+        Evaluator<Itinerary> evaluator = createEvaluators(evaluationConfig, activities);
         return new ItineraryFitness(evaluator, itineraryFactory);
     }
 

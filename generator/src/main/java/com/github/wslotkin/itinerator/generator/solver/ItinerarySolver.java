@@ -1,12 +1,11 @@
 package com.github.wslotkin.itinerator.generator.solver;
 
-import com.github.wslotkin.itinerator.generator.calculators.DistanceCalculator;
 import com.github.wslotkin.itinerator.generator.calculators.RoundingTravelTimeCalculator;
-import com.github.wslotkin.itinerator.generator.calculators.TravelTimeCalculator;
 import com.github.wslotkin.itinerator.generator.config.EvaluationConfig;
 import com.github.wslotkin.itinerator.generator.config.GeneticAlgorithmConfig;
 import com.github.wslotkin.itinerator.generator.datamodel.*;
 import com.github.wslotkin.itinerator.generator.itinerary.ItineraryFactory;
+import cz.cvut.felk.cig.jcop.algorithm.Algorithm;
 import cz.cvut.felk.cig.jcop.algorithm.geneticalgorithm.GeneticAlgorithm;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import cz.cvut.felk.cig.jcop.result.ResultEntry;
@@ -17,8 +16,9 @@ import cz.cvut.felk.cig.jcop.solver.condition.TimeoutCondition;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static com.github.wslotkin.itinerator.generator.calculators.RoundingTravelTimeCalculator.roundingTravelTimeCalculator;
+import static com.github.wslotkin.itinerator.generator.solver.DataRecordingAlgorithmDecorator.wrapWithDataRecordingAlgorithm;
 import static com.google.common.collect.Iterables.getOnlyElement;
 
 public class ItinerarySolver {
@@ -32,43 +32,17 @@ public class ItinerarySolver {
                                                LocalDateTime endTime,
                                                GeneticAlgorithmConfig geneticAlgorithmConfig,
                                                EvaluationConfig evaluationConfig) {
-        RoundingTravelTimeCalculator travelTimeCalculator = new RoundingTravelTimeCalculator(new TravelTimeCalculator(new DistanceCalculator()), 5.0);
+        RoundingTravelTimeCalculator travelTimeCalculator = roundingTravelTimeCalculator();
         ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, fixedEvents);
         ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory, evaluationConfig);
-        GeneticAlgorithm geneticAlgorithm = createGeneticAlgorithm(geneticAlgorithmConfig.getPopulationSize(),
-                geneticAlgorithmConfig.getMutationRate(),
-                geneticAlgorithmConfig.getParallelized());
-        SimpleSolver solver = new SimpleSolver(geneticAlgorithm, itineraryProblem);
+        Algorithm algorithm = createAlgorithm(activities, geneticAlgorithmConfig, evaluationConfig, itineraryFactory);
+        SimpleSolver solver = new SimpleSolver(algorithm, itineraryProblem);
         solver.addStopCondition(new IterationCondition(geneticAlgorithmConfig.getMaxIterations()));
         solver.addStopCondition(new TimeoutCondition(geneticAlgorithmConfig.getMaxDuration()));
         return new ItinerarySolver(solver, itineraryFactory);
     }
 
-    private static GeneticAlgorithm createGeneticAlgorithm(int populationSize, double mutationRate, boolean parallelized) {
-        if (parallelized) {
-            return new ParallelGeneticAlgorithm(populationSize, mutationRate);
-        } else {
-            return new GeneticAlgorithm(populationSize, mutationRate);
-        }
-    }
-
-    public static SolverResult generateResult(List<Activity> activities,
-                                              LocalDateTime startTime,
-                                              LocalDateTime endTime,
-                                              List<Event> events,
-                                              EvaluationConfig evaluationConfig) {
-        RoundingTravelTimeCalculator travelTimeCalculator = new RoundingTravelTimeCalculator(new TravelTimeCalculator(new DistanceCalculator()), 5.0);
-        ItineraryFactory itineraryFactory = new ItineraryFactory(activities, startTime, endTime, travelTimeCalculator, events);
-        ItineraryProblem itineraryProblem = new ItineraryProblem(activities, startTime, endTime, itineraryFactory, evaluationConfig);
-        List<Integer> attributes = activities.stream().map(activities::indexOf).collect(Collectors.toList());
-
-        Configuration configuration = new Configuration(attributes);
-        Itinerary itinerary = itineraryFactory.create(configuration);
-        double score = itineraryProblem.getDefaultFitness().getValue(configuration);
-        return ImmutableSolverResult.of(itinerary, configuration, score, 0L);
-    }
-
-    public ItinerarySolver(Solver solver, ItineraryFactory itineraryFactory) {
+    private ItinerarySolver(Solver solver, ItineraryFactory itineraryFactory) {
         this.solver = solver;
         this.itineraryFactory = itineraryFactory;
     }
@@ -93,6 +67,32 @@ public class ItinerarySolver {
         Exception exception = resultEntry.getException();
         if (bestConfiguration == null && exception != null) {
             throw new RuntimeException(exception);
+        }
+    }
+
+    private static Algorithm createAlgorithm(List<Activity> activities,
+                                             GeneticAlgorithmConfig geneticAlgorithmConfig,
+                                             EvaluationConfig evaluationConfig,
+                                             ItineraryFactory itineraryFactory) {
+        Algorithm geneticAlgorithm = createGeneticAlgorithm(geneticAlgorithmConfig.getPopulationSize(),
+                geneticAlgorithmConfig.getMutationRate(),
+                geneticAlgorithmConfig.getParallelized());
+        if (evaluationConfig.shouldLogEvaluatorResults()) {
+            return wrapWithDataRecordingAlgorithm(geneticAlgorithm,
+                    evaluationConfig,
+                    activities,
+                    itineraryFactory,
+                    "evaluatorOutput.csv");
+        } else {
+            return geneticAlgorithm;
+        }
+    }
+
+    private static GeneticAlgorithm createGeneticAlgorithm(int populationSize, double mutationRate, boolean parallelized) {
+        if (parallelized) {
+            return new ParallelGeneticAlgorithm(populationSize, mutationRate);
+        } else {
+            return new GeneticAlgorithm(populationSize, mutationRate);
         }
     }
 }
