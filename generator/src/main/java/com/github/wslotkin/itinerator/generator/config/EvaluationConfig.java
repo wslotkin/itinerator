@@ -19,7 +19,7 @@ public interface EvaluationConfig {
 
     @Default
     default double getAreaHoppingPenalty() {
-        return -50.0;
+        return -100.0;
     }
 
     @Default
@@ -34,7 +34,7 @@ public interface EvaluationConfig {
 
     @Default
     default double getTravelTimePenalty() {
-        return -20.0;
+        return -10.0;
     }
 
     @Default
