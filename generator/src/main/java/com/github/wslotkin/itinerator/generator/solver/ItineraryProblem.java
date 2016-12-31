@@ -5,7 +5,6 @@ import com.github.wslotkin.itinerator.generator.datamodel.Activity;
 import com.github.wslotkin.itinerator.generator.datamodel.Event;
 import com.github.wslotkin.itinerator.generator.datamodel.Itinerary;
 import com.github.wslotkin.itinerator.generator.evaluator.Evaluator;
-import com.github.wslotkin.itinerator.generator.evaluator.ItineraryFitness;
 import com.github.wslotkin.itinerator.generator.itinerary.ItineraryFactory;
 import cz.cvut.felk.cig.jcop.problem.*;
 import cz.cvut.felk.cig.jcop.util.JcopRandom;

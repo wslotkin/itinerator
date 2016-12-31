@@ -6,7 +6,6 @@ import com.github.wslotkin.itinerator.generator.datamodel.Itinerary;
 import com.github.wslotkin.itinerator.generator.evaluator.Evaluator;
 import com.github.wslotkin.itinerator.generator.evaluator.EvaluatorState;
 import com.github.wslotkin.itinerator.generator.evaluator.EvaluatorType;
-import com.github.wslotkin.itinerator.generator.evaluator.ItineraryFitness;
 import com.github.wslotkin.itinerator.generator.itinerary.ItineraryFactory;
 import com.google.common.annotations.VisibleForTesting;
 import cz.cvut.felk.cig.jcop.algorithm.Algorithm;

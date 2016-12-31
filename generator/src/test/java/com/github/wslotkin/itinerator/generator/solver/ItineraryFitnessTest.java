@@ -1,7 +1,8 @@
-package com.github.wslotkin.itinerator.generator.evaluator;
+package com.github.wslotkin.itinerator.generator.solver;
 
 import com.github.wslotkin.itinerator.generator.datamodel.ImmutableItinerary;
 import com.github.wslotkin.itinerator.generator.datamodel.Itinerary;
+import com.github.wslotkin.itinerator.generator.evaluator.Evaluator;
 import com.github.wslotkin.itinerator.generator.itinerary.ItineraryFactory;
 import cz.cvut.felk.cig.jcop.problem.Configuration;
 import org.junit.Before;

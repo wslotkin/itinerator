@@ -1,7 +1,7 @@
 package com.github.wslotkin.itinerator.generator.experimenter;
 
 import com.github.wslotkin.itinerator.generator.datamodel.Itinerary;
-import com.github.wslotkin.itinerator.generator.evaluator.ItineraryFitness;
+import com.github.wslotkin.itinerator.generator.solver.ItineraryFitness;
 import com.google.common.collect.TreeMultiset;
 
 import java.util.Iterator;
